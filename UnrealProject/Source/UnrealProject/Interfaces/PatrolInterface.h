@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "ShootInterface.generated.h"
+#include "PatrolInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UShootInterface : public UInterface
+class UPatrolInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,17 +16,13 @@ class UShootInterface : public UInterface
 /**
  * 
  */
-class UNREALPROJECT_API IShootInterface
+class UNREALPROJECT_API IPatrolInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual FVector GetShootStartingLocation() = 0;
-
-	virtual class UShooterComponent* GetShooterComponent() = 0;
-
-	virtual bool Shoot();
+	virtual class APatrolRoute* GetPatrolRoute() = 0;
 
 };

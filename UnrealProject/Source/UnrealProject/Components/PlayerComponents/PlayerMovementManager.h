@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "..//GeneralComponents/MovementManager.h"
 #include "InputAction.h"
-#include "MovementManager.generated.h"
+#include "PlayerMovementManager.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class UNREALPROJECT_API UMovementManager : public UActorComponent
+class UNREALPROJECT_API UPlayerMovementManager : public UMovementManager
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UMovementManager();
+	UPlayerMovementManager();
 
 	void Move(const FInputActionValue& Value);
 
@@ -33,9 +33,9 @@ protected:
 	class AMainCharacter* MainCharacter = nullptr;;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement|Rotation", meta = (Displaypriority = 0))
-	float MouseSensitivityX = 20.f;
+	float MouseSensitivityX = 1.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement|Rotation", meta = (Displaypriority = 1))
-	float MouseSensitivityY = 20.f;
+	float MouseSensitivityY = 1.f;
 
 };

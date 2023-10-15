@@ -19,4 +19,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "QuickLibrary", meta = (WorldContext = "WorldContextObject"))
 	static class UShooterGameInstance* GetGameInstance(UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintPure, Category = "QuickLibrary", meta = (WorldContext = "WorldContextObject"))
+	static class AMainCharacter* GetPlayer(UObject* WorldContextObject);
+
 };

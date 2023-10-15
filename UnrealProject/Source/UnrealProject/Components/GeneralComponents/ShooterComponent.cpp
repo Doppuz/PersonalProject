@@ -6,6 +6,7 @@
 #include "../../GameInstance/ShooterGameInstance.h"
 #include "../../SquaredProjectile.h"
 #include "../../Interfaces/ShootInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UShooterComponent::UShooterComponent()
@@ -31,7 +32,12 @@ bool UShooterComponent::Shoot()
 						FActorSpawnParameters SpawnParameters;
 						SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-						GetWorld()->SpawnActor<ASquaredProjectile>(SquaredProjectileClass, ShootInterface->GetShootStartingLocation(), FRotator::ZeroRotator, SpawnParameters);
+						FTransform Transform(GetOwner()->GetActorRotation(), ShootInterface->GetShootStartingLocation());
+						ASquaredProjectile* Squaredprojectile = GetWorld()->SpawnActorDeferred<ASquaredProjectile>(SquaredProjectileClass, Transform, GetOwner(), nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+					
+						Squaredprojectile->SetProjectileOwner(GetOwner());
+
+						UGameplayStatics::FinishSpawningActor(Squaredprojectile, Transform);
 					}
 					else
 					{

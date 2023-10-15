@@ -3,6 +3,7 @@
 
 #include "QuickAccessLibrary.h"
 #include "../GameInstance/ShooterGameInstance.h"
+#include "../Characters/MainCharacter.h"
 
 UShooterGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContextObject)
 {
@@ -15,3 +16,21 @@ UShooterGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContext
 
 	return Cast<UShooterGameInstance>(World->GetGameInstance());
 }
+
+AMainCharacter* UQuickAccessLibrary::GetPlayer(UObject* WorldContextObject)
+{
+	UWorld* World = GEngine->GetWorldFromContextObjectChecked(WorldContextObject);
+
+	if (ensure(World))
+	{
+		APlayerController* PC = World->GetFirstPlayerController();
+		if (PC)
+		{
+			AMainCharacter* curChar = Cast<AMainCharacter>(PC->GetPawn());
+			return curChar;
+		}
+	}
+
+	return nullptr;
+}
+

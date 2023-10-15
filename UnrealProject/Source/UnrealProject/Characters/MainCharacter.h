@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "../Interfaces/ShootInterface.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()
-class UNREALPROJECT_API AMainCharacter : public ACharacter, public IShootInterface
+class UNREALPROJECT_API AMainCharacter : public ABaseCharacter, public IShootInterface
 {
 	GENERATED_BODY()
 
@@ -19,6 +19,14 @@ public:
 #pragma region ShooterInterface
 
 	virtual FVector GetShootStartingLocation();
+
+	virtual class UShooterComponent* GetShooterComponent();
+
+#pragma endregion
+
+#pragma region MovementInterface
+
+	virtual class UMovementManager* GetMovementManager() override;
 
 #pragma endregion
 
@@ -42,7 +50,7 @@ protected:
 	class UPlayerInputComponent* CustomInputComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	class UMovementManager* MovementManager;
+	class UPlayerMovementManager* PlayerMovementManager;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	class USpringArmComponent* SpringArmComponent;

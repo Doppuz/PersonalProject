@@ -3,7 +3,7 @@
 
 #include "MainCharacter.h"
 #include "../Components/PlayerComponents/PlayerInputComponent.h"
-#include "../Components/PlayerComponents/MovementManager.h"
+#include "../Components/PlayerComponents/PlayerMovementManager.h"
 #include "../Components/GeneralComponents/ShooterComponent.h"
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
@@ -26,14 +26,32 @@ AMainCharacter::AMainCharacter()
 	ShootPoint->SetupAttachment(RootComponent);
 
 	CustomInputComponent = CreateDefaultSubobject<UPlayerInputComponent>(TEXT("InputComponent"));
-	MovementManager = CreateDefaultSubobject<UMovementManager>(TEXT("MovementManager"));
+	PlayerMovementManager = CreateDefaultSubobject<UPlayerMovementManager>(TEXT("PlayerMovementManager"));
 	ShooterComponent = CreateDefaultSubobject<UShooterComponent>(TEXT("ShooterComponent"));
 }
+
+#pragma region ShooterInterface
 
 FVector AMainCharacter::GetShootStartingLocation()
 {
 	return ShootPoint->GetComponentLocation();
 }
+
+UShooterComponent* AMainCharacter::GetShooterComponent()
+{
+	return ShooterComponent;
+}
+
+#pragma endregion
+
+#pragma region MovementInterface
+
+UMovementManager* AMainCharacter::GetMovementManager()
+{
+	return PlayerMovementManager;
+}
+
+#pragma endregion
 
 // Called when the game starts or when spawned
 void AMainCharacter::BeginPlay()
@@ -56,9 +74,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
-	EnhancedInputComponent->BindAction(CustomInputComponent->InputToMove, ETriggerEvent::Triggered, MovementManager, &UMovementManager::Move);
-	EnhancedInputComponent->BindAction(CustomInputComponent->InputToRotateCamera, ETriggerEvent::Triggered, MovementManager, &UMovementManager::RotateCamera);
-	EnhancedInputComponent->BindAction(CustomInputComponent->InputToJump, ETriggerEvent::Triggered, MovementManager, &UMovementManager::Jump);
+	EnhancedInputComponent->BindAction(CustomInputComponent->InputToMove, ETriggerEvent::Triggered, PlayerMovementManager, &UPlayerMovementManager::Move);
+	EnhancedInputComponent->BindAction(CustomInputComponent->InputToRotateCamera, ETriggerEvent::Triggered, PlayerMovementManager, &UPlayerMovementManager::RotateCamera);
+	EnhancedInputComponent->BindAction(CustomInputComponent->InputToJump, ETriggerEvent::Triggered, PlayerMovementManager, &UPlayerMovementManager::Jump);
 	EnhancedInputComponent->BindAction(CustomInputComponent->InputToShoot, ETriggerEvent::Triggered, ShooterComponent, &UShooterComponent::Shoot_ByInput);
 }
 

@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MovementManager.h"
+#include "PlayerMovementManager.h"
 #include "../../Characters/MainCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties
-UMovementManager::UMovementManager()
+UPlayerMovementManager::UPlayerMovementManager()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -17,14 +17,14 @@ UMovementManager::UMovementManager()
 
 
 // Called when the game starts
-void UMovementManager::BeginPlay()
+void UPlayerMovementManager::BeginPlay()
 {
 	Super::BeginPlay();
 
 	MainCharacter = Cast<AMainCharacter>(GetOwner());
 }
 
-void UMovementManager::Move(const FInputActionValue& Value)
+void UPlayerMovementManager::Move(const FInputActionValue& Value)
 {
 	if (ensure(MainCharacter))
 	{
@@ -42,7 +42,7 @@ void UMovementManager::Move(const FInputActionValue& Value)
 	}
 }
 
-void UMovementManager::RotateCamera(const FInputActionValue& Value)
+void UPlayerMovementManager::RotateCamera(const FInputActionValue& Value)
 {
 	if (ensure(MainCharacter))
 	{
@@ -60,7 +60,7 @@ void UMovementManager::RotateCamera(const FInputActionValue& Value)
 	}
 }
 
-void UMovementManager::Jump(const FInputActionValue& Value)
+void UPlayerMovementManager::Jump(const FInputActionValue& Value)
 {
 	if (ensure(MainCharacter))
 	{
