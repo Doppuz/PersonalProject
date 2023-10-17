@@ -33,6 +33,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	class UMovementManager* MovementManager;
+
 #pragma endregion
 
 };

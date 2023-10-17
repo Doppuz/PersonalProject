@@ -5,6 +5,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include <Perception/AISenseConfig_Sight.h>
 #include <Perception/AISenseConfig_Hearing.h>
+#include "../Characters/MainCharacter.h"
 
 void ABaseEnemyController::OnPossess(APawn* InPawn)
 {
@@ -22,6 +23,12 @@ void ABaseEnemyController::OnUnPossess()
 
 void ABaseEnemyController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
+	if (Actor && !Actor->GetClass()->IsChildOf(AMainCharacter::StaticClass()))
+	{
+		//to be changed
+		return;
+	}
+
 	UAISenseConfig* CurrentAISenseConfig = AIPerceptionComponent->GetSenseConfig(Stimulus.Type);
 
 	if (Stimulus.WasSuccessfullySensed())
@@ -80,6 +87,7 @@ void ABaseEnemyController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 	{
 	case EEnemyState::PASSIVE:
 
+		SetCurrentAttackTarget(Actor);
 		SetCurrentEnemyState(EEnemyState::ATTACKING);
 
 		break;
@@ -124,53 +132,6 @@ void ABaseEnemyController::HandleHearingSense(AActor* Actor, FAIStimulus Stimulu
 	}
 }
 
-void ABaseEnemyController::HandleOutOfSightSense(AActor* Actor, FAIStimulus Stimulus)
-{
-	EEnemyState EnemyState = GetCurrentEnemyState();
-
-	switch (EnemyState)
-	{
-	case EEnemyState::PASSIVE:
-		break;
-	case EEnemyState::ATTACKING:
-
-		SetCurrentEnemyState(EEnemyState::PASSIVE);
-
-		break;
-	case EEnemyState::INVESTIGATING:
-
-		SetCurrentEnemyState(EEnemyState::PASSIVE);
-
-		break;
-	case EEnemyState::MAX:
-		break;
-	default:
-		break;
-	}
-}
-
-void ABaseEnemyController::HandleHearingExpiresSense(AActor* Actor, FAIStimulus Stimulus)
-{
-	EEnemyState EnemyState = GetCurrentEnemyState();
-
-	switch (EnemyState)
-	{
-	case EEnemyState::PASSIVE:
-		break;
-	case EEnemyState::ATTACKING:
-		break;
-	case EEnemyState::INVESTIGATING:
-
-		SetCurrentEnemyState(EEnemyState::PASSIVE);
-
-		break;
-	case EEnemyState::MAX:
-		break;
-	default:
-		break;
-	}
-}
-
 #pragma region EnemyState
 
 void ABaseEnemyController::SetCurrentEnemyState(EEnemyState InCurrentEnemyState)
@@ -193,6 +154,32 @@ EEnemyState ABaseEnemyController::GetCurrentEnemyState()
 	}
 
 	return EEnemyState::MAX;
+}
+
+#pragma endregion
+
+#pragma region Attacktarget
+
+void ABaseEnemyController::SetCurrentAttackTarget(AActor* NewTarget)
+{
+	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
+
+	if (BlackboardComponent)
+	{
+		BlackboardComponent->SetValueAsObject("AttackTarget", NewTarget);
+	}
+}
+
+AActor* ABaseEnemyController::GetCurrentAttackTarget()
+{
+	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
+
+	if (BlackboardComponent)
+	{
+		return Cast<AActor>(BlackboardComponent->GetValueAsObject("AttackTarget"));
+	}
+
+	return nullptr;
 }
 
 #pragma endregion

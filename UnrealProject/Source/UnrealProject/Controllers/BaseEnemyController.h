@@ -35,10 +35,6 @@ protected:
 
 	void HandleHearingSense(AActor* Actor, FAIStimulus Stimulus);
 
-	void HandleOutOfSightSense(AActor* Actor, FAIStimulus Stimulus);
-
-	void HandleHearingExpiresSense(AActor* Actor, FAIStimulus Stimulus);
-
 #pragma endregion
 
 #pragma region EnemyState
@@ -50,6 +46,18 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "EnemyState")
 	EEnemyState GetCurrentEnemyState();
+
+#pragma endregion
+
+#pragma region Attacktarget
+
+public:
+
+	UFUNCTION(BlueprintCallable, Category = "EnemyState")
+	void SetCurrentAttackTarget(AActor* NewTarget);
+
+	UFUNCTION(BlueprintPure, Category = "EnemyState")
+	AActor* GetCurrentAttackTarget();
 
 #pragma endregion
 
