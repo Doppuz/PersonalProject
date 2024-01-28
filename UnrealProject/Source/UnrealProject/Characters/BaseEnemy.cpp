@@ -22,6 +22,21 @@ UMovementManager* ABaseEnemy::GetMovementManager()
 
 #pragma endregion
 
+#pragma region AttackDefenseInterface
+
+float ABaseEnemy::GetAttackRange()
+{
+	return AttackRange;
+}
+
+float ABaseEnemy::GetDefenseRange()
+{
+	return DefenseRange;
+}
+
+#pragma endregion
+
+
 // Called when the game starts or when spawned
 void ABaseEnemy::BeginPlay()
 {

@@ -6,10 +6,22 @@
 #include <Perception/AISenseConfig_Sight.h>
 #include <Perception/AISenseConfig_Hearing.h>
 #include "../Characters/MainCharacter.h"
+#include "../Interfaces/AttackDefenseInterface.h"
 
 void ABaseEnemyController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+	
+	if (GetBlackboardComponent())
+	{
+		IAttackDefenseInterface* AttackDefenseInterface = Cast<IAttackDefenseInterface>(InPawn);
+
+		if (AttackDefenseInterface)
+		{
+			GetBlackboardComponent()->SetValueAsFloat("AttackRange", AttackDefenseInterface->GetAttackRange());
+			GetBlackboardComponent()->SetValueAsFloat("DefenseRange", AttackDefenseInterface->GetDefenseRange());
+		}
+	}
 
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseEnemyController::OnTargetPerceptionUpdated);
 	AIPerceptionComponent->OnTargetPerceptionForgotten.AddDynamic(this, &ABaseEnemyController::OnTargetPerceptionForgotten);

@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
 #include "../Enums/Enums_AI.h"
+#include "../Interfaces/AttackDefenseInterface.h"
 #include "BaseEnemy.generated.h"
 
 UCLASS()
-class UNREALPROJECT_API ABaseEnemy : public ABaseCharacter
+class UNREALPROJECT_API ABaseEnemy : public ABaseCharacter, public IAttackDefenseInterface
 {
 	GENERATED_BODY()
 
@@ -33,6 +34,26 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	class UMovementManager* MovementManager;
+
+#pragma endregion
+
+#pragma region AttackDefenseInterface
+
+public:
+	
+	UFUNCTION()
+	virtual float GetAttackRange();
+
+	UFUNCTION()
+	virtual float GetDefenseRange();
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AttackDefenseRange")
+	float AttackRange = 150.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AttackDefenseRange")
+	float DefenseRange = 350.f;
 
 #pragma endregion
 
