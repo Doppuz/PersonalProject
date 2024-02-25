@@ -8,7 +8,7 @@
 #include "ActionComponent.generated.h"
 
 class UAction;
-class UShooterGameInstance;
+class USAGameInstance;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALPROJECT_API UActionComponent : public UActorComponent
@@ -19,7 +19,6 @@ public:
 	// Sets default values for this component's properties
 	UActionComponent();
 
-protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
@@ -33,11 +32,10 @@ protected:
 
 	UAction* GetAction(TSoftClassPtr<UAction> ActionSoftClass);
 
-#pragma region Variables
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
 	//List of actions not visible outside
@@ -45,11 +43,10 @@ protected:
 	TArray<TObjectPtr<UAction>> CurrentActions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actions")
-	TArray<TObjectPtr<UAction>> DefaultActions;
+	TArray<TSoftClassPtr<UAction>> DefaultActions;
 
 	UPROPERTY()
-	TSoftObjectPtr<UShooterGameInstance> GI;
+	TObjectPtr<USAGameInstance> GI;
 
-#pragma endregion
 
 };

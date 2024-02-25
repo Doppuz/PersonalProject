@@ -27,6 +27,8 @@ protected:
 
 protected:
 
+#pragma region Input
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced input")
 	class UInputMappingContext* InputMappingContext;
 
@@ -41,5 +43,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced input")
 	class UInputAction* InputToJump;
+
+#pragma endregion
+
+#pragma region SocketActionName
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag")
+	FGameplayTag PrimaryAttackTag;
+
+#pragma endregion
 
 };

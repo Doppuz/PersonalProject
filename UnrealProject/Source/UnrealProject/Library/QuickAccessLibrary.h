@@ -16,7 +16,7 @@ class UNREALPROJECT_API UQuickAccessLibrary : public UBlueprintFunctionLibrary
 public:
 
 	UFUNCTION(BlueprintPure, Category = "QuickLibrary", meta = (WorldContext = "WorldContextObject"))
-	static class UShooterGameInstance* GetGameInstance(UObject* WorldContextObject);
+	static class USAGameInstance* GetGameInstance(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, Category = "QuickLibrary", meta = (WorldContext = "WorldContextObject"))
 	static class AMainCharacter* GetPlayer(UObject* WorldContextObject);

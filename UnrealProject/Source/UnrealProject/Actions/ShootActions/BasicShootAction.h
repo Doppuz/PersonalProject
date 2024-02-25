@@ -6,20 +6,38 @@
 #include "../Action.h"
 #include "BasicShootAction.generated.h"
 
-/**
- * 
- */
-UCLASS()
+class ABasicProjectile;
+
+UCLASS(Blueprintable)
 class UNREALPROJECT_API UBasicShootAction : public UAction
 {
 	GENERATED_BODY()
 	
 public:
 
-#pragma region Variables
+	virtual void StartAction_Implementation(AActor* Instigator) override;
+
+	virtual void StopAction_Implementation(AActor* Instigator) override;
 
 protected:
 
-#pragma endregion
+	UFUNCTION()
+	void OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
+	FName ShootSocket = "ShootSocket";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot", meta = (DisplayName = "BasicProjectileClass"))
+	TSoftClassPtr<ABasicProjectile> BasicProjectileSoftClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot|Montage")
+	UAnimMontage* ShootMontage;
+
+	UPROPERTY()
+	AActor* CurrentInstigator = nullptr;
+
+	UPROPERTY()
+	UAnimInstance* AI = nullptr;
 };

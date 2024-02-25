@@ -8,21 +8,13 @@
 #include "MainCharacter.generated.h"
 
 UCLASS()
-class UNREALPROJECT_API AMainCharacter : public ABaseCharacter, public IShootInterface
+class UNREALPROJECT_API AMainCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
 	AMainCharacter();
-
-#pragma region ShooterInterface
-
-	virtual FVector GetShootStartingLocation();
-
-	virtual class UShooterComponent* GetShooterComponent();
-
-#pragma endregion
 
 #pragma region MovementInterface
 
@@ -42,11 +34,13 @@ protected:
 
 	virtual void PawnClientRestart() override;
 
+	void PrimaryAttack();
+
 protected:
 
 #pragma region Components
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	class UPlayerInputComponent* CustomInputComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
@@ -57,12 +51,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
 	class UCameraComponent* CameraComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	class UShooterComponent* ShooterComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	USceneComponent* ShootPoint;
 
 #pragma endregion
 

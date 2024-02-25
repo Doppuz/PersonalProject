@@ -4,18 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "SquaredProjectile.generated.h"
+#include "BasicProjectile.generated.h"
 
-UCLASS()
-class UNREALPROJECT_API ASquaredProjectile : public APawn
+UCLASS(Blueprintable)
+class UNREALPROJECT_API ABasicProjectile : public APawn
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	ASquaredProjectile();
-
-	void SetProjectileOwner(AActor* InActor);
+	ABasicProjectile();
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,7 +34,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UProjectileMovementComponent* ProjectileMovementComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	AActor* ProjectileOwner = nullptr;
 };

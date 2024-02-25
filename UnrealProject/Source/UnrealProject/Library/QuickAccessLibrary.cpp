@@ -2,11 +2,11 @@
 
 
 #include "QuickAccessLibrary.h"
-#include "../GameInstance/ShooterGameInstance.h"
+#include "../GameInstance/SAGameInstance.h"
 #include "../Characters/MainCharacter.h"
 #include "Engine/AssetManager.h"
 
-UShooterGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContextObject)
+USAGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContextObject)
 {
 	if (!WorldContextObject)
 	{
@@ -15,7 +15,7 @@ UShooterGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContext
 
 	UWorld* World = GEngine->GetWorldFromContextObjectChecked(WorldContextObject);
 
-	return Cast<UShooterGameInstance>(World->GetGameInstance());
+	return Cast<USAGameInstance>(World->GetGameInstance());
 }
 
 AMainCharacter* UQuickAccessLibrary::GetPlayer(UObject* WorldContextObject)

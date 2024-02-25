@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Engine/StreamableManager.h"
-#include "ShooterGameInstance.generated.h"
+#include "SAGameInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPROJECT_API UShooterGameInstance : public UGameInstance
+class UNREALPROJECT_API USAGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	

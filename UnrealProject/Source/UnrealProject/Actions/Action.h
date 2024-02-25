@@ -9,7 +9,7 @@
 
 class UActionComponent;
 
-UCLASS()
+UCLASS(Blueprintable)
 class UNREALPROJECT_API UAction : public UObject
 {
 	GENERATED_BODY()
@@ -17,13 +17,16 @@ class UNREALPROJECT_API UAction : public UObject
 
 public:
 
-	void Initialize(UActionComponent* NewActionComp);
+	virtual void Initialize(UActionComponent* NewActionComp);
 
-	virtual bool CanStart();
+	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	bool CanStart();
 
-	virtual void StartAction(AActor* Instigator);
+	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	void StartAction(AActor* Instigator);
 
-	virtual void StopAction(AActor* Instigator);
+	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	void StopAction(AActor* Instigator);
 
 #pragma region GetSet
 
@@ -40,8 +43,6 @@ public:
 
 #pragma endregion
 
-#pragma region Variables
-
 protected:
 
 	UPROPERTY()
@@ -51,12 +52,13 @@ protected:
 	bool bAutoPlay = false;
 
 	//Name of the action
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Information")
 	FGameplayTag ActionName;
 
 	UPROPERTY()
 	TObjectPtr<UActionComponent> ActionComponentOwner;
 
-#pragma endregion
+	UPROPERTY()
+	class USAGameInstance* GI = nullptr;
 
 };

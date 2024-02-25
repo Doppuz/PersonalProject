@@ -4,12 +4,12 @@
 #include "MainCharacter.h"
 #include "../Components/PlayerComponents/PlayerInputComponent.h"
 #include "../Components/PlayerComponents/PlayerMovementManager.h"
-#include "../Components/GeneralComponents/ShooterComponent.h"
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "../Components/GeneralComponents/ActionComponent.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -22,27 +22,9 @@ AMainCharacter::AMainCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	ShootPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ShootPoint"));
-	ShootPoint->SetupAttachment(RootComponent);
-
 	CustomInputComponent = CreateDefaultSubobject<UPlayerInputComponent>(TEXT("InputComponent"));
 	PlayerMovementManager = CreateDefaultSubobject<UPlayerMovementManager>(TEXT("PlayerMovementManager"));
-	ShooterComponent = CreateDefaultSubobject<UShooterComponent>(TEXT("ShooterComponent"));
 }
-
-#pragma region ShooterInterface
-
-FVector AMainCharacter::GetShootStartingLocation()
-{
-	return ShootPoint->GetComponentLocation();
-}
-
-UShooterComponent* AMainCharacter::GetShooterComponent()
-{
-	return ShooterComponent;
-}
-
-#pragma endregion
 
 #pragma region MovementInterface
 
@@ -76,7 +58,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EnhancedInputComponent->BindAction(CustomInputComponent->InputToMove, ETriggerEvent::Triggered, PlayerMovementManager, &UPlayerMovementManager::Move);
 	EnhancedInputComponent->BindAction(CustomInputComponent->InputToRotateCamera, ETriggerEvent::Triggered, PlayerMovementManager, &UPlayerMovementManager::RotateCamera);
 	EnhancedInputComponent->BindAction(CustomInputComponent->InputToJump, ETriggerEvent::Triggered, PlayerMovementManager, &UPlayerMovementManager::Jump);
-	EnhancedInputComponent->BindAction(CustomInputComponent->InputToShoot, ETriggerEvent::Triggered, ShooterComponent, &UShooterComponent::Shoot_ByInput);
+	EnhancedInputComponent->BindAction(CustomInputComponent->InputToShoot, ETriggerEvent::Triggered, this, &AMainCharacter::PrimaryAttack);
 }
 
 void AMainCharacter::PawnClientRestart()
@@ -93,3 +75,7 @@ void AMainCharacter::PawnClientRestart()
 	}
 }
 
+void AMainCharacter::PrimaryAttack()
+{
+	ActionComponent->StartActionByName(this, CustomInputComponent->PrimaryAttackTag);
+}

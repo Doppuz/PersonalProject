@@ -3,7 +3,7 @@
 
 #include "ActionComponent.h"
 #include "../../Library/QuickAccessLibrary.h"
-#include "../../GameInstance/ShooterGameInstance.h"
+#include "../../GameInstance/SAGameInstance.h"
 #include "../../Actions/Action.h"
 #include "../../Library/QuickAccessLibrary.h"
 
@@ -18,12 +18,17 @@ void UActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GI = UQuickAccessLibrary::GetGameInstance(this);
+	GI = UQuickAccessLibrary::GetGameInstance(GetOwner());
+
+	for (int i = 0; i < DefaultActions.Num(); i++)
+	{
+		AddAction(GetOwner(), DefaultActions[i]);
+	}
 }
 
 void UActionComponent::AddAction(AActor* Instigator, TSoftClassPtr<UAction> SoftActionClass)
 {
-	if (ensure(GI))
+	if (ensureAlways(GI))
 	{
 		GI->StreamableManager.RequestAsyncLoad(SoftActionClass.ToSoftObjectPath(), [this, Instigator, SoftActionClass]()
 			{
@@ -35,11 +40,12 @@ void UActionComponent::AddAction(AActor* Instigator, TSoftClassPtr<UAction> Soft
 
 					if (NewAction)
 					{
+						CurrentActions.Add(NewAction);
+						
 						NewAction->Initialize(this);
 
 						if (NewAction->GetAutoPlay() && NewAction->CanStart())
 						{
-
 							NewAction->StartAction(Instigator);
 						}
 					}

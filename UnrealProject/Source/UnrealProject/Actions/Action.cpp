@@ -2,18 +2,21 @@
 
 
 #include "Action.h"
+#include "../Library/QuickAccessLibrary.h"
 
 void UAction::Initialize(UActionComponent* NewActionComponent)
 {
 	ActionComponentOwner = NewActionComponent;
+
+	GI = UQuickAccessLibrary::GetGameInstance(this);
 }
 
-bool UAction::CanStart()
+bool UAction::CanStart_Implementation()
 {
 	return !bIsRunning;
 }
 
-void UAction::StartAction(AActor* Instigator)
+void UAction::StartAction_Implementation(AActor* Instigator)
 {
 	if (bIsRunning)
 	{
@@ -24,7 +27,7 @@ void UAction::StartAction(AActor* Instigator)
 	bIsRunning = true;
 }
 
-void UAction::StopAction(AActor* Instigators)
+void UAction::StopAction_Implementation(AActor* Instigators)
 {
 	if (!bIsRunning)
 	{

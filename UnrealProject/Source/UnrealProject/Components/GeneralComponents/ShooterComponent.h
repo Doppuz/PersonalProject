@@ -40,9 +40,9 @@ protected:
 #pragma endregion
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile", meta = (DisplaynName = "SquaredProjectile"))
-	TSoftClassPtr<ASquaredProjectile> SquaredProjectileSoft;
+	TSoftClassPtr<ABasicProjectile> BasicProjectileSoft;
 
 	UPROPERTY()
-	class UShooterGameInstance* ShooterGameInstance = nullptr;
+	class USAGameInstance* GI = nullptr;
 
 };

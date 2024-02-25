@@ -3,8 +3,8 @@
 
 #include "ShooterComponent.h"
 #include "../../Library/QuickAccessLibrary.h"
-#include "../../GameInstance/ShooterGameInstance.h"
-#include "../../SquaredProjectile.h"
+#include "../../GameInstance/SAGameInstance.h"
+#include "../../Projectiles/BasicProjectile.h"
 #include "../../Interfaces/ShootInterface.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -18,12 +18,12 @@ UShooterComponent::UShooterComponent()
 
 bool UShooterComponent::Shoot()
 {
-	if (ensure(ShooterGameInstance))
+	if (ensure(GI))
 	{
-		ShooterGameInstance->StreamableManager.RequestAsyncLoad(SquaredProjectileSoft.ToSoftObjectPath(), [this]()
+		GI->StreamableManager.RequestAsyncLoad(BasicProjectileSoft.ToSoftObjectPath(), [this]()
 			{
-				TSubclassOf<ASquaredProjectile> SquaredProjectileClass = SquaredProjectileSoft.Get();
-				if (SquaredProjectileClass)
+				TSubclassOf<ABasicProjectile> BasicProjectileClass = BasicProjectileSoft.Get();
+				if (BasicProjectileClass)
 				{
 					IShootInterface* ShootInterface = Cast<IShootInterface>(GetOwner());
 
@@ -33,11 +33,10 @@ bool UShooterComponent::Shoot()
 						SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 						FTransform Transform(GetOwner()->GetActorRotation(), ShootInterface->GetShootStartingLocation());
-						ASquaredProjectile* Squaredprojectile = GetWorld()->SpawnActorDeferred<ASquaredProjectile>(SquaredProjectileClass, Transform, GetOwner(), nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+						ABasicProjectile* BasicProjectile = GetWorld()->SpawnActorDeferred<ABasicProjectile>(BasicProjectileClass, Transform, GetOwner(), nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
 					
-						Squaredprojectile->SetProjectileOwner(GetOwner());
-
-						UGameplayStatics::FinishSpawningActor(Squaredprojectile, Transform);
+						
+						UGameplayStatics::FinishSpawningActor(BasicProjectile, Transform);
 					}
 					else
 					{
@@ -78,5 +77,5 @@ void UShooterComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	ShooterGameInstance = UQuickAccessLibrary::GetGameInstance(this);
+	GI = UQuickAccessLibrary::GetGameInstance(this);
 }

@@ -2,4 +2,76 @@
 
 
 #include "BasicShootAction.h"
+#include "../../Characters/BaseCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "../../GameInstance/SAGameInstance.h"
 
+void UBasicShootAction::StartAction_Implementation(AActor* Instigator)
+{
+	Super::StartAction_Implementation(Instigator);
+
+	CurrentInstigator = Instigator;
+	
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(Instigator);
+
+	if (ensureAlways(BaseCharacter))
+	{
+		USkeletalMeshComponent* SkeletalMeshComponent = BaseCharacter->GetMesh();
+
+		if (ensureAlways(SkeletalMeshComponent))
+		{
+			AI = SkeletalMeshComponent->GetAnimInstance();
+
+			if (ensureAlways(AI))
+			{
+				AI->OnPlayMontageNotifyBegin.AddDynamic(this, &UBasicShootAction::OnPlayMontageNotifyBegin);
+
+				BaseCharacter->PlayAnimMontage(ShootMontage);
+			}
+		}
+	}
+}
+
+void UBasicShootAction::StopAction_Implementation(AActor* Instigator)
+{
+	Super::StopAction_Implementation(Instigator);
+}
+
+void UBasicShootAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	if (NotifyName == "ShootNotify")
+	{
+		AI->OnPlayMontageNotifyBegin.RemoveDynamic(this, &UBasicShootAction::OnPlayMontageNotifyBegin);
+	
+		if (ensureAlways(GI))
+		{
+			GI->StreamableManager.RequestAsyncLoad(BasicProjectileSoftClass.ToSoftObjectPath(), [this]()
+				{
+					TSubclassOf<ABasicProjectile> BasicProjectileClass = BasicProjectileSoftClass.Get();
+					if (BasicProjectileClass)
+					{
+						ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(CurrentInstigator);
+
+						if (ensureAlways(BaseCharacter))
+						{
+							USkeletalMeshComponent* SkeletalMeshComponent = BaseCharacter->GetMesh();
+
+							if (ensureAlways(SkeletalMeshComponent->DoesSocketExist(ShootSocket)))
+							{
+								FVector SpawnLocation = SkeletalMeshComponent->GetSocketLocation(ShootSocket);
+								FRotator SpawnRotation = SkeletalMeshComponent->GetSocketRotation(ShootSocket);
+
+								FActorSpawnParameters SpawnParameters;
+								SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+								FTransform Transform(SpawnRotation, SpawnLocation);
+								GetWorld()->SpawnActor<ABasicProjectile>(BasicProjectileClass, Transform, SpawnParameters);
+
+								StopAction(CurrentInstigator);
+							}
+						}
+					}
+				});
+		}
+	}
+}

@@ -7,6 +7,8 @@
 #include "../Interfaces/MovementInterface.h"
 #include "BaseCharacter.generated.h"
 
+class UActionComponent;
+
 UCLASS()
 class UNREALPROJECT_API ABaseCharacter : public ACharacter, public IMovementInterface
 {
@@ -33,4 +35,8 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UActionComponent* ActionComponent = nullptr;
 };
