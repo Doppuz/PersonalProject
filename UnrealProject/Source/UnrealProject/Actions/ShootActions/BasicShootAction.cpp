@@ -58,11 +58,18 @@ void UBasicShootAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranch
 
 							if (ensureAlways(SkeletalMeshComponent->DoesSocketExist(ShootSocket)))
 							{
+								FVector InstigatorForwardDirection = BaseCharacter->GetActorForwardVector();
+
 								FVector SpawnLocation = SkeletalMeshComponent->GetSocketLocation(ShootSocket);
-								FRotator SpawnRotation = SkeletalMeshComponent->GetSocketRotation(ShootSocket);
+								FRotator SpawnRotation = InstigatorForwardDirection.Rotation();
+
+								//Uncomment for trace debug
+								//DrawDebugLine(BaseCharacter->GetWorld(), SpawnLocation, SpawnLocation + TraceDirection * 100, FColor::Blue, true, -1.f, 0U, 5.f);
 
 								FActorSpawnParameters SpawnParameters;
-								SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+								SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+								SpawnParameters.Owner = BaseCharacter;
+								SpawnParameters.Instigator = BaseCharacter;
 
 								FTransform Transform(SpawnRotation, SpawnLocation);
 								GetWorld()->SpawnActor<ABasicProjectile>(BasicProjectileClass, Transform, SpawnParameters);

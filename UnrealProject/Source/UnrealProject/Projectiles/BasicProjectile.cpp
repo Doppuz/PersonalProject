@@ -4,7 +4,8 @@
 #include "BasicProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "../Interfaces/MovementInterface.h"
-#include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 ABasicProjectile::ABasicProjectile()
@@ -17,10 +18,13 @@ ABasicProjectile::ABasicProjectile()
 
 	MeshComponent->SetCollisionProfileName("NoCollision");
 
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	BoxComponent->SetupAttachment(MeshComponent);
+	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+	SphereComponent->SetupAttachment(MeshComponent);
 
-	BoxComponent->SetCollisionProfileName("OverlapAll");
+	SphereComponent->SetCollisionProfileName("Projectile");
+
+	ProjectileParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ProjectileParticleComponent"));
+	ProjectileParticleComponent->SetupAttachment(SphereComponent);
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 }
@@ -30,19 +34,19 @@ void ABasicProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABasicProjectile::OnComponentBeginOverlap);
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ABasicProjectile::OnComponentBeginOverlap);
 }
 
 void ABasicProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	BoxComponent->OnComponentBeginOverlap.RemoveDynamic(this, &ABasicProjectile::OnComponentBeginOverlap);
+	SphereComponent->OnComponentBeginOverlap.RemoveDynamic(this, &ABasicProjectile::OnComponentBeginOverlap);
 }
 
 void ABasicProjectile::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor != GetOwner())
+	if (OtherActor != GetOwner() && OtherActor != this)
 	{
 		Destroy();
 	}

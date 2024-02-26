@@ -72,6 +72,16 @@ void UActionComponent::StartActionByName(AActor* Instigator, FGameplayTag Action
 	{
 		if (CurrentActions[i]->GetActionName() == ActionName)
 		{
+			if (!CurrentActions[i]->CanStart())
+			{
+				if (GEngine)
+				{
+					FString FailedMsg = FString::Printf(TEXT("Failed to run: %s"), *ActionName.ToString());
+					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMsg);
+				}
+				continue;
+			}
+
 			CurrentActions[i]->StartAction(Instigator);
 		}
 	}
@@ -83,6 +93,16 @@ void UActionComponent::StopActionByName(AActor* Instigator, FGameplayTag ActionN
 	{
 		if (CurrentActions[i]->GetActionName() == ActionName)
 		{
+			if (!CurrentActions[i]->GetIsRunning())
+			{
+				if (GEngine)
+				{
+					FString FailedMsg = FString::Printf(TEXT("Failed to run: %s"), *ActionName.ToString());
+					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMsg);
+				}
+				continue;
+			}
+
 			CurrentActions[i]->StopAction(Instigator);
 		}
 	}
