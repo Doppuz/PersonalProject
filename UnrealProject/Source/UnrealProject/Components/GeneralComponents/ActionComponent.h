@@ -32,6 +32,19 @@ public:
 
 	UAction* GetAction(TSoftClassPtr<UAction> ActionSoftClass);
 
+#pragma region Server
+
+	UFUNCTION(Server, Reliable)
+	void ServerStartAction(AActor* Instigator, FGameplayTag ActionName);
+
+	UFUNCTION(Server, Reliable)
+	void ServerStopAction(AActor* Instigator, FGameplayTag ActionName);
+
+#pragma endregion
+
+protected:
+
+	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
 protected:
 
@@ -39,7 +52,7 @@ protected:
 	FGameplayTagContainer ActiveGameplayTags;
 
 	//List of actions not visible outside
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TArray<TObjectPtr<UAction>> CurrentActions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actions")

@@ -10,8 +10,6 @@ void UBasicShootAction::StartAction_Implementation(AActor* Instigator)
 {
 	Super::StartAction_Implementation(Instigator);
 
-	CurrentInstigator = Instigator;
-	
 	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(Instigator);
 
 	if (ensureAlways(BaseCharacter))
@@ -24,7 +22,10 @@ void UBasicShootAction::StartAction_Implementation(AActor* Instigator)
 
 			if (ensureAlways(AI))
 			{
-				AI->OnPlayMontageNotifyBegin.AddDynamic(this, &UBasicShootAction::OnPlayMontageNotifyBegin);
+				if (BaseCharacter->HasAuthority())
+				{
+					AI->OnPlayMontageNotifyBegin.AddDynamic(this, &UBasicShootAction::OnPlayMontageNotifyBegin);
+				}
 
 				BaseCharacter->PlayAnimMontage(ShootMontage);
 			}
@@ -50,7 +51,7 @@ void UBasicShootAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranch
 					TSubclassOf<ABasicProjectile> BasicProjectileClass = BasicProjectileSoftClass.Get();
 					if (BasicProjectileClass)
 					{
-						ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(CurrentInstigator);
+						ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(ActionRepData.Instigator);
 
 						if (ensureAlways(BaseCharacter))
 						{
@@ -74,7 +75,7 @@ void UBasicShootAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranch
 								FTransform Transform(SpawnRotation, SpawnLocation);
 								GetWorld()->SpawnActor<ABasicProjectile>(BasicProjectileClass, Transform, SpawnParameters);
 
-								StopAction(CurrentInstigator);
+								StopAction(ActionRepData.Instigator);
 							}
 						}
 					}

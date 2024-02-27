@@ -7,6 +7,25 @@
 #include "GameplayTagContainer.h"
 #include "Action.generated.h"
 
+USTRUCT()
+struct FActionRepData
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY()
+	bool bIsRunning;
+
+	UPROPERTY()
+	TObjectPtr<AActor> Instigator;
+
+	FActionRepData()
+	{
+		bIsRunning = false;
+	}
+};
+
 class UActionComponent;
 
 UCLASS(Blueprintable)
@@ -28,12 +47,22 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StopAction(AActor* Instigator);
 
+protected:
+
+	virtual bool IsSupportedForNetworking() const override
+	{
+		return true;
+	}
+
+	UFUNCTION()
+	void OnRep_RepActionData();
+
 #pragma region GetSet
 
 public:
 
 	UFUNCTION()
-	FORCEINLINE bool GetIsRunning() const { return bIsRunning; }
+	FORCEINLINE bool GetIsRunning() const { return ActionRepData.bIsRunning; }
 
 	UFUNCTION()
 	FORCEINLINE bool GetAutoPlay() const { return  bAutoPlay; }
@@ -45,8 +74,8 @@ public:
 
 protected:
 
-	UPROPERTY()
-	bool bIsRunning = false;
+	UPROPERTY(ReplicatedUsing = "OnRep_RepActionData")
+	struct FActionRepData ActionRepData;
 
 	UPROPERTY()
 	bool bAutoPlay = false;
@@ -55,7 +84,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Information")
 	FGameplayTag ActionName;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TObjectPtr<UActionComponent> ActionComponentOwner;
 
 	UPROPERTY()

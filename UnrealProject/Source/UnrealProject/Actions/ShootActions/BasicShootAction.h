@@ -36,8 +36,5 @@ protected:
 	UAnimMontage* ShootMontage;
 
 	UPROPERTY()
-	AActor* CurrentInstigator = nullptr;
-
-	UPROPERTY()
 	UAnimInstance* AI = nullptr;
 };

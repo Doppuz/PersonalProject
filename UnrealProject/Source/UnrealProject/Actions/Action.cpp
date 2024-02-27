@@ -3,6 +3,7 @@
 
 #include "Action.h"
 #include "../Library/QuickAccessLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 void UAction::Initialize(UActionComponent* NewActionComponent)
 {
@@ -11,29 +12,56 @@ void UAction::Initialize(UActionComponent* NewActionComponent)
 	GI = UQuickAccessLibrary::GetGameInstance(this);
 }
 
+
 bool UAction::CanStart_Implementation()
 {
-	return !bIsRunning;
+	return !ActionRepData.bIsRunning;
 }
 
 void UAction::StartAction_Implementation(AActor* Instigator)
 {
-	if (bIsRunning)
+	if (ActionRepData.bIsRunning)
 	{
-		ensureAlwaysMsgf(false, TEXT("The action is already running!"));
+		//ensureAlwaysMsgf(false, TEXT("The action is already running!"));
 		return;
 	}
 
-	bIsRunning = true;
+	ActionRepData.Instigator = Instigator;
+	ActionRepData.bIsRunning = true;
 }
 
-void UAction::StopAction_Implementation(AActor* Instigators)
+void UAction::StopAction_Implementation(AActor* Instigator)
 {
-	if (!bIsRunning)
+	if (!ActionRepData.bIsRunning)
 	{
-		ensureAlwaysMsgf(false, TEXT("The action is not running!"));
+		//ensureAlwaysMsgf(false, TEXT("The action is not running!"));
 		return;
 	}
 
-	bIsRunning = false;
+	ActionRepData.Instigator = Instigator;
+	ActionRepData.bIsRunning = false;
 }
+
+#pragma region Replication
+
+void UAction::OnRep_RepActionData()
+{
+	if (ActionRepData.bIsRunning)
+	{
+		StartAction(ActionRepData.Instigator);
+	}
+	else
+	{
+		StopAction(ActionRepData.Instigator);
+	}
+}
+
+void UAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UAction, ActionRepData);
+	DOREPLIFETIME(UAction, ActionComponentOwner);
+}
+
+#pragma endregion

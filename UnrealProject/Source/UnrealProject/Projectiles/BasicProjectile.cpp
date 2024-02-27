@@ -27,6 +27,8 @@ ABasicProjectile::ABasicProjectile()
 	ProjectileParticleComponent->SetupAttachment(SphereComponent);
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned

@@ -6,10 +6,14 @@
 #include "../../GameInstance/SAGameInstance.h"
 #include "../../Actions/Action.h"
 #include "../../Library/QuickAccessLibrary.h"
+#include "Net/UnrealNetwork.h"
+#include "Engine/ActorChannel.h"
 
 UActionComponent::UActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+
+	SetIsReplicatedByDefault(true);
 }
 
 
@@ -20,14 +24,23 @@ void UActionComponent::BeginPlay()
 
 	GI = UQuickAccessLibrary::GetGameInstance(GetOwner());
 
-	for (int i = 0; i < DefaultActions.Num(); i++)
+	if (GetOwner()->HasAuthority())
 	{
-		AddAction(GetOwner(), DefaultActions[i]);
+		for (int i = 0; i < DefaultActions.Num(); i++)
+		{
+			AddAction(GetOwner(), DefaultActions[i]);
+		}
 	}
 }
 
 void UActionComponent::AddAction(AActor* Instigator, TSoftClassPtr<UAction> SoftActionClass)
 {
+	//Return if not the server
+	if (!GetOwner()->HasAuthority())
+	{
+		return;
+	}
+
 	if (ensureAlways(GI))
 	{
 		GI->StreamableManager.RequestAsyncLoad(SoftActionClass.ToSoftObjectPath(), [this, Instigator, SoftActionClass]()
@@ -55,7 +68,13 @@ void UActionComponent::AddAction(AActor* Instigator, TSoftClassPtr<UAction> Soft
 }
 
 void UActionComponent::RemoveAction(AActor* Instigator, UAction* ActionToRemove)
-{
+{	
+	//Return if not the server
+	if (!GetOwner()->HasAuthority())
+	{
+		return;
+	}
+
 	for (int i = 0; i < CurrentActions.Num(); i++)
 	{
 		if (CurrentActions[i] == ActionToRemove)
@@ -82,6 +101,12 @@ void UActionComponent::StartActionByName(AActor* Instigator, FGameplayTag Action
 				continue;
 			}
 
+			// If I am the client
+			if (!GetOwner()->HasAuthority())
+			{
+				ServerStartAction(Instigator, ActionName);
+			}
+
 			CurrentActions[i]->StartAction(Instigator);
 		}
 	}
@@ -103,6 +128,12 @@ void UActionComponent::StopActionByName(AActor* Instigator, FGameplayTag ActionN
 				continue;
 			}
 
+			// If I am the client
+			if (!GetOwner()->HasAuthority())
+			{
+				ServerStopAction(Instigator, ActionName);
+			}
+
 			CurrentActions[i]->StopAction(Instigator);
 		}
 	}
@@ -120,3 +151,42 @@ UAction* UActionComponent::GetAction(TSoftClassPtr<UAction> ActionSoftClass)
 
 	return nullptr;
 }
+
+#pragma region Server
+
+void UActionComponent::ServerStartAction_Implementation(AActor* Instigator, FGameplayTag ActionName)
+{
+	StartActionByName(Instigator, ActionName);
+}
+
+void UActionComponent::ServerStopAction_Implementation(AActor* Instigator, FGameplayTag ActionName)
+{
+	StartActionByName(Instigator, ActionName);
+}
+
+#pragma endregion
+
+#pragma region Replication
+
+void UActionComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UActionComponent, CurrentActions);
+}
+
+bool UActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool WroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+	for (UAction* Action : CurrentActions)
+	{
+		if (Action)
+		{
+			WroteSomething |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
+		}
+	}
+
+	return WroteSomething;
+}
+
+#pragma endregion
