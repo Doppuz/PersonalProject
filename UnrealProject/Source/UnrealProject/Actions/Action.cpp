@@ -4,6 +4,7 @@
 #include "Action.h"
 #include "../Library/QuickAccessLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "../Components/GeneralComponents/ActionComponent.h"
 
 void UAction::Initialize(UActionComponent* NewActionComponent)
 {
@@ -15,7 +16,17 @@ void UAction::Initialize(UActionComponent* NewActionComponent)
 
 bool UAction::CanStart_Implementation()
 {
-	return !ActionRepData.bIsRunning;
+	if (GetIsRunning())
+	{
+		return false;
+	}
+
+	if (ensureAlways(ActionComponentOwner) && ActionComponentOwner->ContainsActiveGameplayTags(BlockedTags))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void UAction::StartAction_Implementation(AActor* Instigator)
@@ -24,6 +35,11 @@ void UAction::StartAction_Implementation(AActor* Instigator)
 	{
 		//ensureAlwaysMsgf(false, TEXT("The action is already running!"));
 		return;
+	}
+
+	if (ensureAlways(ActionComponentOwner))
+	{
+		ActionComponentOwner->AddActiveTags(GrantsTags);
 	}
 
 	ActionRepData.Instigator = Instigator;
@@ -36,6 +52,11 @@ void UAction::StopAction_Implementation(AActor* Instigator)
 	{
 		//ensureAlwaysMsgf(false, TEXT("The action is not running!"));
 		return;
+	}
+
+	if (ensureAlways(ActionComponentOwner))
+	{
+		ActionComponentOwner->RemoveActiveTags(GrantsTags);
 	}
 
 	ActionRepData.Instigator = Instigator;

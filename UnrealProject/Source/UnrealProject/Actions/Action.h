@@ -84,6 +84,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Information")
 	FGameplayTag ActionName;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Tags")
+	FGameplayTagContainer GrantsTags;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tags")
+	FGameplayTagContainer BlockedTags;
+
 	UPROPERTY(Replicated)
 	TObjectPtr<UActionComponent> ActionComponentOwner;
 

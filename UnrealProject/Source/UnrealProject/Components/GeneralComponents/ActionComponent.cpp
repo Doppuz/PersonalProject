@@ -9,9 +9,12 @@
 #include "Net/UnrealNetwork.h"
 #include "Engine/ActorChannel.h"
 
+static int DebugPrintActions = 0;
+FAutoConsoleVariableRef CVarDebugPrintActions(TEXT("DebugPrintActions"), DebugPrintActions, TEXT("Print actions info for each action components"), ECVF_Cheat);
+
 UActionComponent::UActionComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	SetIsReplicatedByDefault(true);
 }
@@ -29,6 +32,28 @@ void UActionComponent::BeginPlay()
 		for (int i = 0; i < DefaultActions.Num(); i++)
 		{
 			AddAction(GetOwner(), DefaultActions[i]);
+		}
+	}
+}
+
+void UActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (DebugPrintActions > 0 && GEngine)
+	{
+		FString AutorityMsg = GetOwner()->HasAuthority() ? "Server" : "Client";
+		FColor ServerClientColor = GetOwner()->HasAuthority() ? FColor::Purple : FColor::Orange;
+		FString DebugMsg = AutorityMsg + " -> "+ GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
+		GEngine->AddOnScreenDebugMessage(-1, DeltaTime, ServerClientColor, DebugMsg);
+
+		// Draw All Actions
+		for (UAction* Action : CurrentActions)
+		{
+			FColor TextColor = Action->GetIsRunning() ? FColor::Blue : FColor::White;
+			FString ActionMsg = FString::Printf(TEXT("[%s] Action: %s"), *GetNameSafe(GetOwner()), *GetNameSafe(Action));
+
+			GEngine->AddOnScreenDebugMessage(-1, DeltaTime, TextColor, ActionMsg);
 		}
 	}
 }
@@ -152,6 +177,21 @@ UAction* UActionComponent::GetAction(TSoftClassPtr<UAction> ActionSoftClass)
 	return nullptr;
 }
 
+bool UActionComponent::ContainsActiveGameplayTags(FGameplayTagContainer InTags)
+{
+	return ActiveGameplayTags.HasAny(InTags);
+}
+
+void UActionComponent::AddActiveTags(FGameplayTagContainer InTags)
+{
+	ActiveGameplayTags.AppendTags(InTags);
+}
+
+void UActionComponent::RemoveActiveTags(FGameplayTagContainer InTags)
+{
+	ActiveGameplayTags.RemoveTags(InTags);
+}
+
 #pragma region Server
 
 void UActionComponent::ServerStartAction_Implementation(AActor* Instigator, FGameplayTag ActionName)
@@ -173,6 +213,7 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UActionComponent, CurrentActions);
+	DOREPLIFETIME(UActionComponent, ActiveGameplayTags);
 }
 
 bool UActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)

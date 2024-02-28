@@ -32,6 +32,12 @@ public:
 
 	UAction* GetAction(TSoftClassPtr<UAction> ActionSoftClass);
 
+	bool ContainsActiveGameplayTags(FGameplayTagContainer InTags);
+
+	void AddActiveTags(FGameplayTagContainer InTags);
+
+	void RemoveActiveTags(FGameplayTagContainer InTags);
+
 #pragma region Server
 
 	UFUNCTION(Server, Reliable)
@@ -44,11 +50,13 @@ public:
 
 protected:
 
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tags")
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
 	//List of actions not visible outside
