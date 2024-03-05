@@ -69,5 +69,4 @@ protected:
 	UPROPERTY()
 	TObjectPtr<USAGameInstance> GI;
 
-
 };

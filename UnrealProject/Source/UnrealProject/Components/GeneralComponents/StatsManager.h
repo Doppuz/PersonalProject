@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "StatsManager.generated.h"
 
+class UStat;
+class USAGameInstance;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALPROJECT_API UStatsManager : public UActorComponent
@@ -16,13 +18,25 @@ public:
 	// Sets default values for this component's properties
 	UStatsManager();
 
+	void AddStat(TSoftClassPtr<UStat> StatSoftClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	void ChangeStat(AActor* Instigator, EStatCategory TargetStat, float Amount);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	
+protected:
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	//The initial stats could potentially be TSubclassOf
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats", meta = (DisplayPriority = 0))
+	TArray<TSoftClassPtr<UStat>> DefaultStats;
 
-		
+	UPROPERTY()
+	TArray<UStat*> CurrentStats;
+
+	UPROPERTY()
+	TObjectPtr<USAGameInstance> GI;
+
 };

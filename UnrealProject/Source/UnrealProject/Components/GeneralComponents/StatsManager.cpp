@@ -1,34 +1,60 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Components/GeneralComponents/StatsManager.h"
+#include "StatsManager.h"
+#include "../../Library/QuickAccessLibrary.h"
+#include "../../GameInstance/SAGameInstance.h"
+#include "../../Stats/Stat.h"
+#include "../../Library/QuickAccessLibrary.h"
 
-// Sets default values for this component's properties
 UStatsManager::UStatsManager()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	PrimaryComponentTick.bCanEverTick = false;
 }
-
 
 // Called when the game starts
 void UStatsManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	GI = UQuickAccessLibrary::GetGameInstance(GetOwner());
+
+	for (int i = 0; i < DefaultStats.Num(); i++)
+	{
+		AddStat(DefaultStats[i]);
+	}
 }
 
-
-// Called every frame
-void UStatsManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UStatsManager::AddStat(TSoftClassPtr<UStat> StatSoftClass)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (ensureAlways(GI))
+	{
+		GI->StreamableManager.RequestAsyncLoad(StatSoftClass.ToSoftObjectPath(), [this, StatSoftClass]()
+			{
+				TSubclassOf<UStat> StatClass = StatSoftClass.Get();
 
-	// ...
+				if (StatClass)
+				{
+					UStat* NewStat = NewObject<UStat>(this, StatClass);
+
+					if (NewStat)
+					{
+						CurrentStats.Add(NewStat);
+
+						NewStat->Initialize();
+					}
+				}
+			});
+	}
 }
 
+void UStatsManager::ChangeStat(AActor* Instigator, EStatCategory TargetStat, float Amount)
+{
+	for (int i = 0; i < CurrentStats.Num(); i++)
+	{
+		if (CurrentStats[i]->GetStatCategory() == TargetStat)
+		{
+			CurrentStats[i]->ChangeStat(Instigator, Amount);
+		}
+	}
+}

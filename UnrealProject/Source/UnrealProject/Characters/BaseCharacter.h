@@ -8,6 +8,7 @@
 #include "BaseCharacter.generated.h"
 
 class UActionComponent;
+class UStatsManager;
 
 UCLASS()
 class UNREALPROJECT_API ABaseCharacter : public ACharacter, public IMovementInterface
@@ -28,6 +29,16 @@ public:
 
 #pragma endregion
 
+#pragma region GetSet
+
+	UFUNCTION()
+	FORCEINLINE UActionComponent* GetActionComponent() { return ActionComponent; }
+
+	UFUNCTION()
+	FORCEINLINE UStatsManager* GetStatsManager() { return StatsManager; }
+
+#pragma endregion
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -37,6 +48,9 @@ protected:
 
 protected:
 
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UActionComponent* ActionComponent = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UActionComponent> ActionComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UStatsManager> StatsManager = nullptr;
 };

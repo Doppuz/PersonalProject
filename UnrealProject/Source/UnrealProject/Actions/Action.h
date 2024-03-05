@@ -77,7 +77,7 @@ protected:
 	UPROPERTY(ReplicatedUsing = "OnRep_RepActionData")
 	struct FActionRepData ActionRepData;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Information")
 	bool bAutoPlay = false;
 
 	//Name of the action

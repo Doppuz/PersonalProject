@@ -11,6 +11,7 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	ActionComponent = CreateDefaultSubobject<UActionComponent>(TEXT("ActionComponent"));
+	StatsManager = CreateDefaultSubobject<UStatsManager>(TEXT("StatsManager"));
 }
 
 // Called when the game starts or when spawned

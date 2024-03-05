@@ -29,8 +29,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
 	FName ShootSocket = "ShootSocket";
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot", meta = (DisplayName = "BasicProjectileClass"))
-	TSoftClassPtr<ABasicProjectile> BasicProjectileSoftClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
+	TSubclassOf<ABasicProjectile> BasicProjectileClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot|Montage")
 	UAnimMontage* ShootMontage;

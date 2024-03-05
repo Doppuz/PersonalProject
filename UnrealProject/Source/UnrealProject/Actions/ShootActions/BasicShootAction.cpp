@@ -43,43 +43,39 @@ void UBasicShootAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranch
 	if (NotifyName == "ShootNotify")
 	{
 		AI->OnPlayMontageNotifyBegin.RemoveDynamic(this, &UBasicShootAction::OnPlayMontageNotifyBegin);
-	
+
 		if (ensureAlways(GI))
 		{
-			GI->StreamableManager.RequestAsyncLoad(BasicProjectileSoftClass.ToSoftObjectPath(), [this]()
+			if (BasicProjectileClass)
+			{
+				ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(ActionRepData.Instigator);
+
+				if (ensureAlways(BaseCharacter))
 				{
-					TSubclassOf<ABasicProjectile> BasicProjectileClass = BasicProjectileSoftClass.Get();
-					if (BasicProjectileClass)
+					USkeletalMeshComponent* SkeletalMeshComponent = BaseCharacter->GetMesh();
+
+					if (ensureAlways(SkeletalMeshComponent->DoesSocketExist(ShootSocket)))
 					{
-						ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(ActionRepData.Instigator);
+						FVector InstigatorForwardDirection = BaseCharacter->GetActorForwardVector();
 
-						if (ensureAlways(BaseCharacter))
-						{
-							USkeletalMeshComponent* SkeletalMeshComponent = BaseCharacter->GetMesh();
+						FVector SpawnLocation = SkeletalMeshComponent->GetSocketLocation(ShootSocket);
+						FRotator SpawnRotation = InstigatorForwardDirection.Rotation();
 
-							if (ensureAlways(SkeletalMeshComponent->DoesSocketExist(ShootSocket)))
-							{
-								FVector InstigatorForwardDirection = BaseCharacter->GetActorForwardVector();
+						//Uncomment for trace debug
+						//DrawDebugLine(BaseCharacter->GetWorld(), SpawnLocation, SpawnLocation + TraceDirection * 100, FColor::Blue, true, -1.f, 0U, 5.f);
 
-								FVector SpawnLocation = SkeletalMeshComponent->GetSocketLocation(ShootSocket);
-								FRotator SpawnRotation = InstigatorForwardDirection.Rotation();
+						FActorSpawnParameters SpawnParameters;
+						SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+						SpawnParameters.Owner = BaseCharacter;
+						SpawnParameters.Instigator = BaseCharacter;
 
-								//Uncomment for trace debug
-								//DrawDebugLine(BaseCharacter->GetWorld(), SpawnLocation, SpawnLocation + TraceDirection * 100, FColor::Blue, true, -1.f, 0U, 5.f);
+						FTransform Transform(SpawnRotation, SpawnLocation);
+						GetWorld()->SpawnActor<ABasicProjectile>(BasicProjectileClass, Transform, SpawnParameters);
 
-								FActorSpawnParameters SpawnParameters;
-								SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-								SpawnParameters.Owner = BaseCharacter;
-								SpawnParameters.Instigator = BaseCharacter;
-
-								FTransform Transform(SpawnRotation, SpawnLocation);
-								GetWorld()->SpawnActor<ABasicProjectile>(BasicProjectileClass, Transform, SpawnParameters);
-
-								StopAction(ActionRepData.Instigator);
-							}
-						}
+						StopAction(ActionRepData.Instigator);
 					}
-				});
+				}
+			}
 		}
 	}
 }

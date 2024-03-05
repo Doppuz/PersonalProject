@@ -4,14 +4,49 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "../Enums/Enums_Stat.h"
 #include "Stat.generated.h"
 
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class UNREALPROJECT_API UStat : public UObject
 {
 	GENERATED_BODY()
 	
+public:
+
+	virtual void Initialize();
+
+	void ChangeStat(AActor* Instigator, float Value);
+
+protected:
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Stat")
+	void OnStatReachesMinValue(AActor* Instigator);
+
+#pragma region GetSet
+
+public:
+
+	UFUNCTION()
+	FORCEINLINE EStatCategory GetStatCategory() { return StatCategory; }
+
+#pragma endregion
+
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat", meta = (FullyExpand = true))
+	FStatValue StatValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	EStatCategory StatCategory = EStatCategory::MAX;
+
+	UPROPERTY()
+	class UStatsManager* StatsManagerRef;
+
+	UPROPERTY()
+	class UWorldSubsystem_GlobalEvents* WS_GlobalEvents;
+
 };
