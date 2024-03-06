@@ -6,10 +6,17 @@
 #include "../../GameInstance/SAGameInstance.h"
 #include "../../Stats/Stat.h"
 #include "../../Library/QuickAccessLibrary.h"
+#include "Net/UnrealNetwork.h"
+#include "Engine/ActorChannel.h"
+
+static int DebugPrintStats = 0;
+FAutoConsoleVariableRef CVarDebugPrintStats(TEXT("DebugPrintStats"), DebugPrintStats, TEXT("Print stats info for each stats components"), ECVF_Cheat);
 
 UStatsManager::UStatsManager()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
+
+	SetIsReplicatedByDefault(true);
 }
 
 // Called when the game starts
@@ -19,42 +26,100 @@ void UStatsManager::BeginPlay()
 
 	GI = UQuickAccessLibrary::GetGameInstance(GetOwner());
 
-	for (int i = 0; i < DefaultStats.Num(); i++)
+	if (GetOwner() && GetOwner()->HasAuthority())
 	{
-		AddStat(DefaultStats[i]);
+		for (int i = 0; i < DefaultStats.Num(); i++)
+		{
+			AddStat(DefaultStats[i]);
+		}
 	}
+}
+
+void UStatsManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (DebugPrintStats > 0 && GEngine)
+	{
+		FString AutorityMsg = GetOwner()->HasAuthority() ? "Server" : "Client";
+		FColor ServerClientColor = GetOwner()->HasAuthority() ? FColor::Purple : FColor::Orange;
+		FString DebugMsg = AutorityMsg + " -> " + GetNameSafe(GetOwner()) + " : ";
+		GEngine->AddOnScreenDebugMessage(-1, DeltaTime, ServerClientColor, DebugMsg);
+
+		// Draw All Actions
+		for (UStat* Stat : CurrentStats)
+		{
+			FStatValue CurrentStatValue = Stat->GetStatValue();
+			FString ActionMsg = FString::Printf(TEXT("[%s] %s Stat: Min %f, Max %f, Current %f"), *GetNameSafe(GetOwner()), *GetNameSafe(Stat),
+				CurrentStatValue.MinValue, CurrentStatValue.MaxValue, CurrentStatValue.CurrentValue);
+
+			GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::White, ActionMsg);
+		}
+	}
+
 }
 
 void UStatsManager::AddStat(TSoftClassPtr<UStat> StatSoftClass)
 {
-	if (ensureAlways(GI))
+	if (GetOwner() && GetOwner()->HasAuthority())
 	{
-		GI->StreamableManager.RequestAsyncLoad(StatSoftClass.ToSoftObjectPath(), [this, StatSoftClass]()
-			{
-				TSubclassOf<UStat> StatClass = StatSoftClass.Get();
-
-				if (StatClass)
+		if (ensureAlways(GI))
+		{
+			GI->StreamableManager.RequestAsyncLoad(StatSoftClass.ToSoftObjectPath(), [this, StatSoftClass]()
 				{
-					UStat* NewStat = NewObject<UStat>(this, StatClass);
+					TSubclassOf<UStat> StatClass = StatSoftClass.Get();
 
-					if (NewStat)
+					if (StatClass)
 					{
-						CurrentStats.Add(NewStat);
+						UStat* NewStat = NewObject<UStat>(this, StatClass);
 
-						NewStat->Initialize();
+						if (NewStat)
+						{
+							CurrentStats.Add(NewStat);
+
+							NewStat->Initialize();
+						}
 					}
-				}
-			});
+				});
+		}
 	}
 }
 
 void UStatsManager::ChangeStat(AActor* Instigator, EStatCategory TargetStat, float Amount)
 {
-	for (int i = 0; i < CurrentStats.Num(); i++)
+	if (GetOwner() && GetOwner()->HasAuthority())
 	{
-		if (CurrentStats[i]->GetStatCategory() == TargetStat)
+		for (int i = 0; i < CurrentStats.Num(); i++)
 		{
-			CurrentStats[i]->ChangeStat(Instigator, Amount);
+			if (CurrentStats[i]->GetStatCategory() == TargetStat)
+			{
+				CurrentStats[i]->ChangeStat(Instigator, Amount);
+			}
 		}
 	}
 }
+
+#pragma region Replication
+
+void UStatsManager::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UStatsManager, CurrentStats);
+}
+
+bool UStatsManager::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool WroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+	for (UStat* Stat : CurrentStats)
+	{
+		if (Stat)
+		{
+			WroteSomething |= Channel->ReplicateSubobject(Stat, *Bunch, *RepFlags);
+		}
+	}
+
+	return WroteSomething;
+}
+
+#pragma endregion

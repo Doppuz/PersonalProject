@@ -33,11 +33,27 @@ public:
 	UFUNCTION()
 	FORCEINLINE EStatCategory GetStatCategory() { return StatCategory; }
 
+	UFUNCTION()
+	FORCEINLINE FStatValue GetStatValue() { return StatValue; }
+
 #pragma endregion
+
+#pragma region Server
+
+	//just for aesthetic, so unreliable
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multicast_ChangeStat(AActor* Owner, float OldValue, float NewValue);
+
+#pragma endregion
+
+	virtual bool IsSupportedForNetworking() const override
+	{
+		return true;
+	}
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat", meta = (FullyExpand = true))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Stat", meta = (FullyExpand = true))
 	FStatValue StatValue;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")

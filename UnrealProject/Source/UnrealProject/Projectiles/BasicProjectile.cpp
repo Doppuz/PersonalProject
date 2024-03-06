@@ -6,6 +6,8 @@
 #include "../Interfaces/MovementInterface.h"
 #include "Components/SphereComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "../Components/GeneralComponents/StatsManager.h"
+#include "../Enums/Enums_Stat.h"
 
 // Sets default values
 ABasicProjectile::ABasicProjectile()
@@ -50,6 +52,16 @@ void ABasicProjectile::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCo
 {
 	if (OtherActor != GetOwner() && OtherActor != this)
 	{
+		if (HasAuthority())
+		{
+			UStatsManager* OtherActorStatManager = Cast<UStatsManager>(OtherActor->FindComponentByClass(UStatsManager::StaticClass()));
+
+			if (OtherActorStatManager)
+			{
+				OtherActorStatManager->ChangeStat(GetInstigator(), EStatCategory::HEALTH, -Damage);
+			}
+		}
+
 		Destroy();
 	}
 }

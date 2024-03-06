@@ -26,6 +26,10 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 	
 protected:
 
@@ -33,7 +37,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats", meta = (DisplayPriority = 0))
 	TArray<TSoftClassPtr<UStat>> DefaultStats;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TArray<UStat*> CurrentStats;
 
 	UPROPERTY()

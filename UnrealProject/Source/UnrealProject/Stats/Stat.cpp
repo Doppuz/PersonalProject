@@ -16,17 +16,17 @@ void UStat::Initialize()
 
 void UStat::ChangeStat(AActor* Instigator, float Value)
 {
-	float OldValue = StatValue.CurrentValue;
-	StatValue.CurrentValue = FMath::Clamp(StatValue.CurrentValue + Value, StatValue.MinValue, StatValue.MaxValue);
-
-	if (ensure(WS_GlobalEvents) && ensure(StatsManagerRef))
+	if (ensure(StatsManagerRef) && ensure(StatsManagerRef->GetOwner()) && StatsManagerRef->GetOwner()->HasAuthority())
 	{
-		WS_GlobalEvents->OnStatChanged.Broadcast(StatsManagerRef->GetOwner(), OldValue, StatValue.CurrentValue);
-	}
+		float OldValue = StatValue.CurrentValue;
+		StatValue.CurrentValue = FMath::Clamp(StatValue.CurrentValue + Value, StatValue.MinValue, StatValue.MaxValue);
 
-	if (StatValue.CurrentValue == StatValue.MinValue)
-	{
-		OnStatReachesMinValue(Instigator);
+		Multicast_ChangeStat(StatsManagerRef->GetOwner(), OldValue, StatValue.CurrentValue);
+
+		if (StatValue.CurrentValue == StatValue.MinValue)
+		{
+			OnStatReachesMinValue(Instigator);
+		}
 	}
 }
 
@@ -34,3 +34,22 @@ void UStat::OnStatReachesMinValue_Implementation(AActor* Instigator)
 {
 	//override on children
 }
+
+void UStat::Multicast_ChangeStat_Implementation(AActor* Owner, float OldValue, float NewValue)
+{
+	if (ensure(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnStatChanged.Broadcast(Owner, OldValue, NewValue);
+	}
+}
+
+#pragma region Replication
+
+void UStat::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UStat, StatValue);
+}
+
+#pragma endregion
