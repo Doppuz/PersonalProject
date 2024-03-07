@@ -37,6 +37,9 @@ public:
 	UFUNCTION()
 	FORCEINLINE UStatsManager* GetStatsManager() { return StatsManager; }
 
+	UFUNCTION()
+	FORCEINLINE UAnimInstance* GetAnimInstance() { return GetMesh() ? GetMesh()->GetAnimInstance() : nullptr; }
+
 #pragma endregion
 
 protected:

@@ -14,21 +14,16 @@ void UBasicShootAction::StartAction_Implementation(AActor* Instigator)
 
 	if (ensureAlways(BaseCharacter))
 	{
-		USkeletalMeshComponent* SkeletalMeshComponent = BaseCharacter->GetMesh();
+		AI = BaseCharacter->GetAnimInstance();
 
-		if (ensureAlways(SkeletalMeshComponent))
+		if (ensureAlways(AI))
 		{
-			AI = SkeletalMeshComponent->GetAnimInstance();
-
-			if (ensureAlways(AI))
+			if (BaseCharacter->HasAuthority())
 			{
-				if (BaseCharacter->HasAuthority())
-				{
-					AI->OnPlayMontageNotifyBegin.AddDynamic(this, &UBasicShootAction::OnPlayMontageNotifyBegin);
-				}
-
-				BaseCharacter->PlayAnimMontage(ShootMontage);
+				AI->OnPlayMontageNotifyBegin.AddDynamic(this, &UBasicShootAction::OnPlayMontageNotifyBegin);
 			}
+
+			BaseCharacter->PlayAnimMontage(ShootMontage);
 		}
 	}
 }
