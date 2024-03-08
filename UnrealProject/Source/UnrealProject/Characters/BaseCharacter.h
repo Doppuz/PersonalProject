@@ -40,6 +40,9 @@ public:
 	UFUNCTION()
 	FORCEINLINE UAnimInstance* GetAnimInstance() { return GetMesh() ? GetMesh()->GetAnimInstance() : nullptr; }
 
+	UFUNCTION()
+	FORCEINLINE UMaterialInstanceDynamic* GetMaterialInstanceDynamic() { return MaterialInstanceDynamic; }
+
 #pragma endregion
 
 protected:
@@ -50,6 +53,9 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> MaterialInstanceDynamic = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UActionComponent> ActionComponent = nullptr;

@@ -19,6 +19,10 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (GetMesh())
+	{
+		MaterialInstanceDynamic = GetMesh()->CreateDynamicMaterialInstance(0);
+	}
 }
 
 // Called every frame
