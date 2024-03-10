@@ -9,13 +9,12 @@ void UNotifyEmerge::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* 
 {
 	if (MeshComp)
 	{
-		AMainCharacter* MainCharacter = Cast<AMainCharacter>(MeshComp->GetOwner());
+		ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(MeshComp->GetOwner());
 
-		if (MainCharacter)
+		if (BaseCharacter)
 		{
-			MeshComp->SetHiddenInGame(false);
 			MeshComp->AddLocalOffset(FVector(0.f, 0.f, 200.f));
-			MainCharacter->GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
+			BaseCharacter->GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
 		}
 	}
 }

@@ -44,7 +44,10 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	RunBehaviorTree(BehaviorTree);
+	if (HasAuthority())
+	{
+		RunBehaviorTree(BehaviorTree);
+	}
 
 	if (Blackboard)
 	{

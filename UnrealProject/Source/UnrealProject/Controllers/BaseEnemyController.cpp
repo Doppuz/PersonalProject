@@ -7,6 +7,7 @@
 #include <Perception/AISenseConfig_Hearing.h>
 #include "../Characters/MainCharacter.h"
 #include "../Interfaces/AttackDefenseInterface.h"
+#include "../Library/QuickAccessLibrary.h"
 
 void ABaseEnemyController::OnPossess(APawn* InPawn)
 {

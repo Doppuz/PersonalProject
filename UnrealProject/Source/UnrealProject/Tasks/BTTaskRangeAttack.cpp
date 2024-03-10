@@ -3,7 +3,6 @@
 
 #include "BTTaskRangeAttack.h"
 #include "AIController.h"
-#include "../Interfaces/ShootInterface.h"
 
 EBTNodeResult::Type UBTTaskRangeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -12,7 +11,7 @@ EBTNodeResult::Type UBTTaskRangeAttack::ExecuteTask(UBehaviorTreeComponent& Owne
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	APawn* CurrentOwner = AIController->GetPawn();
 	
-	IShootInterface* CurrentOwnerShooterInterface = Cast<IShootInterface>(CurrentOwner);
+	/*IShootInterface* CurrentOwnerShooterInterface = Cast<IShootInterface>(CurrentOwner);
 
 	if (CurrentOwnerShooterInterface)
 	{
@@ -22,7 +21,7 @@ EBTNodeResult::Type UBTTaskRangeAttack::ExecuteTask(UBehaviorTreeComponent& Owne
 		{
 			return EBTNodeResult::Succeeded;
 		}
-	}
+	}*/
 
 	return EBTNodeResult::Failed;
 }

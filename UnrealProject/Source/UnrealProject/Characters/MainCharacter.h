@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
-#include "../Interfaces/ShootInterface.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()

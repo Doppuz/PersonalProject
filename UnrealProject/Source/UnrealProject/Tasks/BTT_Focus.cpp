@@ -15,7 +15,9 @@ EBTNodeResult::Type UBTT_Focus::ExecuteTask(UBehaviorTreeComponent& OwnerComp, u
 	{
 		AActor* Target = Cast<AActor>(BlackboardComponent->GetValueAsObject(GetSelectedBlackboardKey()));
 		AIController->SetFocus(Target);
+
+		return EBTNodeResult::Succeeded;
 	}
 
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::Failed;
 }
