@@ -3,35 +3,7 @@
 
 #include "BasicShootAction.h"
 #include "../../Characters/BaseCharacter.h"
-#include "Kismet/GameplayStatics.h"
 #include "../../GameInstance/SAGameInstance.h"
-
-void UBasicShootAction::StartAction_Implementation(AActor* Instigator)
-{
-	Super::StartAction_Implementation(Instigator);
-
-	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(Instigator);
-
-	if (ensureAlways(BaseCharacter))
-	{
-		AI = BaseCharacter->GetAnimInstance();
-
-		if (ensureAlways(AI))
-		{
-			if (BaseCharacter->HasAuthority())
-			{
-				AI->OnPlayMontageNotifyBegin.AddDynamic(this, &UBasicShootAction::OnPlayMontageNotifyBegin);
-			}
-
-			BaseCharacter->PlayAnimMontage(ShootMontage);
-		}
-	}
-}
-
-void UBasicShootAction::StopAction_Implementation(AActor* Instigator)
-{
-	Super::StopAction_Implementation(Instigator);
-}
 
 void UBasicShootAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
 {

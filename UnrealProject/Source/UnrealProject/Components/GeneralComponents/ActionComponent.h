@@ -26,8 +26,10 @@ public:
 
 	void RemoveAction(AActor* Instigator, UAction* ActionToRemove);
 
+	UFUNCTION(BlueprintCallable, Category = "Action")
 	void StartActionByName(AActor* Instigator, FGameplayTag ActionName);
 
+	UFUNCTION(BlueprintCallable, Category = "Action")
 	void StopActionByName(AActor* Instigator, FGameplayTag ActionName);
 
 	UAction* GetAction(TSoftClassPtr<UAction> ActionSoftClass);

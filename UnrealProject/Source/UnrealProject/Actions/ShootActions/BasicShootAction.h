@@ -3,26 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Action.h"
+#include "../MontageActions/PlayMontageAction.h"
 #include "BasicShootAction.generated.h"
 
 class ABasicProjectile;
 
 UCLASS(Blueprintable)
-class UNREALPROJECT_API UBasicShootAction : public UAction
+class UNREALPROJECT_API UBasicShootAction : public UPlayMontageAction
 {
 	GENERATED_BODY()
 	
-public:
-
-	virtual void StartAction_Implementation(AActor* Instigator) override;
-
-	virtual void StopAction_Implementation(AActor* Instigator) override;
-
 protected:
 
-	UFUNCTION()
-	void OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+	virtual void OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload) override;
 
 protected:
 
@@ -32,9 +25,4 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
 	TSubclassOf<ABasicProjectile> BasicProjectileClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot|Montage")
-	UAnimMontage* ShootMontage;
-
-	UPROPERTY()
-	UAnimInstance* AI = nullptr;
 };
