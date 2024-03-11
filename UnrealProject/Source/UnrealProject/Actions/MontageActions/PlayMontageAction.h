@@ -25,10 +25,16 @@ protected:
 	UFUNCTION()
 	virtual void OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
+	UFUNCTION()
+	virtual void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot|Montage")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage")
 	UAnimMontage* MontageToPlay;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage")
+	float InitialMontageSpeed = 1.f;
 
 	UPROPERTY()
 	UAnimInstance* AI = nullptr;

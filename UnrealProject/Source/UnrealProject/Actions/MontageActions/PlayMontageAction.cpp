@@ -4,12 +4,18 @@
 #include "PlayMontageAction.h"
 #include "../../Characters/BaseCharacter.h"
 #include "../../GameInstance/SAGameInstance.h"
+#include "../../Components/GeneralComponents/ActionComponent.h"
 
 void UPlayMontageAction::StartAction_Implementation(AActor* Instigator)
 {
 	Super::StartAction_Implementation(Instigator);
 
-	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(Instigator);
+	if (!ensureAlways(ActionComponentOwner))
+	{
+		return;
+	}
+
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(ActionComponentOwner->GetOwner());
 
 	if (ensureAlways(BaseCharacter))
 	{
@@ -20,9 +26,10 @@ void UPlayMontageAction::StartAction_Implementation(AActor* Instigator)
 			if (BaseCharacter->HasAuthority())
 			{
 				AI->OnPlayMontageNotifyBegin.AddDynamic(this, &UPlayMontageAction::OnPlayMontageNotifyBegin);
+				AI->OnMontageEnded.AddDynamic(this, &UPlayMontageAction::OnMontageEnded);
 			}
 
-			BaseCharacter->PlayAnimMontage(MontageToPlay);
+			BaseCharacter->PlayAnimMontage(MontageToPlay, InitialMontageSpeed);
 		}
 	}
 }
@@ -34,10 +41,16 @@ void UPlayMontageAction::StopAction_Implementation(AActor* Instigator)
 	if (ensureAlways(AI))
 	{
 		AI->OnPlayMontageNotifyBegin.RemoveDynamic(this, &UPlayMontageAction::OnPlayMontageNotifyBegin);
+		AI->OnMontageEnded.RemoveDynamic(this, &UPlayMontageAction::OnMontageEnded);
 	}
 }
 
 void UPlayMontageAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	//override children
+}
+
+void UPlayMontageAction::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	StopAction(ActionRepData.Instigator);
 }

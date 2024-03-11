@@ -11,31 +11,7 @@ UDieAction::UDieAction()
 	bAutoPlay = true;
 }
 
-void UDieAction::StartAction_Implementation(AActor* Instigator)
+void UDieAction::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	Super::StartAction_Implementation(Instigator);
-
-	if (!ensureAlways(ActionComponentOwner))
-	{
-		return;
-	}
-
-	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(ActionComponentOwner->GetOwner());
-
-	if (ensureAlways(BaseCharacter))
-	{
-		AI = BaseCharacter->GetAnimInstance();
-
-		if (ensureAlways(AI))
-		{
-			//TODO: Implement score and end game UI
-
-			BaseCharacter->PlayAnimMontage(DieMontage);
-		}
-	}
-}
-
-void UDieAction::StopAction_Implementation(AActor* Instigator)
-{
-	Super::StopAction_Implementation(Instigator);
+	//Overriden old behaviour
 }

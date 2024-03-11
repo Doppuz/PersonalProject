@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Action.h"
+#include "../Actions/MontageActions/PlayMontageAction.h"
 #include "DieAction.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPROJECT_API UDieAction : public UAction
+class UNREALPROJECT_API UDieAction : public UPlayMontageAction
 {
 	GENERATED_BODY()
 	
@@ -18,18 +18,8 @@ public:
 
 	UDieAction();
 
-	virtual void StartAction_Implementation(AActor* Instigator) override;
-
-	virtual void StopAction_Implementation(AActor* Instigator) override;
-
-public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot|Montage")
-	UAnimMontage* DieMontage;
-
 protected:
 
-	UPROPERTY()
-	UAnimInstance* AI = nullptr;
+	virtual void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted) override;
 
 };

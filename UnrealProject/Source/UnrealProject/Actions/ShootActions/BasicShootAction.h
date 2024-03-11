@@ -17,6 +17,8 @@ protected:
 
 	virtual void OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload) override;
 
+	virtual void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted) override;
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")

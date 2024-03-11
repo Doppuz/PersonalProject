@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "../Components/GeneralComponents/ActionComponent.h"
+#include "Camera/CameraActor.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()

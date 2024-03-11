@@ -46,3 +46,8 @@ void UBasicShootAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranch
 		}
 	}
 }
+
+void UBasicShootAction::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	//Overriden old behaviour
+}

@@ -22,7 +22,7 @@ void UANW_NotifyDisappear::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeq
 
 void UANW_NotifyDisappear::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
-	UpdateMaterialParam(MeshComp, 0.f);
+	UpdateMaterialParam(MeshComp, 1.f);
 }
 
 void UANW_NotifyDisappear::UpdateMaterialParam(USkeletalMeshComponent* MeshComp, float ValueToAdd)
