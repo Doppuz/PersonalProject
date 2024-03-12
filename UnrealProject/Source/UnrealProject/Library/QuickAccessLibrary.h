@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Engine/StreamableManager.h"
 #include "QuickAccessLibrary.generated.h"
 
 #define QL UQuickAccessLibrary

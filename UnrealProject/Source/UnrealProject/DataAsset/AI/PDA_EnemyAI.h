@@ -21,8 +21,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Info")
 	int32 MaxLevelToSpawn = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Info", meta = (DisplayName = "BaseEnemyClass"))
-	TSoftClassPtr<ABaseEnemy> BaseEnemySoftClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Info")
+	TSubclassOf<ABaseEnemy> BaseEnemyClass;
 
 	FPrimaryAssetId GetPrimaryAssetId() const override
 	{

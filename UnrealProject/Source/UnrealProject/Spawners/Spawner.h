@@ -9,6 +9,7 @@
 class UCapsuleComponent;
 class UBillboardComponent;
 class UActionComponent;
+class UArrowComponent;
 
 UCLASS()
 class UNREALPROJECT_API ASpawner : public AActor
@@ -25,16 +26,19 @@ protected:
 
 protected:
 
-	UPROPERTY(EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	UCapsuleComponent* CapsuleComponent;
 
-	UPROPERTY(EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	UActionComponent* ActionComponent;
 
 #if WITH_EDITORONLY_DATA
 
-	UPROPERTY(EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	UBillboardComponent* EditorTexture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	UArrowComponent* ArrowComponent;
 
 #endif
 

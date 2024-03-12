@@ -5,6 +5,7 @@
 #include "Components/BillboardComponent.h"	
 #include "Components/CapsuleComponent.h"
 #include "../Components/GeneralComponents/ActionComponent.h"
+#include "Components/ArrowComponent.h"
 
 // Sets default values
 ASpawner::ASpawner()
@@ -18,6 +19,9 @@ ASpawner::ASpawner()
 
 	EditorTexture = CreateDefaultSubobject<UBillboardComponent>(TEXT("EditorTexture"));
 	EditorTexture->SetupAttachment(RootComponent);
+
+	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
+	ArrowComponent->SetupAttachment(RootComponent);
 
 #endif
 
