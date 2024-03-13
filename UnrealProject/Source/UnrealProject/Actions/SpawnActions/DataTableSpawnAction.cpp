@@ -4,16 +4,20 @@
 #include "DataTableSpawnAction.h"
 #include "Engine/DataTable.h"	
 #include "Engine/AssetManager.h"
+#include "../../Components/GeneralComponents/ActionComponent.h"
 
 void UDataTableSpawnAction::StartAction_Implementation(AActor* Instigator)
 {
 	Super::StartAction_Implementation(Instigator);
 
-	FPrimaryDataAssetRow* SelectedRow = GetSelectedRow();
-
-	if (SelectedRow)
+	if (ensureAlways(ActionComponentOwner) && ActionComponentOwner->GetOwner()->HasAuthority())
 	{
-		AsyncLoadPrimaryAsset(SelectedRow);
+		FPrimaryDataAssetRow* SelectedRow = GetSelectedRow();
+
+		if (SelectedRow)
+		{
+			AsyncLoadPrimaryAsset(SelectedRow);
+		}
 	}
 }
 

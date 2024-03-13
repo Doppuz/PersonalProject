@@ -10,7 +10,8 @@
 // Sets default values
 ASpawner::ASpawner()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	RootComponent = CapsuleComponent;
@@ -33,4 +34,9 @@ void ASpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ASpawner::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }

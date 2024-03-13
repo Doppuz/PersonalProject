@@ -5,6 +5,7 @@
 #include "../GameInstance/SAGameInstance.h"
 #include "../Characters/MainCharacter.h"
 #include "Engine/AssetManager.h"
+#include "../Components/GeneralComponents/ActionComponent.h"
 
 USAGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContextObject)
 {
@@ -107,4 +108,20 @@ bool UQuickAccessLibrary::ClassIsChildOfSoft(const TSoftClassPtr<UObject>& SoftC
 
 		return false;
 	}
+}
+
+bool UQuickAccessLibrary::StartAction(UObject* WorldContextObject, AActor* Instigator, const AActor* CurrentActor, const FGameplayTag ActionName)
+{
+	if (ensureAlways(CurrentActor))
+	{
+		UActionComponent* CurrentActionComponent = Cast<UActionComponent>(CurrentActor->FindComponentByClass(UActionComponent::StaticClass()));
+
+		if (CurrentActionComponent)
+		{
+			CurrentActionComponent->StartActionByName(Instigator, ActionName);
+			return true;
+		}
+	}
+
+	return false;
 }

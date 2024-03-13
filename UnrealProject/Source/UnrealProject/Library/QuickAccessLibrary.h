@@ -28,4 +28,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
 	static bool ClassIsChildOfSoft(const TSoftClassPtr<UObject>& SoftClass, const TSubclassOf<UObject>& Class);
 
+	//StartAction from the actor action component
+	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
+	static bool StartAction(UObject* WorldContextObject, AActor* Instigator, const AActor* CurrentActor, const FGameplayTag ActionName);
+
 };

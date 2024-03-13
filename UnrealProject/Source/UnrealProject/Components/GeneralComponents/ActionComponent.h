@@ -62,13 +62,13 @@ protected:
 	FGameplayTagContainer ActiveGameplayTags;
 
 	//List of actions not visible outside
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
 	TArray<TObjectPtr<UAction>> CurrentActions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actions")
 	TArray<TSoftClassPtr<UAction>> DefaultActions;
 
 	UPROPERTY()
-	TObjectPtr<USAGameInstance> GI;
+	USAGameInstance* GI;
 
 };
