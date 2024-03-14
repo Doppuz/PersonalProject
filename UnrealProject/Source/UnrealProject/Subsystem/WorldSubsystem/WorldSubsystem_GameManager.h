@@ -42,7 +42,7 @@ protected:
 	const UGameSubsystemSettings* GameSubsystemSettings;
 
 	UPROPERTY()
-	USAGameInstance* GI;;
+	USAGameInstance* GI;
 
 	UPROPERTY()
 	float CheckFrequency = 3.f;

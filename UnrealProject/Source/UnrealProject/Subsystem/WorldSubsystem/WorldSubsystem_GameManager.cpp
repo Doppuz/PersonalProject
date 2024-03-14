@@ -83,7 +83,6 @@ void UWorldSubsystem_GameManager::UpdateManager()
 void UWorldSubsystem_GameManager::PrintSpawners(float DeltaTime)
 {
     // Print all the spawner
-
     int CurrentFreeSpawners = 0;
 
     for (TSoftObjectPtr<ASpawner> SpawnerSoft : GameSubsystemSettings->RangeSpawners)

@@ -29,6 +29,11 @@ void UPlayMontageAction::StartAction_Implementation(AActor* Instigator)
 				AI->OnMontageEnded.AddDynamic(this, &UPlayMontageAction::OnMontageEnded);
 			}
 
+			/*if (AI->IsAnyMontagePlaying())
+			{
+				AI->StopAllMontages(0.3f);
+			}*/
+
 			BaseCharacter->PlayAnimMontage(MontageToPlay, InitialMontageSpeed);
 		}
 	}
