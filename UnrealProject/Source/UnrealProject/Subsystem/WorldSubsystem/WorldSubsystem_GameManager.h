@@ -26,6 +26,12 @@ public:
 
 	void UpdateManager();
 
+#pragma region Debug
+
+	void PrintSpawners(float DeltaTime);
+
+#pragma endregion
+
 protected:
 
 	void ActivateSpawner(TSoftObjectPtr<ASpawner> InSpawner, FGameplayTag ActionName);
@@ -39,7 +45,7 @@ protected:
 	USAGameInstance* GI;;
 
 	UPROPERTY()
-	float CheckFrequency = 5.f;
+	float CheckFrequency = 3.f;
 
 	UPROPERTY()
 	float CurrentTick = 0.f;

@@ -6,7 +6,11 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "WorldSubsystem_GlobalEvents.generated.h"
 
+class UActionComponent;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnStatChanged, AActor*, Owner, float, OldValue, float, NewValue);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionSpawnActor, UActionComponent*, InActionComponent, AActor*, ActorSpawned);
 
 UCLASS()
 class UNREALPROJECT_API UWorldSubsystem_GlobalEvents : public UWorldSubsystem
@@ -17,5 +21,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Stats")
 	FOnStatChanged OnStatChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Stats")
+	FOnActionSpawnActor OnActionSpawnActor;
 	
 };

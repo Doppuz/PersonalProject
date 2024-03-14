@@ -16,9 +16,9 @@ class UNREALPROJECT_API UGameSubsystemSettings : public UDeveloperSettings
 	
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	UPROPERTY(config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	TArray<TSoftObjectPtr<ASpawner>> RangeSpawners;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	UPROPERTY(config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	FGameplayTag SpawnActionName;
 };

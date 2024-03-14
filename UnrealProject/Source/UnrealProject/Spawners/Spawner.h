@@ -6,6 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "Spawner.generated.h"
 
+UENUM(BlueprintType)
+enum class ESpawnerType
+{
+	SINGLE,
+	MULTIPLE,
+	MAX UMETA(Hidden)
+};
+
+
 class UCapsuleComponent;
 class UBillboardComponent;
 class UActionComponent;
@@ -20,13 +29,29 @@ public:
 	// Sets default values for this actor's properties
 	ASpawner();
 
+	bool CanSpawn();
+
+	UFUNCTION()
+	FORCEINLINE ESpawnerType GetSpawnerType() { return SpawnerType; };
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaTime) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UFUNCTION()
+	void OnActionSpawnActor(UActionComponent* InActionComponent, AActor* ActorSpawned);
 
 protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner Info")
+	ESpawnerType SpawnerType = ESpawnerType::SINGLE;
+
+	UPROPERTY()
+	TArray<AActor*> CurrentActorsSpawned;
+
+//Components
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	UCapsuleComponent* CapsuleComponent;
@@ -43,5 +68,10 @@ protected:
 	UArrowComponent* ArrowComponent;
 
 #endif
+
+// end
+
+	UPROPERTY()
+	class UWorldSubsystem_GlobalEvents* WS_GlobalEvents;
 
 };

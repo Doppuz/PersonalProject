@@ -28,7 +28,7 @@ bool UDataTableSpawnAction::DataTableFilterCondition(const FPrimaryDataAssetRow*
 
 void UDataTableSpawnAction::DataTableFilterRows(TArray<FPrimaryDataAssetRow*>& OutTableRows)
 {
-	for (int i = OutTableRows.Num() - 1; i > 0; i--)
+	for (int i = OutTableRows.Num() - 1; i >= 0; i--)
 	{
 		if (!DataTableFilterCondition(OutTableRows[i]))
 		{
@@ -69,4 +69,6 @@ void UDataTableSpawnAction::AsyncLoadPrimaryAsset(FPrimaryDataAssetRow* PrimaryD
 void UDataTableSpawnAction::OnRowLoaded(FPrimaryAssetId LoadedId)
 {
 	//Override children
+
+	StopAction(ActionRepData.Instigator);
 }

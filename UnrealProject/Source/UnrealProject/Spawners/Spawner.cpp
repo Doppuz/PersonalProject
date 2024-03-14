@@ -6,12 +6,12 @@
 #include "Components/CapsuleComponent.h"
 #include "../Components/GeneralComponents/ActionComponent.h"
 #include "Components/ArrowComponent.h"
+#include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
 // Sets default values
 ASpawner::ASpawner()
 {
-	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	RootComponent = CapsuleComponent;
@@ -33,10 +33,45 @@ ASpawner::ASpawner()
 void ASpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
+
+	if (ensureAlways(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnActionSpawnActor.AddDynamic(this, &ASpawner::OnActionSpawnActor);
+	}
 }
 
-void ASpawner::Tick(float DeltaTime)
+void ASpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Super::Tick(DeltaTime);
+	Super::EndPlay(EndPlayReason);
+
+	if (ensureAlways(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnActionSpawnActor.RemoveDynamic(this, &ASpawner::OnActionSpawnActor);
+	}
+}
+
+bool ASpawner::CanSpawn()
+{
+	if (SpawnerType == ESpawnerType::SINGLE)
+	{
+		if(CurrentActorsSpawned.Num() > 0)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void ASpawner::OnActionSpawnActor(UActionComponent* InActionComponent, AActor* ActorSpawned)
+{
+	if (ActionComponent == InActionComponent)
+	{
+		if (!CurrentActorsSpawned.Contains(ActorSpawned))
+		{
+			CurrentActorsSpawned.Add(ActorSpawned);
+		}
+	}
 }

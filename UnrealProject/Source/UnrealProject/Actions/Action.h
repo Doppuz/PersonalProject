@@ -96,4 +96,7 @@ protected:
 	UPROPERTY()
 	class USAGameInstance* GI = nullptr;
 
+	UPROPERTY()
+	class UWorldSubsystem_GlobalEvents* WS_GlobalEvents;
+
 };

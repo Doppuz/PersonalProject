@@ -5,6 +5,7 @@
 #include "Engine/AssetManager.h"
 #include "../../../DataAsset/AI/PDA_EnemyAI.h"
 #include "../../../Components/GeneralComponents/ActionComponent.h"
+#include "../../../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
 bool UDTEnemySpawnAction::DataTableFilterCondition(const FPrimaryDataAssetRow* InTableRow)
 {
@@ -22,8 +23,15 @@ void UDTEnemySpawnAction::OnRowLoaded(FPrimaryAssetId LoadedId)
         {
             if (ensureAlways(AIData->BaseEnemyClass))
             {
-                AActor* NewBot = GetWorld()->SpawnActor<AActor>(AIData->BaseEnemyClass, ActionComponentOwner->GetOwner()->GetActorLocation(), ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation());
+                AActor* NewActor = GetWorld()->SpawnActor<AActor>(AIData->BaseEnemyClass, ActionComponentOwner->GetOwner()->GetActorLocation(), ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation());
+            
+                if (NewActor && ensureAlways(WS_GlobalEvents))
+                {
+                    WS_GlobalEvents->OnActionSpawnActor.Broadcast(ActionComponentOwner, NewActor);
+                }
             }
         }
     }
+
+    Super::OnRowLoaded(LoadedId);
 }

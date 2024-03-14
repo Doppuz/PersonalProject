@@ -11,6 +11,7 @@ void UAction::Initialize(UActionComponent* NewActionComponent)
 	ActionComponentOwner = NewActionComponent;
 
 	GI = UQuickAccessLibrary::GetGameInstance(this);
+	WS_GlobalEvents = GetOuter()->GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 }
 
 
