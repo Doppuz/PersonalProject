@@ -30,13 +30,13 @@ protected:
 
 	void ActivateSpawner(TSoftObjectPtr<ASpawner> InSpawner, FGameplayTag ActionName);
 
-	UFUNCTION()
-	void OnAssetLoaded(FPrimaryAssetId LoadedId);
-
 protected:
 
 	UPROPERTY()
-	FPrimaryAssetId PDA_ID_WS_GameManager;
+	const UGameSubsystemSettings* GameSubsystemSettings;
+
+	UPROPERTY()
+	USAGameInstance* GI;;
 
 	UPROPERTY()
 	float CheckFrequency = 5.f;
