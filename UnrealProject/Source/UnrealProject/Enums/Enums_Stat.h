@@ -32,6 +32,32 @@ public:
 
 };
 
+USTRUCT(BlueprintType)
+struct FStat_Broadcast
+{
+	GENERATED_BODY()
+
+public:
+
+	FStat_Broadcast() {};
+
+	FStat_Broadcast(AActor* InOwner, FStatValue InStatValue, float InOldValue, EStatCategory InStatCategory) :
+		Owner(InOwner), StatValue(InStatValue), OldValue(InOldValue), StatCategory(InStatCategory) {};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	AActor* Owner;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	FStatValue StatValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	float OldValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	EStatCategory StatCategory = EStatCategory::MAX;
+
+};
+
 UCLASS()
 class UNREALPROJECT_API UEnums_Stat : public UObject
 {

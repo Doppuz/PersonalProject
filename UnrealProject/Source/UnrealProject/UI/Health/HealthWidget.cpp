@@ -2,11 +2,9 @@
 
 
 #include "HealthWidget.h"
-#include "Components/GridPanel.h"
+#include "../../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
+#include "../../Library/QuickAccessLibrary.h"
 #include "Components/ProgressBar.h"
-#include "Blueprint/WidgetTree.h"	
-#include "Styling/SlateTypes.h"	
-#include "Components/GridSlot.h"
 
 //I am not usign it atm but might be useful later
 /*void UHealthWidget::CreateInitialHealth(int MaxHealth)
@@ -50,3 +48,36 @@
 		}
 	}
 }*/
+
+void UHealthWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	if (ensureAlways(GetWorld()))
+	{
+		WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
+
+		if (ensureAlways(WS_GlobalEvents))
+		{
+			WS_GlobalEvents->OnStatChanged.AddDynamic(this, &UHealthWidget::OnStatChanged);
+		}
+	}
+}
+
+void UHealthWidget::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	if (ensureAlways(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnStatChanged.RemoveDynamic(this, &UHealthWidget::OnStatChanged);
+	}
+}
+
+void UHealthWidget::OnStatChanged(FStat_Broadcast StatBroadcast)
+{
+	if (StatBroadcast.Owner == WidgetOwner)
+	{
+		HealthProgessBar->SetPercent(StatBroadcast.StatValue.CurrentValue / StatBroadcast.StatValue.MaxValue);
+	}
+}

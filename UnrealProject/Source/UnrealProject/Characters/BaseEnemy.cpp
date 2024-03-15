@@ -54,7 +54,7 @@ void ABaseEnemy::BeginPlay()
 
 		if (ensureAlways(HealthComponent))
 		{
-			//HealthWidget->CreateInitialHealth(3);
+			HealthWidget->SetWidgetOwner(this);
 		}
 	}
 }

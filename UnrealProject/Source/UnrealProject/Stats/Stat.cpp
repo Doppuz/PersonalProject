@@ -39,7 +39,7 @@ void UStat::Multicast_ChangeStat_Implementation(AActor* Owner, float OldValue, f
 {
 	if (ensure(WS_GlobalEvents))
 	{
-		WS_GlobalEvents->OnStatChanged.Broadcast(Owner, OldValue, NewValue);
+		WS_GlobalEvents->OnStatChanged.Broadcast(FStat_Broadcast(Owner, StatValue, OldValue, StatCategory));
 	}
 }
 

@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "../../Enums/Enums_Stat.h"
 #include "HealthWidget.generated.h"
 
-class UGridPanel;
+class UWorldSubsystem_GlobalEvents;
 class UProgressBar;
 
 UCLASS()
@@ -16,18 +17,28 @@ class UNREALPROJECT_API UHealthWidget : public UUserWidget
 	
 public:
 
+	virtual void NativeConstruct() override;
+
+	virtual void NativeDestruct() override;
+
+	void SetWidgetOwner(AActor* InWidgetOwner) { WidgetOwner = InWidgetOwner; }
+
 	/*UFUNCTION(BlueprintCallable, Category = "Debug")
 	void CreateInitialHealth(int MaxHealth);*/
 
 protected:
 
-	/*UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UGridPanel> HealthGrid;
+	UFUNCTION()
+	void OnStatChanged(FStat_Broadcast StatBroadcast);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UProgressBar>> ProgressBars;*/
+protected:
+
+	UPROPERTY()
+	AActor* WidgetOwner;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UProgressBar> HealthProgessBar;
 
+	UPROPERTY()
+	UWorldSubsystem_GlobalEvents* WS_GlobalEvents;
 };
