@@ -8,6 +8,8 @@
 #include "../Interfaces/AttackDefenseInterface.h"
 #include "BaseEnemy.generated.h"
 
+class UWidgetComponent;
+
 UCLASS()
 class UNREALPROJECT_API ABaseEnemy : public ABaseCharacter, public IAttackDefenseInterface
 {
@@ -23,6 +25,13 @@ protected:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+#pragma region Components
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UWidgetComponent* HealthComponent;
+
+#pragma endregion
 
 #pragma region MovementInterface
 
