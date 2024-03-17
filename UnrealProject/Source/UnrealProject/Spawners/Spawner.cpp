@@ -14,6 +14,7 @@ ASpawner::ASpawner()
 	PrimaryActorTick.bCanEverTick = false;
 
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RootComponent = CapsuleComponent;
 
 #if WITH_EDITORONLY_DATA
@@ -39,6 +40,7 @@ void ASpawner::BeginPlay()
 	if (ensureAlways(WS_GlobalEvents))
 	{
 		WS_GlobalEvents->OnActionSpawnActor.AddDynamic(this, &ASpawner::OnActionSpawnActor);
+		WS_GlobalEvents->OnActionActorDead.AddDynamic(this, &ASpawner::OnActionActorDead);
 	}
 }
 
@@ -49,6 +51,7 @@ void ASpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (ensureAlways(WS_GlobalEvents))
 	{
 		WS_GlobalEvents->OnActionSpawnActor.RemoveDynamic(this, &ASpawner::OnActionSpawnActor);
+		WS_GlobalEvents->OnActionActorDead.RemoveDynamic(this, &ASpawner::OnActionActorDead);
 	}
 }
 
@@ -73,5 +76,14 @@ void ASpawner::OnActionSpawnActor(UActionComponent* InActionComponent, AActor* A
 		{
 			CurrentActorsSpawned.Add(ActorSpawned);
 		}
+	}
+}
+
+void ASpawner::OnActionActorDead(UActionComponent* InActionComponent, AActor* DeadActor)
+{
+	if (CurrentActorsSpawned.Contains(DeadActor))
+	{
+		CurrentActorsSpawned.Remove(DeadActor);
+		DeadActor->Destroy();
 	}
 }

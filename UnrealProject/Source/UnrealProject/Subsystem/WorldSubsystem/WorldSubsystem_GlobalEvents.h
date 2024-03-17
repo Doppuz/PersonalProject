@@ -12,6 +12,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStatChanged, FStat_Broadcast, Sta
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionSpawnActor, UActionComponent*, InActionComponent, AActor*, ActorSpawned);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionActorDead, UActionComponent*, InActionComponent, AActor*, ActorSpawned);
+
 UCLASS()
 class UNREALPROJECT_API UWorldSubsystem_GlobalEvents : public UWorldSubsystem
 {
@@ -24,5 +26,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Stats")
 	FOnActionSpawnActor OnActionSpawnActor;
+
+	UPROPERTY(BlueprintAssignable, Category = "Stats")
+	FOnActionActorDead OnActionActorDead;
 	
 };

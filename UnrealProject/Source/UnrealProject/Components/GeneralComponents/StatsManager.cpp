@@ -8,6 +8,7 @@
 #include "../../Library/QuickAccessLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/ActorChannel.h"
+#include "../../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
 static int DebugPrintStats = 0;
 FAutoConsoleVariableRef CVarDebugPrintStats(TEXT("DebugPrintStats"), DebugPrintStats, TEXT("Print stats info for each stats components"), ECVF_Cheat);
@@ -25,6 +26,7 @@ void UStatsManager::BeginPlay()
 	Super::BeginPlay();
 
 	GI = UQuickAccessLibrary::GetGameInstance(GetOwner());
+	WS_GlobalEvents = GetOuter()->GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 
 	if (GetOwner() && GetOwner()->HasAuthority())
 	{
@@ -93,11 +95,25 @@ void UStatsManager::ChangeStat(AActor* Instigator, EStatCategory TargetStat, flo
 		{
 			if (CurrentStats[i]->GetStatCategory() == TargetStat)
 			{
-				CurrentStats[i]->ChangeStat(Instigator, Amount);
+				FStat_Broadcast Stat_Broadcast = CurrentStats[i]->ChangeStat(Instigator, Amount);
+
+				Multicast_ChangeStat(Stat_Broadcast);
 			}
 		}
 	}
 }
+
+#pragma region RPC
+
+void UStatsManager::Multicast_ChangeStat_Implementation(FStat_Broadcast StatBroadcast)
+{
+	if (ensure(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnStatChanged.Broadcast(StatBroadcast);
+	}
+}
+
+#pragma endregion
 
 #pragma region Replication
 

@@ -43,6 +43,9 @@ protected:
 	UFUNCTION()
 	void OnActionSpawnActor(UActionComponent* InActionComponent, AActor* ActorSpawned);
 
+	UFUNCTION()
+	void OnActionActorDead(UActionComponent* InActionComponent, AActor* DeadActor);
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner Info")

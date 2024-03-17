@@ -19,7 +19,7 @@ public:
 
 	virtual void Initialize();
 
-	void ChangeStat(AActor* Instigator, float Value);
+	FStat_Broadcast ChangeStat(AActor* Instigator, float Value);
 
 protected:
 
@@ -38,14 +38,6 @@ public:
 
 #pragma endregion
 
-#pragma region Server
-
-	//just for aesthetic, so unreliable
-	UFUNCTION(NetMulticast, Unreliable)
-	void Multicast_ChangeStat(AActor* Owner, float OldValue, float NewValue);
-
-#pragma endregion
-
 	virtual bool IsSupportedForNetworking() const override
 	{
 		return true;
@@ -61,8 +53,5 @@ protected:
 
 	UPROPERTY()
 	class UStatsManager* StatsManagerRef;
-
-	UPROPERTY()
-	class UWorldSubsystem_GlobalEvents* WS_GlobalEvents;
 
 };

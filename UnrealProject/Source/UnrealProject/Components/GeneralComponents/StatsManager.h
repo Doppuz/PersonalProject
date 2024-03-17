@@ -7,7 +7,8 @@
 #include "StatsManager.generated.h"
 
 class UStat;
-class USAGameInstance;
+class USAGameInstance; 
+class UWorldSubsystem_GlobalEvents;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALPROJECT_API UStatsManager : public UActorComponent
@@ -22,6 +23,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	void ChangeStat(AActor* Instigator, EStatCategory TargetStat, float Amount);
+
+#pragma region RPC
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multicast_ChangeStat(FStat_Broadcast StatBroadcast);
+
+#pragma endregion
 
 protected:
 	// Called when the game starts
@@ -42,5 +50,8 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<USAGameInstance> GI;
+
+	UPROPERTY()
+	TObjectPtr<UWorldSubsystem_GlobalEvents> WS_GlobalEvents;
 
 };
