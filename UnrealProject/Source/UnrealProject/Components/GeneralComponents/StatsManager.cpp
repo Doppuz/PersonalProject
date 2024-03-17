@@ -97,7 +97,10 @@ void UStatsManager::ChangeStat(AActor* Instigator, EStatCategory TargetStat, flo
 			{
 				FStat_Broadcast Stat_Broadcast = CurrentStats[i]->ChangeStat(Instigator, Amount);
 
-				Multicast_ChangeStat(Stat_Broadcast);
+				if (Stat_Broadcast.StatValue.CurrentValue != Stat_Broadcast.OldValue)
+				{
+					Multicast_ChangeStat(Stat_Broadcast);
+				}
 			}
 		}
 	}

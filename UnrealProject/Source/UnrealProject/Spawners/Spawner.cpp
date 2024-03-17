@@ -28,6 +28,8 @@ ASpawner::ASpawner()
 #endif
 
 	ActionComponent = CreateDefaultSubobject<UActionComponent>(TEXT("ActionComponent"));
+
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
@@ -37,10 +39,13 @@ void ASpawner::BeginPlay()
 
 	WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 
-	if (ensureAlways(WS_GlobalEvents))
+	if (HasAuthority())
 	{
-		WS_GlobalEvents->OnActionSpawnActor.AddDynamic(this, &ASpawner::OnActionSpawnActor);
-		WS_GlobalEvents->OnActionActorDead.AddDynamic(this, &ASpawner::OnActionActorDead);
+		if (ensureAlways(WS_GlobalEvents))
+		{
+			WS_GlobalEvents->OnActionSpawnActor.AddDynamic(this, &ASpawner::OnActionSpawnActor);
+			WS_GlobalEvents->OnActionActorDead.AddDynamic(this, &ASpawner::OnActionActorDead);
+		}
 	}
 }
 
@@ -48,10 +53,13 @@ void ASpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	if (ensureAlways(WS_GlobalEvents))
+	if (HasAuthority())
 	{
-		WS_GlobalEvents->OnActionSpawnActor.RemoveDynamic(this, &ASpawner::OnActionSpawnActor);
-		WS_GlobalEvents->OnActionActorDead.RemoveDynamic(this, &ASpawner::OnActionActorDead);
+		if (ensureAlways(WS_GlobalEvents))
+		{
+			WS_GlobalEvents->OnActionSpawnActor.RemoveDynamic(this, &ASpawner::OnActionSpawnActor);
+			WS_GlobalEvents->OnActionActorDead.RemoveDynamic(this, &ASpawner::OnActionActorDead);
+		}
 	}
 }
 
@@ -87,3 +95,14 @@ void ASpawner::OnActionActorDead(UActionComponent* InActionComponent, AActor* De
 		DeadActor->Destroy();
 	}
 }
+
+#pragma region Replication
+
+void ASpawner::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASpawner, CurrentActorsSpawned);
+}
+
+#pragma endregion

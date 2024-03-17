@@ -51,7 +51,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner Info")
 	ESpawnerType SpawnerType = ESpawnerType::SINGLE;
 
-	UPROPERTY()
+	UPROPERTY(replicated)
 	TArray<AActor*> CurrentActorsSpawned;
 
 //Components
