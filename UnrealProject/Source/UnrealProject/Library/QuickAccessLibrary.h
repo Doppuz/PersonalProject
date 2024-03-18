@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Engine/StreamableManager.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "QuickAccessLibrary.generated.h"
 
 #define QL UQuickAccessLibrary
@@ -31,5 +32,8 @@ public:
 	//StartAction from the actor action component
 	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
 	static bool StartAction(UObject* WorldContextObject, AActor* Instigator, const AActor* CurrentActor, const FGameplayTag ActionName);
+
+	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
+	static ETeamAttitude::Type GetTeamAttitude(UObject* WorldContextObject, AActor* FirstActor, const AActor* SecondActor);
 
 };

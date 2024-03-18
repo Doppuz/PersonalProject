@@ -8,6 +8,8 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "../Components/GeneralComponents/StatsManager.h"
 #include "../Enums/Enums_Stat.h"
+#include "GenericTeamAgentInterface.h"
+#include "../Library/QuickAccessLibrary.h"
 
 // Sets default values
 ABasicProjectile::ABasicProjectile()
@@ -58,10 +60,15 @@ void ABasicProjectile::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCo
 
 			if (OtherActorStatManager)
 			{
-				OtherActorStatManager->ChangeStat(GetInstigator(), EStatCategory::HEALTH, -Damage);
-			}
-		}
+				ETeamAttitude::Type TeamAttitudeType = QL::GetTeamAttitude(this, GetInstigator(), OtherActor);
 
-		Destroy();
+				if (TeamAttitudeType == ETeamAttitude::Hostile || TeamAttitudeType == ETeamAttitude::Neutral)
+				{
+					OtherActorStatManager->ChangeStat(GetInstigator(), EStatCategory::HEALTH, -Damage);
+				}
+			}
+
+			Destroy();
+		}
 	}
 }

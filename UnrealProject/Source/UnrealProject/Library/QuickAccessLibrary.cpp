@@ -125,3 +125,19 @@ bool UQuickAccessLibrary::StartAction(UObject* WorldContextObject, AActor* Insti
 
 	return false;
 }
+
+ETeamAttitude::Type UQuickAccessLibrary::GetTeamAttitude(UObject* WorldContextObject, AActor* FirstActor, const AActor* SecondActor)
+{
+	APawn* FirstActorPawn = Cast<APawn>(FirstActor);
+	if (ensureAlways(FirstActorPawn) && ensureAlways(SecondActor))
+	{
+		IGenericTeamAgentInterface* FirstActorTeamInterface = Cast<IGenericTeamAgentInterface>(FirstActorPawn->GetController());
+
+		if (FirstActorTeamInterface)
+		{
+			return FirstActorTeamInterface->GetTeamAttitudeTowards(*SecondActor);
+		}
+	}
+
+	return ETeamAttitude::Neutral;
+}

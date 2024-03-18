@@ -38,6 +38,8 @@ ABaseAIController::ABaseAIController()
 	GetPerceptionComponent()->ConfigureSense(*HearingConfig);
 
 	GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
+
+	SetGenericTeamId(TeamID);
 }
 
 void ABaseAIController::OnPossess(APawn* InPawn)
@@ -74,3 +76,37 @@ void ABaseAIController::HandleHearingExpiresSense(AActor* Actor, FAIStimulus Sti
 {
 	//Override in children
 }
+
+#pragma region IGenericTeamAgentInterface
+
+void ABaseAIController::SetGenericTeamId(const FGenericTeamId& InTeamID)
+{
+	if (HasAuthority())
+	{
+		Super::SetGenericTeamId(TeamID);
+	}
+}
+
+ETeamAttitude::Type ABaseAIController::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	if (const APawn* OtherPawn = Cast<APawn>(&Other))
+	{
+		if (IGenericTeamAgentInterface* GenericTeamAgentInterface = Cast<IGenericTeamAgentInterface>(OtherPawn->GetController()))
+		{
+			FGenericTeamId OtherGenericTeamID = GenericTeamAgentInterface->GetGenericTeamId();
+
+			if (GetGenericTeamId() != OtherGenericTeamID)
+			{
+				return ETeamAttitude::Hostile;
+			}
+			else
+			{
+				return ETeamAttitude::Friendly;
+			}
+		}
+	}
+
+	return ETeamAttitude::Neutral;
+}
+
+#pragma endregion

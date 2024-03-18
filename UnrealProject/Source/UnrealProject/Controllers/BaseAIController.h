@@ -24,6 +24,14 @@ public:
 	UFUNCTION()
 	FORCEINLINE UBehaviorTree* GetBehaviorTree() { return BehaviorTree; };
 
+#pragma region IGenericTeamAgentInterface
+
+	virtual void SetGenericTeamId(const FGenericTeamId& InTeamID) override;
+
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const;
+
+#pragma endregion
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintreadWrite, Category = "AI")
@@ -31,6 +39,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintreadWrite, Category = "AI")
 	class UAIPerceptionComponent* AIPerceptionComponent;
+
+private:
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	FGenericTeamId TeamID;
 
 #pragma region Senses
 
