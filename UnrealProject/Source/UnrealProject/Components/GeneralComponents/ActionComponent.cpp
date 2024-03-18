@@ -9,8 +9,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Engine/ActorChannel.h"
 
-static int DebugPrintActions = 0;
-FAutoConsoleVariableRef CVarDebugPrintActions(TEXT("DebugPrintActions"), DebugPrintActions, TEXT("Print actions info for each action components"), ECVF_Cheat);
+static int DebugPrintPlayersActions = 0;
+FAutoConsoleVariableRef CVarDebugPrintPlayersActions(TEXT("DebugPrintPlayersActions"), DebugPrintPlayersActions, TEXT("Print actions info for each player action components"), ECVF_Cheat);
 
 UActionComponent::UActionComponent()
 {
@@ -40,20 +40,23 @@ void UActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (DebugPrintActions > 0 && GEngine)
+	if (DebugPrintPlayersActions > 0 && GEngine && ensureAlways(GI))
 	{
-		FString AutorityMsg = GetOwner()->HasAuthority() ? "Server" : "Client";
-		FColor ServerClientColor = GetOwner()->HasAuthority() ? FColor::Purple : FColor::Orange;
-		FString DebugMsg = AutorityMsg + " -> "+ GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
-		GEngine->AddOnScreenDebugMessage(-1, DeltaTime, ServerClientColor, DebugMsg);
-
-		// Draw All Actions
-		for (UAction* Action : CurrentActions)
+		if (QL::ClassIsChildOfSoft(GI->GetDebugActionComponentClass(), GetOwner()->GetClass()))
 		{
-			FColor TextColor = Action->GetIsRunning() ? FColor::Blue : FColor::White;
-			FString ActionMsg = FString::Printf(TEXT("[%s] Action: %s"), *GetNameSafe(GetOwner()), *GetNameSafe(Action));
+			FString AutorityMsg = GetOwner()->HasAuthority() ? "Server" : "Client";
+			FColor ServerClientColor = GetOwner()->HasAuthority() ? FColor::Purple : FColor::Orange;
+			FString DebugMsg = AutorityMsg + " -> " + GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
+			GEngine->AddOnScreenDebugMessage(-1, DeltaTime, ServerClientColor, DebugMsg);
 
-			GEngine->AddOnScreenDebugMessage(-1, DeltaTime, TextColor, ActionMsg);
+			// Draw All Actions
+			for (UAction* Action : CurrentActions)
+			{
+				FColor TextColor = Action->GetIsRunning() ? FColor::Blue : FColor::White;
+				FString ActionMsg = FString::Printf(TEXT("[%s] Action: %s"), *GetNameSafe(GetOwner()), *GetNameSafe(Action));
+
+				GEngine->AddOnScreenDebugMessage(-1, DeltaTime, TextColor, ActionMsg);
+			}
 		}
 	}
 }
@@ -70,6 +73,11 @@ void UActionComponent::AddAction(AActor* Instigator, TSoftClassPtr<UAction> Soft
 	{
 		GI->StreamableManager.RequestAsyncLoad(SoftActionClass.ToSoftObjectPath(), [this, Instigator, SoftActionClass]()
 			{
+				if (ContainsAction(SoftActionClass))
+				{
+					return;
+				}
+
 				TSubclassOf<UAction> ActionClass = SoftActionClass.Get();
 
 				if (ActionClass)
@@ -147,7 +155,7 @@ void UActionComponent::StopActionByName(AActor* Instigator, FGameplayTag ActionN
 			{
 				if (GEngine)
 				{
-					FString FailedMsg = FString::Printf(TEXT("Failed to run: %s"), *ActionName.ToString());
+					FString FailedMsg = FString::Printf(TEXT("Failed to stop: %s"), *ActionName.ToString());
 					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMsg);
 				}
 				continue;
@@ -201,7 +209,7 @@ void UActionComponent::ServerStartAction_Implementation(AActor* Instigator, FGam
 
 void UActionComponent::ServerStopAction_Implementation(AActor* Instigator, FGameplayTag ActionName)
 {
-	StartActionByName(Instigator, ActionName);
+	StopActionByName(Instigator, ActionName);
 }
 
 #pragma endregion
@@ -228,6 +236,24 @@ bool UActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bu
 	}
 
 	return WroteSomething;
+}
+
+bool UActionComponent::ContainsAction(TSoftClassPtr<UAction> SoftActionClass)
+{
+	for (int i = 0; i < CurrentActions.Num(); i++)
+	{
+		if (CurrentActions[i] && CurrentActions[i]->GetClass() == SoftActionClass)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void UActionComponent::PrintSingleDebugActions()
+{
+	DebugPrintSingleActions = !DebugPrintSingleActions;
 }
 
 #pragma endregion

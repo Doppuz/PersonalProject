@@ -14,8 +14,18 @@ UCLASS()
 class UNREALPROJECT_API USAGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	UFUNCTION()
+	FORCEINLINE TSoftClassPtr<AActor> GetDebugActionComponentClass() { return DebugActionComponentClass; }
+
 public:
 
 	FStreamableManager StreamableManager;
+
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
+	TSoftClassPtr<AActor> DebugActionComponentClass;
 };

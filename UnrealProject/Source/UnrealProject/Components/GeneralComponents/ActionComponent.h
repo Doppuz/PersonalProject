@@ -22,8 +22,10 @@ public:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, Category = "Action")
 	void AddAction(AActor* Instigator, TSoftClassPtr<UAction> SoftActionClass);
 
+	UFUNCTION(BlueprintCallable, Category = "Action")
 	void RemoveAction(AActor* Instigator, UAction* ActionToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
@@ -56,6 +58,11 @@ protected:
 
 	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
+	virtual bool ContainsAction(TSoftClassPtr<UAction> SoftActionClass);
+
+	UFUNCTION(CallInEditor, Category = "Debug")
+	void PrintSingleDebugActions();
+
 protected:
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Tags")
@@ -70,5 +77,8 @@ protected:
 
 	UPROPERTY()
 	USAGameInstance* GI;
+
+	UPROPERTY()
+	bool DebugPrintSingleActions = false;
 
 };
