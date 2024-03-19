@@ -14,6 +14,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionSpawnActor, UActionCompone
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionActorDead, UActionComponent*, InActionComponent, AActor*, ActorSpawned);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAllPlayersReady, AGameModeBase*, CurrentGameMode);
+
 UCLASS()
 class UNREALPROJECT_API UWorldSubsystem_GlobalEvents : public UWorldSubsystem
 {
@@ -24,10 +26,13 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Stats")
 	FOnStatChanged OnStatChanged;
 
-	UPROPERTY(BlueprintAssignable, Category = "Stats")
+	UPROPERTY(BlueprintAssignable, Category = "Action")
 	FOnActionSpawnActor OnActionSpawnActor;
 
-	UPROPERTY(BlueprintAssignable, Category = "Stats")
+	UPROPERTY(BlueprintAssignable, Category = "Action")
 	FOnActionActorDead OnActionActorDead;
+
+	UPROPERTY(BlueprintAssignable, Category = "Login")
+	FOnAllPlayersReady OnAllPlayersReady;
 	
 };

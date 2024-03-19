@@ -36,4 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
 	static ETeamAttitude::Type GetTeamAttitude(UObject* WorldContextObject, AActor* FirstActor, const AActor* SecondActor);
 
+	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
+	static class AUnrealProjectGameModeBase* GetCurrentGameMode(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, Category = "QuickLibrary", meta = (WorldContext = "WorldContextObject"))
+	static bool GetAreAllPlayersReady(UObject* WorldContextObject);
 };

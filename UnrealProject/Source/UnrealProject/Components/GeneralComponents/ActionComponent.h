@@ -22,6 +22,8 @@ public:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void AddAction(AActor* Instigator, TSoftClassPtr<UAction> SoftActionClass);
 
@@ -42,7 +44,18 @@ public:
 
 	void RemoveActiveTags(FGameplayTagContainer InTags);
 
+#pragma region Events
+
+protected:
+
+	UFUNCTION()
+	void OnAllPlayersReady(AGameModeBase* CurrentGameMode);
+
+#pragma endregion
+
 #pragma region Server
+
+public:
 
 	UFUNCTION(Server, Reliable)
 	void ServerStartAction(AActor* Instigator, FGameplayTag ActionName);
@@ -77,6 +90,9 @@ protected:
 
 	UPROPERTY()
 	USAGameInstance* GI;
+
+	UPROPERTY()
+	UWorldSubsystem_GlobalEvents* WS_GlobalEvents;
 
 	UPROPERTY()
 	bool DebugPrintSingleActions = false;

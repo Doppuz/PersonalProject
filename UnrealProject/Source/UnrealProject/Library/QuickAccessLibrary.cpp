@@ -6,6 +6,8 @@
 #include "../Characters/MainCharacter.h"
 #include "Engine/AssetManager.h"
 #include "../Components/GeneralComponents/ActionComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "../UnrealProjectGameModeBase.h"
 
 USAGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContextObject)
 {
@@ -140,4 +142,21 @@ ETeamAttitude::Type UQuickAccessLibrary::GetTeamAttitude(UObject* WorldContextOb
 	}
 
 	return ETeamAttitude::Neutral;
+}
+
+AUnrealProjectGameModeBase* UQuickAccessLibrary::GetCurrentGameMode(UObject* WorldContextObject)
+{
+	return Cast<AUnrealProjectGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+}
+
+bool UQuickAccessLibrary::GetAreAllPlayersReady(UObject* WorldContextObject)
+{
+	AUnrealProjectGameModeBase* UnrealProjectGameModeBase = UQuickAccessLibrary::GetCurrentGameMode(WorldContextObject);
+
+	if (ensureAlways(UnrealProjectGameModeBase))
+	{
+		return UnrealProjectGameModeBase->GetAreAllPlayersReady();
+	}
+
+	return false;
 }

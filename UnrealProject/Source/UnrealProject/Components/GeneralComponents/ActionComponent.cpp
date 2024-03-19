@@ -8,6 +8,7 @@
 #include "../../Library/QuickAccessLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/ActorChannel.h"
+#include "../../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
 static int DebugPrintPlayersActions = 0;
 FAutoConsoleVariableRef CVarDebugPrintPlayersActions(TEXT("DebugPrintPlayersActions"), DebugPrintPlayersActions, TEXT("Print actions info for each player action components"), ECVF_Cheat);
@@ -26,13 +27,29 @@ void UActionComponent::BeginPlay()
 	Super::BeginPlay();
 
 	GI = UQuickAccessLibrary::GetGameInstance(GetOwner());
+	WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 
 	if (GetOwner()->HasAuthority())
 	{
-		for (int i = 0; i < DefaultActions.Num(); i++)
+		if (QL::GetAreAllPlayersReady(this))
 		{
-			AddAction(GetOwner(), DefaultActions[i]);
+			//No need to get the gamemode
+			OnAllPlayersReady(nullptr);
 		}
+		else if (ensureAlways(WS_GlobalEvents))
+		{
+			WS_GlobalEvents->OnAllPlayersReady.AddDynamic(this, &UActionComponent::OnAllPlayersReady);
+		}
+	}
+}
+
+void UActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	if (GetOwner()->HasAuthority() && ensureAlways(WS_GlobalEvents) && WS_GlobalEvents->OnAllPlayersReady.Contains(this, "OnAllPlayersReady"))
+	{
+		WS_GlobalEvents->OnAllPlayersReady.RemoveDynamic(this, &UActionComponent::OnAllPlayersReady);
 	}
 }
 
@@ -199,6 +216,21 @@ void UActionComponent::RemoveActiveTags(FGameplayTagContainer InTags)
 {
 	ActiveGameplayTags.RemoveTags(InTags);
 }
+
+#pragma region Events
+
+void UActionComponent::OnAllPlayersReady(AGameModeBase* CurrentGameMode)
+{
+	if (GetOwner()->HasAuthority())
+	{
+		for (int i = 0; i < DefaultActions.Num(); i++)
+		{
+			AddAction(GetOwner(), DefaultActions[i]);
+		}
+	}
+}
+
+#pragma endregion
 
 #pragma region Server
 

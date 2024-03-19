@@ -21,6 +21,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+
+
 #pragma region IGenericTeamAgentInterface
 
 	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override;
