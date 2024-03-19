@@ -9,6 +9,7 @@
 
 class UActionComponent;
 class UStatsManager;
+class UWorldSubsystem_GlobalEvents;
 
 UCLASS()
 class UNREALPROJECT_API ABaseCharacter : public ACharacter, public IMovementInterface
@@ -62,4 +63,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStatsManager> StatsManager = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UWorldSubsystem_GlobalEvents> WS_GlobalEvents;
 };

@@ -10,8 +10,8 @@
 #include "Engine/ActorChannel.h"
 #include "../../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
-static int DebugPrintPlayersActions = 0;
-FAutoConsoleVariableRef CVarDebugPrintPlayersActions(TEXT("DebugPrintPlayersActions"), DebugPrintPlayersActions, TEXT("Print actions info for each player action components"), ECVF_Cheat);
+static int DebugPrintClassActions = 0;
+FAutoConsoleVariableRef CVarDebugPrintClassActions(TEXT("DebugPrintClassActions"), DebugPrintClassActions, TEXT("Print actions info for the specific class set on the gameinstance"), ECVF_Cheat);
 
 UActionComponent::UActionComponent()
 {
@@ -57,7 +57,7 @@ void UActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (DebugPrintPlayersActions > 0 && GEngine && ensureAlways(GI))
+	if (DebugPrintClassActions > 0 && GEngine && ensureAlways(GI))
 	{
 		if (QL::ClassIsChildOfSoft(GI->GetDebugActionComponentClass(), GetOwner()->GetClass()))
 		{

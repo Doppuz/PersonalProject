@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "../Components/GeneralComponents/ActionComponent.h"
 #include "Camera/CameraActor.h"
+#include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -40,13 +41,27 @@ UMovementManager* AMainCharacter::GetMovementManager()
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (ensureAlways(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnActionActorDead.AddDynamic(this, &AMainCharacter::OnActionActorDead);
+	}
+}
+
+void AMainCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	if (ensureAlways(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnActionActorDead.RemoveDynamic(this, &AMainCharacter::OnActionActorDead);
+	}
 }
 
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -80,3 +95,15 @@ void AMainCharacter::PrimaryAttack()
 {
 	ActionComponent->StartActionByName(this, CustomInputComponent->PrimaryAttackTag);
 }
+
+#pragma region Events
+
+void AMainCharacter::OnActionActorDead(UActionComponent* InActionComponent, AActor* DeadActor)
+{
+	if (InActionComponent == ActionComponent)
+	{
+		Destroy();
+	}
+}
+
+#pragma endregion

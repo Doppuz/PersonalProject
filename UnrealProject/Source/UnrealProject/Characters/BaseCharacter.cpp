@@ -23,6 +23,8 @@ void ABaseCharacter::BeginPlay()
 	{
 		MaterialInstanceDynamic = GetMesh()->CreateDynamicMaterialInstance(0);
 	}
+
+	WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 }
 
 // Called every frame

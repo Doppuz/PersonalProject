@@ -25,6 +25,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -34,6 +36,15 @@ protected:
 	virtual void PawnClientRestart() override;
 
 	void PrimaryAttack();
+
+#pragma region Events
+
+protected:
+
+	UFUNCTION()
+	void OnActionActorDead(UActionComponent* InActionComponent, AActor* DeadActor);
+
+#pragma endregion
 
 protected:
 
