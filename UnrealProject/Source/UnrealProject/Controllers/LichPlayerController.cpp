@@ -39,6 +39,11 @@ ETeamAttitude::Type ALichPlayerController::GetTeamAttitudeTowards(const AActor& 
 	return ETeamAttitude::Neutral;
 }
 
+void ALichPlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+}
+
 void ALichPlayerController::SetGenericTeamId(const FGenericTeamId& InTeamID)
 {
 	if (HasAuthority())

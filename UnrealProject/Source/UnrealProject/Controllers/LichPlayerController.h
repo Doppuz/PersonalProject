@@ -21,8 +21,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-
-
 #pragma region IGenericTeamAgentInterface
 
 	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override;
@@ -32,6 +30,10 @@ public:
 	ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 #pragma endregion
+
+protected:
+
+	virtual void OnPossess(APawn* aPawn) override;
 
 private:
 
