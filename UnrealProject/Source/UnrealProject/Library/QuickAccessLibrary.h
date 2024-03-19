@@ -33,6 +33,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
 	static bool StartAction(UObject* WorldContextObject, AActor* Instigator, const AActor* CurrentActor, const FGameplayTag ActionName);
 
+	//Add action from the actor action component
+	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
+	static bool AddAction(UObject* WorldContextObject, AActor* Instigator, const AActor* CurrentActor, const TSoftClassPtr<UAction> NewAction);
+
 	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
 	static ETeamAttitude::Type GetTeamAttitude(UObject* WorldContextObject, AActor* FirstActor, const AActor* SecondActor);
 

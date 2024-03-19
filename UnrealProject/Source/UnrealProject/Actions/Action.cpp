@@ -54,14 +54,20 @@ void UAction::StopAction_Implementation(AActor* Instigator)
 		//ensureAlwaysMsgf(false, TEXT("The action is not running!"));
 		return;
 	}
-
-	if (ensureAlways(ActionComponentOwner))
+	if (!ensureAlways(ActionComponentOwner))
 	{
-		ActionComponentOwner->RemoveActiveTags(GrantsTags);
+		return;
 	}
+
+	ActionComponentOwner->RemoveActiveTags(GrantsTags);
 
 	ActionRepData.Instigator = Instigator;
 	ActionRepData.bIsRunning = false;
+
+	if (bAutoRemove)
+	{
+		ActionComponentOwner->RemoveAction(Instigator, this);
+	}
 }
 
 #pragma region Replication

@@ -6,6 +6,12 @@
 #include "BaseCharacter.h"
 #include "MainCharacter.generated.h"
 
+class UPlayerInputComponent;
+class UPlayerMovementManager;
+class USpringArmComponent;
+class UCameraComponent;
+class UStaticMeshComponent;
+
 UCLASS()
 class UNREALPROJECT_API AMainCharacter : public ABaseCharacter
 {
@@ -51,16 +57,19 @@ protected:
 #pragma region Components
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	class UPlayerInputComponent* CustomInputComponent;
+	UPlayerInputComponent* CustomInputComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	class UPlayerMovementManager* PlayerMovementManager;
+	UPlayerMovementManager* PlayerMovementManager;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	class USpringArmComponent* SpringArmComponent;
+	USpringArmComponent* SpringArmComponent;
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
-	class UCameraComponent* CameraComponent;
+	UCameraComponent* CameraComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UStaticMeshComponent* ShieldComponent;
 
 #pragma endregion
 

@@ -13,6 +13,20 @@ enum class EStatCategory : uint8
 	MAX UMETA(Hidden)
 };
 
+USTRUCT(BlueprintType)
+struct FStatCategoryValue
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	EStatCategory StatCategory = EStatCategory::MAX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	float Value = 0.f;
+
+};
 
 USTRUCT(BlueprintType)
 struct FStatValue

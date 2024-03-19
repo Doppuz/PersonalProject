@@ -128,6 +128,22 @@ bool UQuickAccessLibrary::StartAction(UObject* WorldContextObject, AActor* Insti
 	return false;
 }
 
+bool UQuickAccessLibrary::AddAction(UObject* WorldContextObject, AActor* Instigator, const AActor* CurrentActor, const TSoftClassPtr<UAction> NewAction)
+{
+	if (ensureAlways(CurrentActor))
+	{
+		UActionComponent* CurrentActionComponent = Cast<UActionComponent>(CurrentActor->FindComponentByClass(UActionComponent::StaticClass()));
+
+		if (CurrentActionComponent)
+		{
+			CurrentActionComponent->AddAction(Instigator, NewAction);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 ETeamAttitude::Type UQuickAccessLibrary::GetTeamAttitude(UObject* WorldContextObject, AActor* FirstActor, const AActor* SecondActor)
 {
 	APawn* FirstActorPawn = Cast<APawn>(FirstActor);

@@ -12,6 +12,7 @@
 #include "../Components/GeneralComponents/ActionComponent.h"
 #include "Camera/CameraActor.h"
 #include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -23,6 +24,12 @@ AMainCharacter::AMainCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	ShieldComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShieldComponent"));
+	ShieldComponent->SetCollisionProfileName(TEXT("OverlapOnlyProjectile"));
+	ShieldComponent->SetRelativeScale3D(FVector(2.5f, 2.5f, 2.5f));
+	ShieldComponent->SetAutoActivate(false);
+	ShieldComponent->SetupAttachment(RootComponent);
 
 	CustomInputComponent = CreateDefaultSubobject<UPlayerInputComponent>(TEXT("InputComponent"));
 	PlayerMovementManager = CreateDefaultSubobject<UPlayerMovementManager>(TEXT("PlayerMovementManager"));

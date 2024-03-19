@@ -10,8 +10,8 @@
 #include "Engine/ActorChannel.h"
 #include "../../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
-static int DebugPrintStats = 0;
-FAutoConsoleVariableRef CVarDebugPrintStats(TEXT("DebugPrintStats"), DebugPrintStats, TEXT("Print stats info for each stats components"), ECVF_Cheat);
+static int DebugPrintClassStats = 0;
+FAutoConsoleVariableRef CVarDebugPrintClassStats(TEXT("DebugPrintClassStats"), DebugPrintClassStats, TEXT("Print stats info for for the specific class set on the gameinstance"), ECVF_Cheat);
 
 UStatsManager::UStatsManager()
 {
@@ -41,21 +41,24 @@ void UStatsManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (DebugPrintStats > 0 && GEngine)
+	if (DebugPrintClassStats > 0 && GEngine && ensureAlways(GI))
 	{
-		FString AutorityMsg = GetOwner()->HasAuthority() ? "Server" : "Client";
-		FColor ServerClientColor = GetOwner()->HasAuthority() ? FColor::Purple : FColor::Orange;
-		FString DebugMsg = AutorityMsg + " -> " + GetNameSafe(GetOwner()) + " : ";
-		GEngine->AddOnScreenDebugMessage(-1, DeltaTime, ServerClientColor, DebugMsg);
-
-		// Draw All Actions
-		for (UStat* Stat : CurrentStats)
+		if (QL::ClassIsChildOfSoft(GI->GetDebugStatManagerClass(), GetOwner()->GetClass()))
 		{
-			FStatValue CurrentStatValue = Stat->GetStatValue();
-			FString ActionMsg = FString::Printf(TEXT("[%s] %s Stat: Min %f, Max %f, Current %f"), *GetNameSafe(GetOwner()), *GetNameSafe(Stat),
-				CurrentStatValue.MinValue, CurrentStatValue.MaxValue, CurrentStatValue.CurrentValue);
+			FString AutorityMsg = GetOwner()->HasAuthority() ? "Server" : "Client";
+			FColor ServerClientColor = GetOwner()->HasAuthority() ? FColor::Purple : FColor::Orange;
+			FString DebugMsg = AutorityMsg + " -> " + GetNameSafe(GetOwner()) + " : ";
+			GEngine->AddOnScreenDebugMessage(-1, DeltaTime, ServerClientColor, DebugMsg);
 
-			GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::White, ActionMsg);
+			// Draw All Actions
+			for (UStat* Stat : CurrentStats)
+			{
+				FStatValue CurrentStatValue = Stat->GetStatValue();
+				FString ActionMsg = FString::Printf(TEXT("[%s] %s Stat: Min %f, Max %f, Current %f"), *GetNameSafe(GetOwner()), *GetNameSafe(Stat),
+					CurrentStatValue.MinValue, CurrentStatValue.MaxValue, CurrentStatValue.CurrentValue);
+
+				GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::White, ActionMsg);
+			}
 		}
 	}
 
