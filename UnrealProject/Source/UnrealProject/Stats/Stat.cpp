@@ -3,6 +3,7 @@
 
 #include "Stat.h"
 #include "../Components/GeneralComponents/StatsManager.h"
+#include "Net/UnrealNetwork.h"
 
 void UStat::Initialize()
 {

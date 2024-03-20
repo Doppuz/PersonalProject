@@ -13,6 +13,8 @@
 #include "Camera/CameraActor.h"
 #include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "../Enums/SACustomDefine.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -27,9 +29,13 @@ AMainCharacter::AMainCharacter()
 
 	ShieldComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShieldComponent"));
 	ShieldComponent->SetCollisionProfileName(TEXT("OverlapOnlyProjectile"));
+	ShieldComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ShieldComponent->SetRelativeScale3D(FVector(2.5f, 2.5f, 2.5f));
-	ShieldComponent->SetAutoActivate(false);
+	ShieldComponent->SetVisibility(false);
+	ShieldComponent->SetIsReplicated(true);
 	ShieldComponent->SetupAttachment(RootComponent);
+
+	GetCapsuleComponent()->SetIsReplicated(true);
 
 	CustomInputComponent = CreateDefaultSubobject<UPlayerInputComponent>(TEXT("InputComponent"));
 	PlayerMovementManager = CreateDefaultSubobject<UPlayerMovementManager>(TEXT("PlayerMovementManager"));
@@ -48,7 +54,7 @@ UMovementManager* AMainCharacter::GetMovementManager()
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	if (ensureAlways(WS_GlobalEvents))
 	{
 		WS_GlobalEvents->OnActionActorDead.AddDynamic(this, &AMainCharacter::OnActionActorDead);

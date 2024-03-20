@@ -8,6 +8,7 @@
 #include "WorldSubsystem_GameManager.generated.h"
 
 class ASpawner;
+class UGameSubsystemSettings;
 
 UCLASS()
 class UNREALPROJECT_API UWorldSubsystem_GameManager : public UTickableWorldSubsystem

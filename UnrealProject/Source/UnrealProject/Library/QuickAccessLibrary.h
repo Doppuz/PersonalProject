@@ -38,6 +38,9 @@ public:
 	static bool AddAction(UObject* WorldContextObject, AActor* Instigator, const AActor* CurrentActor, const TSoftClassPtr<UAction> NewAction);
 
 	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
+	static bool HasGameplayTags(UObject* WorldContextObject, AActor* InActor, FGameplayTagContainer GameplayTag);
+
+	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
 	static ETeamAttitude::Type GetTeamAttitude(UObject* WorldContextObject, AActor* FirstActor, const AActor* SecondActor);
 
 	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")

@@ -7,6 +7,7 @@
 #include "../Components/GeneralComponents/ActionComponent.h"
 #include "Components/ArrowComponent.h"
 #include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASpawner::ASpawner()

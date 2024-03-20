@@ -144,6 +144,22 @@ bool UQuickAccessLibrary::AddAction(UObject* WorldContextObject, AActor* Instiga
 	return false;
 }
 
+bool UQuickAccessLibrary::HasGameplayTags(UObject* WorldContextObject, AActor* InActor, FGameplayTagContainer GameplayTag)
+{
+	if (ensureAlways(InActor))
+	{
+		UActionComponent* CurrentActionComponent = Cast<UActionComponent>(InActor->FindComponentByClass(UActionComponent::StaticClass()));
+
+		if (CurrentActionComponent)
+		{
+			auto a = CurrentActionComponent->ContainsActiveGameplayTags(GameplayTag);
+			return CurrentActionComponent->ContainsActiveGameplayTags(GameplayTag);
+		}
+	}
+
+	return false;
+}
+
 ETeamAttitude::Type UQuickAccessLibrary::GetTeamAttitude(UObject* WorldContextObject, AActor* FirstActor, const AActor* SecondActor)
 {
 	APawn* FirstActorPawn = Cast<APawn>(FirstActor);

@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "BasicProjectile.generated.h"
 
+class UTagsReferenceSettings;
+
 UCLASS(Blueprintable)
 class UNREALPROJECT_API ABasicProjectile : public APawn
 {
@@ -14,6 +16,9 @@ class UNREALPROJECT_API ABasicProjectile : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ABasicProjectile();
+
+	UFUNCTION()
+	FORCEINLINE float GetDamage() { return Damage; };
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,4 +45,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UProjectileMovementComponent* ProjectileMovementComponent;
+
+	UPROPERTY()
+	const UTagsReferenceSettings* TagsReferenceSettings;
 };

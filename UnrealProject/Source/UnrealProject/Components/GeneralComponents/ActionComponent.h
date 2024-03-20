@@ -9,6 +9,7 @@
 
 class UAction;
 class USAGameInstance;
+class UWorldSubsystem_GlobalEvents;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALPROJECT_API UActionComponent : public UActorComponent

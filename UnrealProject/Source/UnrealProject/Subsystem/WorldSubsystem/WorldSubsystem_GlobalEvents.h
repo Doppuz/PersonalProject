@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "../../Enums/Enums_Stat.h"
 #include "WorldSubsystem_GlobalEvents.generated.h"
 
 class UActionComponent;

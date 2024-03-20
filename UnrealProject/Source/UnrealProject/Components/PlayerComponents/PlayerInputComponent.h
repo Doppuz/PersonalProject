@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "InputAction.h"
+#include "GameplayTagContainer.h"
 #include "PlayerInputComponent.generated.h"
 
 

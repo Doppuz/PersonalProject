@@ -10,6 +10,8 @@
 #include "../Enums/Enums_Stat.h"
 #include "GenericTeamAgentInterface.h"
 #include "../Library/QuickAccessLibrary.h"
+#include "Components/CapsuleComponent.h"
+#include "../Settings/TagsReferenceSettings.h"
 
 // Sets default values
 ABasicProjectile::ABasicProjectile()
@@ -24,8 +26,7 @@ ABasicProjectile::ABasicProjectile()
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(MeshComponent);
-
-	SphereComponent->SetCollisionProfileName("Projectile");
+	SphereComponent->SetCollisionProfileName(TEXT("ProjectilePreset"));
 
 	ProjectileParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ProjectileParticleComponent"));
 	ProjectileParticleComponent->SetupAttachment(SphereComponent);
@@ -41,6 +42,8 @@ void ABasicProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ABasicProjectile::OnComponentBeginOverlap);
+
+	TagsReferenceSettings = GetDefault<UTagsReferenceSettings>();
 }
 
 void ABasicProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -54,7 +57,7 @@ void ABasicProjectile::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCo
 {
 	if (OtherActor != GetOwner() && OtherActor != this && !OtherActor->IsA(ABasicProjectile::StaticClass()))
 	{
-		if (HasAuthority())
+		if (HasAuthority() && TagsReferenceSettings && !QL::HasGameplayTags(this, OtherActor, TagsReferenceSettings->ShieldTag))
 		{
 			UStatsManager* OtherActorStatManager = Cast<UStatsManager>(OtherActor->FindComponentByClass(UStatsManager::StaticClass()));
 
