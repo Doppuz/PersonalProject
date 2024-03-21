@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Engine/DataTable.h"
 #include "Enums_General.generated.h"
 
 USTRUCT(BlueprintType)

@@ -22,7 +22,11 @@ public:
 
 protected:
 
+	virtual void SpawnActor(TSubclassOf<AActor> ClassToSpawn);
+
+protected:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn", meta = (DisplayName = "ClassToSpawn"))
-	TSoftClassPtr<AActor> SoftClassToSpawn;
+	TArray<TSoftClassPtr<AActor>> SoftClassesToSpawn;
 
 };

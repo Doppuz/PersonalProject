@@ -9,17 +9,24 @@ void USingleSpawnAction::StartAction_Implementation(AActor* Instigator)
 {
 	Super::StartAction_Implementation(Instigator);
 
+	if (SoftClassesToSpawn.Num() < 1)
+	{
+		return;
+	}
+
 	if (ensureAlways(ActionComponentOwner) && ActionComponentOwner->GetOwner()->HasAuthority())
 	{
 		if (ensureAlways(GI))
 		{
-			GI->StreamableManager.RequestAsyncLoad(SoftClassToSpawn.ToSoftObjectPath(), [this, Instigator]()
+			int RandomIndex = FMath::RandRange(0, SoftClassesToSpawn.Num() - 1);
+
+			GI->StreamableManager.RequestAsyncLoad(SoftClassesToSpawn[RandomIndex].ToSoftObjectPath(), [this, Instigator, RandomIndex]()
 				{
-					TSubclassOf<AActor> ClassToSpawn = SoftClassToSpawn.Get();
+					TSubclassOf<AActor> ClassToSpawn = SoftClassesToSpawn[RandomIndex].Get();
 
 					if (ensureAlways(ClassToSpawn))
 					{
-						AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, ActionComponentOwner->GetOwner()->GetActorLocation(), ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation());
+						SpawnActor(ClassToSpawn);
 					}
 
 					StopAction_Implementation(Instigator);
@@ -31,4 +38,9 @@ void USingleSpawnAction::StartAction_Implementation(AActor* Instigator)
 void USingleSpawnAction::StopAction_Implementation(AActor* Instigator)
 {
 	Super::StopAction_Implementation(Instigator);
+}
+
+void USingleSpawnAction::SpawnActor(TSubclassOf<AActor> ClassToSpawn)
+{
+	AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, ActionComponentOwner->GetOwner()->GetActorLocation(), ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation());
 }
