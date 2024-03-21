@@ -192,3 +192,18 @@ bool UQuickAccessLibrary::GetAreAllPlayersReady(UObject* WorldContextObject)
 
 	return false;
 }
+
+AGameStateBase* UQuickAccessLibrary::GetGameState(UObject* WorldContextObject)
+{
+	if (!WorldContextObject)
+	{
+		return nullptr;
+	}
+
+	if (UWorld* World = WorldContextObject->GetWorld())
+	{
+		return World->GetGameState();
+	}
+
+	return nullptr;
+}

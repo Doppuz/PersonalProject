@@ -29,6 +29,9 @@ protected:
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void DestroyProjectile();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "BasicData")
@@ -48,4 +51,10 @@ protected:
 
 	UPROPERTY()
 	const UTagsReferenceSettings* TagsReferenceSettings;
+
+	UPROPERTY()
+	FTimerHandle DestroyTimer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Timer")
+	float DestroyTimerDuration = 3.f;
 };

@@ -44,12 +44,18 @@ void ABasicProjectile::BeginPlay()
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ABasicProjectile::OnComponentBeginOverlap);
 
 	TagsReferenceSettings = GetDefault<UTagsReferenceSettings>();
+
+	if (ensureAlways(GetWorld()))
+	{
+		GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &ABasicProjectile::DestroyProjectile, DestroyTimerDuration, false);
+	}
 }
 
 void ABasicProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
+	GetWorld()->GetTimerManager().ClearTimer(DestroyTimer);
 	SphereComponent->OnComponentBeginOverlap.RemoveDynamic(this, &ABasicProjectile::OnComponentBeginOverlap);
 }
 
@@ -74,4 +80,9 @@ void ABasicProjectile::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCo
 			Destroy();
 		}
 	}
+}
+
+void ABasicProjectile::DestroyProjectile()
+{
+	Destroy();
 }

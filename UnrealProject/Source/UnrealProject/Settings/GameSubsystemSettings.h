@@ -21,4 +21,7 @@ public:
 
 	UPROPERTY(config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	FGameplayTag SpawnActionName;
+
+	UPROPERTY(config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	TArray<TSoftObjectPtr<ASpawner>> PowerupSpawners;
 };

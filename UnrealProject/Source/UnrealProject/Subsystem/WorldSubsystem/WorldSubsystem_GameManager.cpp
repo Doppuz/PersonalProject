@@ -43,12 +43,22 @@ void UWorldSubsystem_GameManager::Initialize(FSubsystemCollectionBase& Collectio
 void UWorldSubsystem_GameManager::Tick(float DeltaTime)
 {
     CurrentTick += DeltaTime;
+    CurrentPowerUpTick += DeltaTime;
+
+    CheckFrequency = FMath::RandRange(3.f, 7.f);
 
     if (CurrentTick > CheckFrequency)
     {
         UpdateManager();
 
         CurrentTick = 0.f;
+    }
+
+    if (CurrentPowerUpTick > PowerupCheckFrequency)
+    {
+        UpdatePowerUpManager();
+
+        CurrentPowerUpTick = 0.f;
     }
 
     if (DebugPrintSpawners > 0 && GEngine && GameSubsystemSettings)
@@ -76,6 +86,20 @@ void UWorldSubsystem_GameManager::UpdateManager()
         {
             int NumberExtracted = FMath::RandRange(0, CurrentRangeSpawner.Num() - 1);
             ActivateSpawner(CurrentRangeSpawner[NumberExtracted], GameSubsystemSettings->SpawnActionName);
+        }
+    }
+}
+
+void UWorldSubsystem_GameManager::UpdatePowerUpManager()
+{
+    if (ensureAlways(GameSubsystemSettings))
+    {
+        TArray<TSoftObjectPtr<ASpawner>> CurrentPowerupSpawner = GameSubsystemSettings->PowerupSpawners;
+
+        if (CurrentPowerupSpawner.Num() > 0)
+        {
+            int NumberExtracted = FMath::RandRange(0, CurrentPowerupSpawner.Num() - 1);
+            ActivateSpawner(CurrentPowerupSpawner[NumberExtracted], GameSubsystemSettings->SpawnActionName);
         }
     }
 }

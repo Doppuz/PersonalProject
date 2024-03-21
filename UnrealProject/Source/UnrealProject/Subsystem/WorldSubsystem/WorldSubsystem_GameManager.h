@@ -27,6 +27,8 @@ public:
 
 	void UpdateManager();
 
+	void UpdatePowerUpManager();
+
 #pragma region Debug
 
 	void PrintSpawners(float DeltaTime);
@@ -49,5 +51,11 @@ protected:
 	float CheckFrequency = 3.f;
 
 	UPROPERTY()
+	float PowerupCheckFrequency = 8.f;
+
+	UPROPERTY()
 	float CurrentTick = 0.f;
+
+	UPROPERTY()
+	float CurrentPowerUpTick = 0.f;
 };
