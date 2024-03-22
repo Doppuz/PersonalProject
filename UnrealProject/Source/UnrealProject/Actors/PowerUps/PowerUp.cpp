@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "../../Library/QuickAccessLibrary.h"
+#include "../../Enums/SACustomDefine.h"
 
 // Sets default values
 APowerUp::APowerUp()
@@ -12,9 +13,8 @@ APowerUp::APowerUp()
  	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	SphereComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	SphereComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	SphereComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	SphereComponent->SetCollisionProfileName(TEXT("PowerupPreset"));
+	
 	RootComponent = SphereComponent;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));

@@ -8,9 +8,25 @@
 void UEQSSpawnAction::OnSpawnQueryFinished(TSharedPtr<FEnvQueryResult> Result)
 {
 	FActorSpawnParameters ActorSpawnParameters;
-	ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-	AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, Result->GetItemAsLocation(0), ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation(), ActorSpawnParameters);
+	ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
+	
+	TArray<FVector> Locations;
+	for (int i = 0; i < Result->Items.Num() - 1; i++)
+	{
+		if (Result->GetItemScore(i) > 0)
+		{
+			FVector CurrentLocation = Result->GetItemAsLocation(i);
+			if (!Locations.Contains(CurrentLocation))
+			{
+				Locations.Add(CurrentLocation);
+			}
+		}
+	}
+	
+	if (Locations.Num() > 0)
+	{
+		AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, Locations[FMath::RandRange(0, Locations.Num() - 1)], ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation(), ActorSpawnParameters);
+	}
 }
 
 void UEQSSpawnAction::SpawnActor(TSubclassOf<AActor> InClassToSpawn)

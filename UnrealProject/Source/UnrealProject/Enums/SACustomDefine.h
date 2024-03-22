@@ -8,6 +8,7 @@
 #include "SACustomDefine.generated.h"
 
 #define ECC_Projectile ECC_GameTraceChannel1
+#define ECC_Powerup ECC_GameTraceChannel2
 
 UCLASS()
 class UNREALPROJECT_API USACustomDefine : public UObject
