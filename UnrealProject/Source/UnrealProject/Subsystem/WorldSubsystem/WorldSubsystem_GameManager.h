@@ -31,8 +31,6 @@ public:
 
 	void UpdatePowerUpManager();
 
-	void IncreaseScore(float ScoreToAdd);
-
 #pragma region Events
 
 	UFUNCTION()

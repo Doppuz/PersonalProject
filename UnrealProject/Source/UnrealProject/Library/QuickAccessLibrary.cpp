@@ -8,6 +8,8 @@
 #include "../Components/GeneralComponents/ActionComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../UnrealProjectGameModeBase.h"
+#include "../GameState/SAGameStateBase.h"
+#include "../PlayerState/SAPlayerState.h"
 
 USAGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContextObject)
 {
@@ -130,7 +132,7 @@ bool UQuickAccessLibrary::StartAction(UObject* WorldContextObject, AActor* Insti
 
 bool UQuickAccessLibrary::AddAction(UObject* WorldContextObject, AActor* Instigator, const AActor* CurrentActor, const TSoftClassPtr<UAction> NewAction)
 {
-	if (ensureAlways(CurrentActor))
+	if (ensureAlways(CurrentActor) && ensureAlways(CurrentActor->HasAuthority()))
 	{
 		UActionComponent* CurrentActionComponent = Cast<UActionComponent>(CurrentActor->FindComponentByClass(UActionComponent::StaticClass()));
 
@@ -152,7 +154,6 @@ bool UQuickAccessLibrary::HasGameplayTags(UObject* WorldContextObject, AActor* I
 
 		if (CurrentActionComponent)
 		{
-			auto a = CurrentActionComponent->ContainsActiveGameplayTags(GameplayTag);
 			return CurrentActionComponent->ContainsActiveGameplayTags(GameplayTag);
 		}
 	}
@@ -178,8 +179,6 @@ ETeamAttitude::Type UQuickAccessLibrary::GetTeamAttitude(UObject* WorldContextOb
 
 AUnrealProjectGameModeBase* UQuickAccessLibrary::GetCurrentGameMode(UObject* WorldContextObject)
 {
-	auto a = UGameplayStatics::GetGameMode(WorldContextObject);
-	auto b = Cast<AUnrealProjectGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	return Cast<AUnrealProjectGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 }
 
@@ -208,4 +207,27 @@ ASAGameStateBase* UQuickAccessLibrary::GetGameState(UObject* WorldContextObject)
 	}
 
 	return nullptr;
+}
+
+void UQuickAccessLibrary::AddScoreToAllPlayers(AActor* Instigator, float ScoreToAdd)
+{
+	if (ensureAlways(Instigator) && ensureAlways(Instigator->HasAuthority()))
+	{
+		AGameStateBase* GS = GetGameState(Instigator);
+
+		if (ensureAlways(GS))
+		{
+			TArray<TObjectPtr<APlayerState>> PlayerStates = GS->PlayerArray;
+
+			for (int i = 0; i < PlayerStates.Num(); i++)
+			{
+				ASAPlayerState* CurrentPS = Cast<ASAPlayerState>(PlayerStates[i]);
+
+				if (CurrentPS)
+				{
+					CurrentPS->UpdatePlayerScore(ScoreToAdd);
+				}
+			}
+		}
+	}
 }

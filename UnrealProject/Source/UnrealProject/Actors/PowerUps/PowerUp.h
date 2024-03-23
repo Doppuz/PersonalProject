@@ -63,4 +63,20 @@ protected:
 
 #pragma endregion
 
+
+#pragma region Score
+
+public:
+
+	UFUNCTION()
+	FORCEINLINE float GetPowerUpScore() { return PowerUpScore; };
+
+protected:
+
+	//Score to add in different cases such as the kill of this character
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Score")
+	float PowerUpScore = 0.f;
+
+#pragma endregion
+
 };

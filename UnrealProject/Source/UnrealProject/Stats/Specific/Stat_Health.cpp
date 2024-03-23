@@ -5,6 +5,7 @@
 #include "../../Components/GeneralComponents/ActionComponent.h"
 #include "../../Components/GeneralComponents/StatsManager.h"
 #include "../../Characters/BaseCharacter.h"
+#include "../../Library/QuickAccessLibrary.h"
 
 void UStat_Health::OnStatReachesMinValue_Implementation(AActor* Instigator)
 {
@@ -18,6 +19,7 @@ void UStat_Health::OnStatReachesMinValue_Implementation(AActor* Instigator)
 
 			if (ActionComponent)
 			{
+				QL::AddScoreToAllPlayers(BaseCharacter, BaseCharacter->GetCharacterScore());
 				ActionComponent->AddAction(Instigator, DieAction);
 			}
 		}

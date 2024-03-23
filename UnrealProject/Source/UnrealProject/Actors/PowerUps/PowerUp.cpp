@@ -63,6 +63,8 @@ void APowerUp::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 
 		if (OtherPlayerController)
 		{
+			QL::AddScoreToAllPlayers(this, PowerUpScore);
+		
 			for (int i = 0; i < ActionsToAdd.Num(); i++)
 			{
 				QL::AddAction(this, OtherActor, OtherActor, ActionsToAdd[i]);

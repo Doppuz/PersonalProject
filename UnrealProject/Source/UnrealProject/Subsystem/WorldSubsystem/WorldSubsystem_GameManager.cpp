@@ -76,7 +76,7 @@ void UWorldSubsystem_GameManager::Tick(float DeltaTime)
 
         if (CurrentScoreTick >= ScoreCheckFrequency)
         {
-            IncreaseScore(ScoreCheckFrequency);
+            QL::AddScoreToAllPlayers(QL::GetGameState(this), CurrentScoreTick);
 
             CurrentScoreTick = 0.f;
         }
@@ -121,26 +121,6 @@ void UWorldSubsystem_GameManager::UpdatePowerUpManager()
         {
             int NumberExtracted = FMath::RandRange(0, CurrentPowerupSpawner.Num() - 1);
             ActivateSpawner(CurrentPowerupSpawner[NumberExtracted], GameSubsystemSettings->SpawnActionName);
-        }
-    }
-}
-
-void UWorldSubsystem_GameManager::IncreaseScore(float ScoreToAdd)
-{
-    AGameStateBase* GS = QL::GetGameState(this);
-
-    if (ensureAlways(GS))
-    {
-        TArray<TObjectPtr<APlayerState>> PlayerStates = GS->PlayerArray;
-
-        for (int i = 0; i < PlayerStates.Num(); i++)
-        {
-            ASAPlayerState* CurrentPS = Cast<ASAPlayerState>(PlayerStates[i]);
-
-            if (CurrentPS)
-            {
-                CurrentPS->UpdatePlayerScore(ScoreToAdd);
-            }
         }
     }
 }

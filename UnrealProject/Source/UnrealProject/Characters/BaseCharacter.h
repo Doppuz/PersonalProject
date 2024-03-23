@@ -66,4 +66,20 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UWorldSubsystem_GlobalEvents> WS_GlobalEvents;
+
+#pragma region Score
+
+public:
+
+	UFUNCTION()
+	FORCEINLINE float GetCharacterScore() { return CharacterScore; };
+
+protected:
+
+	//Score to add in different cases such as the kill of this character
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Score")
+	float CharacterScore = 0.f;
+
+#pragma endregion
+
 };

@@ -51,4 +51,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "QuickLibrary", meta = (WorldContext = "WorldContextObject"))
 	static class ASAGameStateBase* GetGameState(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
+	static void AddScoreToAllPlayers(AActor* Instigator, float ScoreToAdd);
 };
