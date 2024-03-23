@@ -143,11 +143,7 @@ void UActionComponent::StartActionByName(AActor* Instigator, FGameplayTag Action
 		{
 			if (!CurrentActions[i]->CanStart())
 			{
-				if (GEngine)
-				{
-					//FString FailedMsg = FString::Printf(TEXT("Failed to run: %s"), *ActionName.ToString());
-					//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMsg);
-				}
+				UE_LOG(LogTemp, Warning, TEXT("Failed to run: %s"), *ActionName.ToString());
 				continue;
 			}
 

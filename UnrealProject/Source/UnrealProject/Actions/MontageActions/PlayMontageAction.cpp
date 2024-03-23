@@ -4,7 +4,8 @@
 #include "PlayMontageAction.h"
 #include "../../Characters/BaseCharacter.h"
 #include "../../GameInstance/SAGameInstance.h"
-#include "../../Components/GeneralComponents/ActionComponent.h"
+#include "../../Components/GeneralComponents/ActionComponent.h"	
+#include "Animation/AnimInstance.h"
 
 void UPlayMontageAction::StartAction_Implementation(AActor* Instigator)
 {

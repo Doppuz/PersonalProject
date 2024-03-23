@@ -3,6 +3,7 @@
 
 #include "GeneralUserWidget.h"	
 #include "Blueprint/WidgetTree.h"
+#include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
 void UGeneralUserWidget::SetWidgetOwner(AActor* InWidgetOwner)
 {
@@ -18,5 +19,15 @@ void UGeneralUserWidget::SetWidgetOwner(AActor* InWidgetOwner)
 		{
 			CurrentGeneralUserWidget->SetWidgetOwner(InWidgetOwner);
 		}
+	}
+}
+
+void UGeneralUserWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	if (ensureAlways(GetWorld()))
+	{
+		WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 	}
 }

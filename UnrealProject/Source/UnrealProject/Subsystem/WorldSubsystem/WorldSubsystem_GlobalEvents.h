@@ -17,6 +17,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionActorDead, UActionComponen
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAllPlayersReady, AGameModeBase*, CurrentGameMode);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnScoreUpdated, float, OldScore, float, NewScore);
+
 UCLASS()
 class UNREALPROJECT_API UWorldSubsystem_GlobalEvents : public UWorldSubsystem
 {
@@ -35,5 +37,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Login")
 	FOnAllPlayersReady OnAllPlayersReady;
+
+	UPROPERTY(BlueprintAssignable, Category = "Login")
+	FOnScoreUpdated OnScoreUpdated;
 	
 };

@@ -4,6 +4,7 @@
 #include "ANW_NotifyDisappear.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Characters/BaseCharacter.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 void UANW_NotifyDisappear::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {

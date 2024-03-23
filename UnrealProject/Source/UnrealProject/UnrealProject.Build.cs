@@ -8,7 +8,7 @@ public class UnrealProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "EnhancedInput", "InputCore", "GameplayTasks", "GameplayTags", "SlateCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "EnhancedInput", "InputCore", "GameplayTasks", "GameplayTags", "SlateCore", "UnrealEd" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

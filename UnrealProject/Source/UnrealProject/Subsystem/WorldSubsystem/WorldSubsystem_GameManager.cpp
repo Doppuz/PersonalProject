@@ -6,6 +6,10 @@
 #include "../../Library/QuickAccessLibrary.h"
 #include "../../Spawners/Spawner.h"
 #include "Engine/AssetManager.h"
+#include "../../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
+#include "../../GameState/SAGameStateBase.h"
+#include "../../PlayerState/SAPlayerState.h"
+#include "../../UnrealProjectGameModeBase.h"
 
 static int DebugPrintSpawners = 0;
 FAutoConsoleVariableRef CVarDebugPrintSpawners(TEXT("DebugPrintSpawners"), DebugPrintSpawners, TEXT("Print spawners controlled by the Game Manager"), ECVF_Cheat);
@@ -38,32 +42,49 @@ void UWorldSubsystem_GameManager::Initialize(FSubsystemCollectionBase& Collectio
     Super::Initialize(Collection);
 
     GameSubsystemSettings = GetDefault<UGameSubsystemSettings>();
+    WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
+
+    if (ensure(WS_GlobalEvents))
+    {
+        WS_GlobalEvents->OnAllPlayersReady.AddDynamic(this, &UWorldSubsystem_GameManager::OnAllPlayersReady);
+    }
 }
 
 void UWorldSubsystem_GameManager::Tick(float DeltaTime)
 {
-    CurrentTick += DeltaTime;
-    CurrentPowerUpTick += DeltaTime;
-
-    CheckFrequency = FMath::RandRange(3.f, 7.f);
-
-    if (CurrentTick > CheckFrequency)
+    if (bActivateTick)
     {
-        UpdateManager();
+        CurrentTick += DeltaTime;
+        CurrentPowerUpTick += DeltaTime;
+        CurrentScoreTick += DeltaTime;
 
-        CurrentTick = 0.f;
-    }
+        CheckFrequency = FMath::RandRange(3.f, 7.f);
 
-    if (CurrentPowerUpTick > PowerupCheckFrequency)
-    {
-        UpdatePowerUpManager();
+        if (CurrentTick >= CheckFrequency)
+        {
+            UpdateManager();
 
-        CurrentPowerUpTick = 0.f;
-    }
+            CurrentTick = 0.f;
+        }
 
-    if (DebugPrintSpawners > 0 && GEngine && GameSubsystemSettings)
-    {
-        PrintSpawners(DeltaTime);
+        if (CurrentPowerUpTick >= PowerupCheckFrequency)
+        {
+            UpdatePowerUpManager();
+
+            CurrentPowerUpTick = 0.f;
+        }
+
+        if (CurrentScoreTick >= ScoreCheckFrequency)
+        {
+            IncreaseScore(ScoreCheckFrequency);
+
+            CurrentScoreTick = 0.f;
+        }
+
+        if (DebugPrintSpawners > 0 && GEngine && GameSubsystemSettings)
+        {
+            PrintSpawners(DeltaTime);
+        }
     }
 }
 
@@ -104,6 +125,26 @@ void UWorldSubsystem_GameManager::UpdatePowerUpManager()
     }
 }
 
+void UWorldSubsystem_GameManager::IncreaseScore(float ScoreToAdd)
+{
+    AGameStateBase* GS = QL::GetGameState(this);
+
+    if (ensureAlways(GS))
+    {
+        TArray<TObjectPtr<APlayerState>> PlayerStates = GS->PlayerArray;
+
+        for (int i = 0; i < PlayerStates.Num(); i++)
+        {
+            ASAPlayerState* CurrentPS = Cast<ASAPlayerState>(PlayerStates[i]);
+
+            if (CurrentPS)
+            {
+                CurrentPS->UpdatePlayerScore(ScoreToAdd);
+            }
+        }
+    }
+}
+
 void UWorldSubsystem_GameManager::PrintSpawners(float DeltaTime)
 {
     // Print all the spawner
@@ -139,3 +180,12 @@ TStatId UWorldSubsystem_GameManager::GetStatId() const
 {
     RETURN_QUICK_DECLARE_CYCLE_STAT(UMapGridTickableWorldSubsystem, STATGROUP_Tickables);
 }
+
+#pragma region Events
+
+void UWorldSubsystem_GameManager::OnAllPlayersReady(AGameModeBase* CurrentGameMode)
+{
+    bActivateTick = true;
+}
+
+#pragma endregion

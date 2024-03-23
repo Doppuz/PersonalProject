@@ -50,5 +50,5 @@ public:
 	static bool GetAreAllPlayersReady(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, Category = "QuickLibrary", meta = (WorldContext = "WorldContextObject"))
-	static AGameStateBase* GetGameState(UObject* WorldContextObject);
+	static class ASAGameStateBase* GetGameState(UObject* WorldContextObject);
 };

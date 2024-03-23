@@ -23,7 +23,14 @@ public:
 
 protected:
 
+	virtual void NativeConstruct() override;
+
+protected:
+
 	UPROPERTY()
 	AActor* WidgetOwner;
+
+	UPROPERTY()
+	class UWorldSubsystem_GlobalEvents* WS_GlobalEvents;
 
 };

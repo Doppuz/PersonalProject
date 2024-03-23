@@ -8,6 +8,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Limits.h"
+#include "../GameState/SAGameStateBase.h"
 
 EBTNodeResult::Type UBTT_SetClosestAttackEnemy::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {

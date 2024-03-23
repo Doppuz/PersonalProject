@@ -33,7 +33,4 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UProgressBar> HealthProgessBar;
-
-	UPROPERTY()
-	UWorldSubsystem_GlobalEvents* WS_GlobalEvents;
 };

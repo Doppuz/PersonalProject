@@ -10,12 +10,25 @@ void AUnrealProjectGameModeBase::InitGame(const FString& MapName, const FString&
 
 	WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 
-	FGameModeEvents::GameModePostLoginEvent.AddUObject(this, &AUnrealProjectGameModeBase::OnGameModePostLoginEvent);
+#if WITH_EDITOR
+
+	const ULevelEditorPlaySettings* PlayInSettings = GetDefault<ULevelEditorPlaySettings>();
+
+	if (ensureAlways(PlayInSettings))
+	{
+		PlayInSettings->GetPlayNumberOfClients(RequiredNumberOfPlayers);
+	}
+
+#endif
 }
 
-void AUnrealProjectGameModeBase::OnGameModePostLoginEvent(AGameModeBase* GameMode, APlayerController* NewPlayer)
+void AUnrealProjectGameModeBase::GenericPlayerInitialization(AController* NewPlayer)
 {
-	if (GetNumPlayers() == RequiredNumberOfPlayers && ensureAlways(WS_GlobalEvents))
+	Super::GenericPlayerInitialization(NewPlayer);
+
+	PlayerInitialized += 1;
+
+	if (PlayerInitialized == RequiredNumberOfPlayers && ensureAlways(WS_GlobalEvents))
 	{
 		AreAllPlayersReady = true;
 		WS_GlobalEvents->OnAllPlayersReady.Broadcast(this);

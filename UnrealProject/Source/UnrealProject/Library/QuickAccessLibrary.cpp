@@ -178,6 +178,8 @@ ETeamAttitude::Type UQuickAccessLibrary::GetTeamAttitude(UObject* WorldContextOb
 
 AUnrealProjectGameModeBase* UQuickAccessLibrary::GetCurrentGameMode(UObject* WorldContextObject)
 {
+	auto a = UGameplayStatics::GetGameMode(WorldContextObject);
+	auto b = Cast<AUnrealProjectGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	return Cast<AUnrealProjectGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 }
 
@@ -193,7 +195,7 @@ bool UQuickAccessLibrary::GetAreAllPlayersReady(UObject* WorldContextObject)
 	return false;
 }
 
-AGameStateBase* UQuickAccessLibrary::GetGameState(UObject* WorldContextObject)
+ASAGameStateBase* UQuickAccessLibrary::GetGameState(UObject* WorldContextObject)
 {
 	if (!WorldContextObject)
 	{
@@ -202,7 +204,7 @@ AGameStateBase* UQuickAccessLibrary::GetGameState(UObject* WorldContextObject)
 
 	if (UWorld* World = WorldContextObject->GetWorld())
 	{
-		return World->GetGameState();
+		return Cast<ASAGameStateBase>(World->GetGameState());
 	}
 
 	return nullptr;

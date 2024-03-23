@@ -53,14 +53,9 @@ void UHealthWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (ensureAlways(GetWorld()))
+	if (ensureAlways(WS_GlobalEvents))
 	{
-		WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
-
-		if (ensureAlways(WS_GlobalEvents))
-		{
-			WS_GlobalEvents->OnStatChanged.AddDynamic(this, &UHealthWidget::OnStatChanged);
-		}
+		WS_GlobalEvents->OnStatChanged.AddDynamic(this, &UHealthWidget::OnStatChanged);
 	}
 }
 

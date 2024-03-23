@@ -22,13 +22,15 @@ protected:
 
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 
-	UFUNCTION()
-	void OnGameModePostLoginEvent(AGameModeBase* GameMode, APlayerController* PlayerController);
+	virtual void GenericPlayerInitialization(AController* NewPlayer) override;
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Players")
 	int RequiredNumberOfPlayers = 2;
+
+	UPROPERTY()
+	int PlayerInitialized = 0;
 
 	UPROPERTY()
 	TObjectPtr<UWorldSubsystem_GlobalEvents> WS_GlobalEvents;

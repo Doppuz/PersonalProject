@@ -9,6 +9,8 @@
 
 class ASpawner;
 class UGameSubsystemSettings;
+class UWorldSubsystem_GlobalEvents;
+class AUnrealProjectGameModeBase;
 
 UCLASS()
 class UNREALPROJECT_API UWorldSubsystem_GameManager : public UTickableWorldSubsystem
@@ -29,6 +31,15 @@ public:
 
 	void UpdatePowerUpManager();
 
+	void IncreaseScore(float ScoreToAdd);
+
+#pragma region Events
+
+	UFUNCTION()
+	void OnAllPlayersReady(AGameModeBase* CurrentGameMode);
+
+#pragma endregion
+
 #pragma region Debug
 
 	void PrintSpawners(float DeltaTime);
@@ -45,17 +56,45 @@ protected:
 	const UGameSubsystemSettings* GameSubsystemSettings;
 
 	UPROPERTY()
+	TObjectPtr<UWorldSubsystem_GlobalEvents> WS_GlobalEvents;
+
+	UPROPERTY()
 	USAGameInstance* GI;
+
+	UPROPERTY()
+	bool bActivateTick = false;
+
+#pragma region Enemies
 
 	UPROPERTY()
 	float CheckFrequency = 3.f;
 
 	UPROPERTY()
+	float CurrentTick = 0.f;
+
+#pragma endregion
+
+#pragma region Powerups
+
+	UPROPERTY()
 	float PowerupCheckFrequency = 8.f;
 
 	UPROPERTY()
-	float CurrentTick = 0.f;
+	float CurrentPowerUpTick = 0.f;
+
+#pragma endregion
+
+#pragma region Score
 
 	UPROPERTY()
-	float CurrentPowerUpTick = 0.f;
+	float TotalScore = 0.f;
+
+	UPROPERTY()
+	float ScoreCheckFrequency = 1.f;
+
+	UPROPERTY()
+	float CurrentScoreTick = 0.f;
+
+#pragma endregion
+
 };
