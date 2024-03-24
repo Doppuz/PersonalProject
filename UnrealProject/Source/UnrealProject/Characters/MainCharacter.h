@@ -43,6 +43,8 @@ protected:
 
 	void PrimaryAttack();
 
+	void Dash();
+
 #pragma region Events
 
 protected:

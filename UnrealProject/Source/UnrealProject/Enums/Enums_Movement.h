@@ -11,6 +11,7 @@ enum class EMovementState
 {
 	WALKING,
 	SPRINTING,
+	DASH,
 	MAX UMETA(Hidden)
 };
 

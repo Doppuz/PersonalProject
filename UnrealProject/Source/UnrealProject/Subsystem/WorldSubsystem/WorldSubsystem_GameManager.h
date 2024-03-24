@@ -57,7 +57,7 @@ protected:
 	TObjectPtr<UWorldSubsystem_GlobalEvents> WS_GlobalEvents;
 
 	UPROPERTY()
-	USAGameInstance* GI;
+	class USAGameInstance* GI;
 
 	UPROPERTY()
 	bool bActivateTick = false;

@@ -17,7 +17,7 @@ void UAction::Initialize(UActionComponent* NewActionComponent)
 
 bool UAction::CanStart_Implementation()
 {
-	if (GetIsRunning())
+	if (GetIsRunning() || bIsInCooldown)
 	{
 		return false;
 	}
@@ -61,6 +61,16 @@ void UAction::StopAction_Implementation(AActor* Instigator)
 
 	ActionComponentOwner->RemoveActiveTags(GrantsTags);
 
+	if (CooldownAmount > 0.f)
+	{
+		bIsInCooldown = true;
+
+		if (ensureAlways(GetWorld()))
+		{
+			GetWorld()->GetTimerManager().SetTimer(CooldownTimerHandle, this, &UAction::OnCooldownExpire, CooldownAmount, false);
+		}
+	}
+
 	ActionRepData.Instigator = Instigator;
 	ActionRepData.bIsRunning = false;
 
@@ -68,6 +78,11 @@ void UAction::StopAction_Implementation(AActor* Instigator)
 	{
 		ActionComponentOwner->RemoveAction(Instigator, this);
 	}
+}
+
+void UAction::OnCooldownExpire()
+{
+	bIsInCooldown = false;
 }
 
 #pragma region Replication
@@ -90,6 +105,7 @@ void UAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLif
 
 	DOREPLIFETIME(UAction, ActionRepData);
 	DOREPLIFETIME(UAction, ActionComponentOwner);
+	DOREPLIFETIME(UAction, bIsInCooldown);
 }
 
 #pragma endregion

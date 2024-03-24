@@ -9,19 +9,19 @@
 
 class ASpawner;
 
-UCLASS(Config = Game)
+UCLASS(Config = Game, defaultconfig)
 class UNREALPROJECT_API UGameSubsystemSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
 	
 public:
 
-	UPROPERTY(config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	TArray<TSoftObjectPtr<ASpawner>> RangeSpawners;
 
-	UPROPERTY(config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	FGameplayTag SpawnActionName;
 
-	UPROPERTY(config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	TArray<TSoftObjectPtr<ASpawner>> PowerupSpawners;
 };

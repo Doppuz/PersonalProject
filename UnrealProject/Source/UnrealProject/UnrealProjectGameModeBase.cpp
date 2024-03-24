@@ -28,7 +28,7 @@ void AUnrealProjectGameModeBase::GenericPlayerInitialization(AController* NewPla
 
 	PlayerInitialized += 1;
 
-	if (PlayerInitialized == RequiredNumberOfPlayers && ensureAlways(WS_GlobalEvents))
+	if (PlayerInitialized >= RequiredNumberOfPlayers && ensureAlways(WS_GlobalEvents))
 	{
 		AreAllPlayersReady = true;
 		WS_GlobalEvents->OnAllPlayersReady.Broadcast(this);

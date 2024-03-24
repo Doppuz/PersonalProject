@@ -57,6 +57,8 @@ protected:
 	UFUNCTION()
 	void OnRep_RepActionData();
 
+	void OnCooldownExpire();
+
 #pragma region GetSet
 
 public:
@@ -82,6 +84,19 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Base Information")
 	bool bAutoRemove = false;
+
+#pragma region Cooldown
+
+	UPROPERTY(replicated)
+	bool bIsInCooldown = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Base Information | Cooldown")
+	float CooldownAmount = 0.f;
+
+	UPROPERTY()
+	FTimerHandle CooldownTimerHandle;
+
+#pragma endregion
 
 	//Name of the action
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Information")

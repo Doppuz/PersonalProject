@@ -45,12 +45,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced input")
 	class UInputAction* InputToJump;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced input")
+	class UInputAction* InputToDash;
+
 #pragma endregion
 
 #pragma region SocketActionName
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag")
 	FGameplayTag PrimaryAttackTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag")
+	FGameplayTag DashTag;
 
 #pragma endregion
 

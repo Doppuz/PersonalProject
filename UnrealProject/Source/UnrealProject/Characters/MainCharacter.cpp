@@ -88,6 +88,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EnhancedInputComponent->BindAction(CustomInputComponent->InputToRotateCamera, ETriggerEvent::Triggered, PlayerMovementManager, &UPlayerMovementManager::RotateCamera);
 	EnhancedInputComponent->BindAction(CustomInputComponent->InputToJump, ETriggerEvent::Triggered, PlayerMovementManager, &UPlayerMovementManager::Jump);
 	EnhancedInputComponent->BindAction(CustomInputComponent->InputToShoot, ETriggerEvent::Triggered, this, &AMainCharacter::PrimaryAttack);
+	EnhancedInputComponent->BindAction(CustomInputComponent->InputToDash, ETriggerEvent::Triggered, this, &AMainCharacter::Dash);
 }
 
 void AMainCharacter::PawnClientRestart()
@@ -107,6 +108,11 @@ void AMainCharacter::PawnClientRestart()
 void AMainCharacter::PrimaryAttack()
 {
 	ActionComponent->StartActionByName(this, CustomInputComponent->PrimaryAttackTag);
+}
+
+void AMainCharacter::Dash()
+{
+	ActionComponent->StartActionByName(this, CustomInputComponent->DashTag);
 }
 
 #pragma region Events

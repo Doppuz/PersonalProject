@@ -30,7 +30,7 @@ protected:
 	EMovementState CurrentMovementState = EMovementState::WALKING;
 
 	UPROPERTY(EditDefaultsOnly, meta = (ArraySizeEnum = "EMovementState"))
-	float MovementStateSpeed[EMovementState::MAX]{ 900.f, 1800.f};
+	float MovementStateSpeed[EMovementState::MAX]{ 900.f, 1800.f, 4000.f};
 
 #pragma endregion
 
