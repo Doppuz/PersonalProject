@@ -52,7 +52,7 @@ void ABaseEnemy::BeginPlay()
 	{
 		UHealthWidget* HealthWidget = Cast<UHealthWidget>(HealthComponent->GetWidget());
 
-		if (ensureAlways(HealthComponent))
+		if (ensureAlways(HealthWidget))
 		{
 			HealthWidget->SetWidgetOwner(this);
 		}

@@ -25,7 +25,14 @@ void UEQSSpawnAction::OnSpawnQueryFinished(TSharedPtr<FEnvQueryResult> Result)
 	
 	if (Locations.Num() > 0)
 	{
-		AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, Locations[FMath::RandRange(0, Locations.Num() - 1)], ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation(), ActorSpawnParameters);
+		FVector LocationExtracted = Locations[FMath::RandRange(0, Locations.Num() - 1)];
+
+		if (ActionComponentOwner)
+		{
+			LocationExtracted.Z = ActionComponentOwner->GetOwner()->GetActorLocation().Z;
+		}
+
+		AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, LocationExtracted, ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation(), ActorSpawnParameters);
 	}
 }
 
