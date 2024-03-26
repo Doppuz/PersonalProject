@@ -63,19 +63,9 @@ void ABasicProjectile::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCo
 {
 	if (OtherActor != GetOwner() && OtherActor != this && !OtherActor->IsA(ABasicProjectile::StaticClass()))
 	{
-		if (HasAuthority() && TagsReferenceSettings && !QL::HasGameplayTags(this, OtherActor, TagsReferenceSettings->ShieldTag))
+		if (HasAuthority() && TagsReferenceSettings && !QL::HasGameplayTags(this, OtherActor, FGameplayTagContainer(TagsReferenceSettings->ShieldTag)))
 		{
-			UStatsManager* OtherActorStatManager = Cast<UStatsManager>(OtherActor->FindComponentByClass(UStatsManager::StaticClass()));
-
-			if (OtherActorStatManager)
-			{
-				ETeamAttitude::Type TeamAttitudeType = QL::GetTeamAttitude(this, GetInstigator(), OtherActor);
-
-				if (TeamAttitudeType == ETeamAttitude::Hostile || TeamAttitudeType == ETeamAttitude::Neutral)
-				{
-					OtherActorStatManager->ChangeStat(GetInstigator(), EStatCategory::HEALTH, -Damage);
-				}
-			}
+			QL::ApplyDamageToActor(GetInstigator(), OtherActor, Damage);
 
 			Destroy();
 		}

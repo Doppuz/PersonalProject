@@ -24,6 +24,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	void ChangeStat(AActor* Instigator, EStatCategory TargetStat, float Amount);
 
+	float GetCurrentStatValue(EStatCategory InStatCategory);
+
 #pragma region RPC
 
 	UFUNCTION(NetMulticast, Unreliable)

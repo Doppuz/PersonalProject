@@ -71,7 +71,7 @@ void UHealthWidget::NativeDestruct()
 
 void UHealthWidget::OnStatChanged(FStat_Broadcast StatBroadcast)
 {
-	if (StatBroadcast.Owner == WidgetOwner)
+	if (StatBroadcast.Owner == WidgetOwner && StatBroadcast.StatCategory == EStatCategory::HEALTH)
 	{
 		HealthProgessBar->SetPercent(StatBroadcast.StatValue.CurrentValue / StatBroadcast.StatValue.MaxValue);
 	}

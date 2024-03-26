@@ -54,4 +54,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
 	static void AddScoreToAllPlayers(AActor* Instigator, float ScoreToAdd);
+
+	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
+	static void ApplyDamageToActor(AActor* FromActor, AActor* ToActor, float DamageAmount);
 };

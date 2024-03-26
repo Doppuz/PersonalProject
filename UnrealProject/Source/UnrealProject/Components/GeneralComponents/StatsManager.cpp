@@ -109,6 +109,20 @@ void UStatsManager::ChangeStat(AActor* Instigator, EStatCategory TargetStat, flo
 	}
 }
 
+float UStatsManager::GetCurrentStatValue(EStatCategory InStatCategory)
+{
+	for (int i = 0; i < CurrentStats.Num(); i++)
+	{
+		if (CurrentStats[i]->GetStatCategory() == InStatCategory)
+		{
+			return CurrentStats[i]->GetStatValue().CurrentValue;
+		}
+	}
+
+	ensureAlwaysMsgf(false, TEXT("This stat do not exist in the character"));
+	return 0;
+}
+
 #pragma region RPC
 
 void UStatsManager::Multicast_ChangeStat_Implementation(FStat_Broadcast StatBroadcast)

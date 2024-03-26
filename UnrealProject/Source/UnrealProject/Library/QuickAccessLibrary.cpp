@@ -10,6 +10,8 @@
 #include "../UnrealProjectGameModeBase.h"
 #include "../GameState/SAGameStateBase.h"
 #include "../PlayerState/SAPlayerState.h"
+#include "../Components/GeneralComponents/StatsManager.h"
+#include "../Enums/Enums_Stat.h"
 
 USAGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContextObject)
 {
@@ -138,7 +140,7 @@ bool UQuickAccessLibrary::AddAction(UObject* WorldContextObject, AActor* Instiga
 
 		if (CurrentActionComponent)
 		{
-			CurrentActionComponent->AddAction(Instigator, NewAction);
+			CurrentActionComponent->AddAction_Soft(Instigator, NewAction);
 			return true;
 		}
 	}
@@ -227,6 +229,24 @@ void UQuickAccessLibrary::AddScoreToAllPlayers(AActor* Instigator, float ScoreTo
 				{
 					CurrentPS->UpdatePlayerScore(ScoreToAdd);
 				}
+			}
+		}
+	}
+}
+
+void UQuickAccessLibrary::ApplyDamageToActor(AActor* FromActor, AActor* ToActor, float DamageAmount)
+{
+	if (FromActor && ToActor && FromActor->HasAuthority())
+	{
+		UStatsManager* OtherActorStatManager = Cast<UStatsManager>(ToActor->FindComponentByClass(UStatsManager::StaticClass()));
+
+		if (OtherActorStatManager)
+		{
+			ETeamAttitude::Type TeamAttitudeType = QL::GetTeamAttitude(FromActor, FromActor, ToActor);
+
+			if (TeamAttitudeType == ETeamAttitude::Hostile || TeamAttitudeType == ETeamAttitude::Neutral)
+			{
+				OtherActorStatManager->ChangeStat(ToActor, EStatCategory::HEALTH, -DamageAmount);
 			}
 		}
 	}

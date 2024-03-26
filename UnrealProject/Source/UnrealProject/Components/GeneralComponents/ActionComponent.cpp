@@ -78,7 +78,7 @@ void UActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	}
 }
 
-void UActionComponent::AddAction(AActor* Instigator, TSoftClassPtr<UAction> SoftActionClass)
+void UActionComponent::AddAction_Soft(AActor* Instigator, TSoftClassPtr<UAction> SoftActionClass)
 {
 	//Return if not the server
 	if (!GetOwner()->HasAuthority())
@@ -114,6 +114,31 @@ void UActionComponent::AddAction(AActor* Instigator, TSoftClassPtr<UAction> Soft
 					}
 				}
 			});
+	}
+}
+
+void UActionComponent::AddAction(AActor* Instigator, TSubclassOf<UAction> ActionClass)
+{
+	if (ContainsAction(TSoftClassPtr<UAction>(ActionClass)))
+	{
+		return;
+	}
+
+	if (ActionClass)
+	{
+		UAction* NewAction = NewObject<UAction>(this, ActionClass);
+
+		if (NewAction)
+		{
+			CurrentActions.Add(NewAction);
+
+			NewAction->Initialize(this);
+
+			if (NewAction->GetAutoPlay() && NewAction->CanStart())
+			{
+				NewAction->StartAction(Instigator);
+			}
+		}
 	}
 }
 

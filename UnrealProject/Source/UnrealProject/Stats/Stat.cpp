@@ -20,7 +20,7 @@ FStat_Broadcast UStat::ChangeStat(AActor* Instigator, float Value)
 		float OldValue = StatValue.CurrentValue;
 		StatValue.CurrentValue = FMath::Clamp(StatValue.CurrentValue + Value, StatValue.MinValue, StatValue.MaxValue);
 
-		if (StatValue.CurrentValue == StatValue.MinValue)
+		if (OldValue != StatValue.MinValue && StatValue.CurrentValue == StatValue.MinValue)
 		{
 			OnStatReachesMinValue(Instigator);
 		}

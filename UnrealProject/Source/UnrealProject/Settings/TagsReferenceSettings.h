@@ -18,5 +18,5 @@ class UNREALPROJECT_API UTagsReferenceSettings : public UDeveloperSettings
 public:
 
 	UPROPERTY(config, EditDefaultsOnly, BlueprintReadOnly, Category = "Shield")
-	FGameplayTagContainer ShieldTag;
+	FGameplayTag ShieldTag;
 };

@@ -10,6 +10,7 @@ UENUM(BlueprintType)
 enum class EStatCategory : uint8
 {
 	HEALTH,
+	SHIELD,
 	MAX UMETA(Hidden)
 };
 
@@ -65,7 +66,7 @@ public:
 	FStatValue StatValue;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
-	float OldValue;
+	float OldValue = StatValue.CurrentValue;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
 	EStatCategory StatCategory = EStatCategory::MAX;

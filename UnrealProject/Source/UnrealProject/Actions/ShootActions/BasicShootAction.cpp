@@ -4,6 +4,8 @@
 #include "BasicShootAction.h"
 #include "../../Characters/BaseCharacter.h"
 #include "../../GameInstance/SAGameInstance.h"
+#include "../../Projectiles/BasicProjectile.h"
+#include "Animation/AnimInstance.h"
 
 void UBasicShootAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
 {

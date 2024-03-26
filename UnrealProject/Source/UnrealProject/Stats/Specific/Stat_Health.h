@@ -13,6 +13,10 @@ class UNREALPROJECT_API UStat_Health : public UStat
 {
 	GENERATED_BODY()
 	
+public:
+
+	virtual FStat_Broadcast ChangeStat(AActor* Instigator, float Value) override;
+
 protected:
 
 	virtual void OnStatReachesMinValue_Implementation(AActor* Instigator) override;

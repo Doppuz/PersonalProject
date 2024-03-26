@@ -19,7 +19,7 @@ public:
 
 	virtual void Initialize();
 
-	FStat_Broadcast ChangeStat(AActor* Instigator, float Value);
+	virtual FStat_Broadcast ChangeStat(AActor* Instigator, float Value);
 
 protected:
 

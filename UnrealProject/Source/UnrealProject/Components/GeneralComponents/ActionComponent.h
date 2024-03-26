@@ -26,7 +26,10 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
-	void AddAction(AActor* Instigator, TSoftClassPtr<UAction> SoftActionClass);
+	void AddAction_Soft(AActor* Instigator, TSoftClassPtr<UAction> SoftActionClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	void AddAction(AActor* Instigator, TSubclassOf<UAction> ActionClass);
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void RemoveAction(AActor* Instigator, UAction* ActionToRemove);
@@ -87,7 +90,7 @@ protected:
 	TArray<TObjectPtr<UAction>> CurrentActions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actions")
-	TArray<TSoftClassPtr<UAction>> DefaultActions;
+	TArray<TSubclassOf<UAction>> DefaultActions;
 
 	UPROPERTY()
 	USAGameInstance* GI;
