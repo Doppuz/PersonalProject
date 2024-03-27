@@ -5,6 +5,8 @@
 #include "../Library/QuickAccessLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "../Components/GeneralComponents/ActionComponent.h"
+#include "../Components/GeneralComponents/ActionComponent.h"
+#include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
 void UAction::Initialize(UActionComponent* NewActionComponent)
 {
@@ -45,6 +47,11 @@ void UAction::StartAction_Implementation(AActor* Instigator)
 
 	ActionRepData.Instigator = Instigator;
 	ActionRepData.bIsRunning = true;
+
+	if (ensureAlways(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnStartAction.Broadcast(ActionComponentOwner, ActionName);
+	}
 }
 
 void UAction::StopAction_Implementation(AActor* Instigator)
@@ -73,6 +80,11 @@ void UAction::StopAction_Implementation(AActor* Instigator)
 
 	ActionRepData.Instigator = Instigator;
 	ActionRepData.bIsRunning = false;
+
+	if (ensureAlways(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnStopAction.Broadcast(ActionComponentOwner, ActionName);
+	}
 
 	if (bAutoRemove)
 	{

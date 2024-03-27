@@ -6,6 +6,7 @@
 #include "BaseCharacter.h"
 #include "../Enums/Enums_AI.h"
 #include "../Interfaces/AttackDefenseInterface.h"
+#include "GameplayTagContainer.h"
 #include "BaseEnemy.generated.h"
 
 class UWidgetComponent;
@@ -25,6 +26,11 @@ protected:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UFUNCTION()
+	void OnStopAction(UActionComponent* InActionComponent, FGameplayTag ActionName);
 
 #pragma region Components
 

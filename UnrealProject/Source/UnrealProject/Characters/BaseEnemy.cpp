@@ -5,6 +5,9 @@
 #include "../Components/GeneralComponents/MovementManager.h"	
 #include "Components/WidgetComponent.h"
 #include "../UI/Health/HealthWidget.h"
+#include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 ABaseEnemy::ABaseEnemy()
 {
@@ -57,6 +60,11 @@ void ABaseEnemy::BeginPlay()
 			HealthWidget->SetWidgetOwner(this);
 		}
 	}
+
+	if (HasAuthority() && ensureAlways(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnStopAction.AddDynamic(this, &ABaseEnemy::OnStopAction);
+	}
 }
 
 // Called every frame
@@ -64,4 +72,32 @@ void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ABaseEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	if (HasAuthority() && ensureAlways(WS_GlobalEvents))
+	{
+		WS_GlobalEvents->OnStopAction.RemoveDynamic(this, &ABaseEnemy::OnStopAction);
+	}
+}
+
+void ABaseEnemy::OnStopAction(UActionComponent* InActionComponent, FGameplayTag ActionName)
+{
+	if (InActionComponent == ActionComponent)
+	{
+		AAIController* AIController = Cast<AAIController>(GetController());
+
+		if (AIController)
+		{
+			UBlackboardComponent* BC = AIController->GetBlackboardComponent();
+
+			if (BC)
+			{
+				BC->SetValueAsString("LastStopAction", ActionName.ToString());
+			}
+		}
+	}
 }

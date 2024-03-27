@@ -36,7 +36,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Dash")
 	TObjectPtr<UNiagaraSystem> DashEffect;
 
-
 	UPROPERTY()
 	FTimerHandle DashTimerHandle;
 
