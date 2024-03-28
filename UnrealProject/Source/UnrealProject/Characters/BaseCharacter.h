@@ -24,7 +24,9 @@ public:
 
 	virtual FVector GetCurrentMovementSpeed();
 
-	virtual void SetCurrentMovementSpeed(float Invalue);
+	virtual void SetMaxMovementSpeed(float Invalue);
+
+	virtual float GetCurrentMaxMovementSpeed();
 
 	virtual class UMovementManager* GetMovementManager();
 

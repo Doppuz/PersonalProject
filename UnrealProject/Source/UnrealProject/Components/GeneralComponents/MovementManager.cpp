@@ -4,23 +4,38 @@
 #include "MovementManager.h"
 #include "../../Interfaces/MovementInterface.h"
 
-// Sets default values for this component's properties
 UMovementManager::UMovementManager()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
-
-	// ...
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UMovementManager::SetCurrentMovementState(EMovementState InState)
+void UMovementManager::SetCurrentMovementState(EMovementState InState, bool SmoothTransition, float SmoothTransitionDuration)
 {
-	CurrentMovementState = InState;
-
-	if (ensureAlways(OwnerMovementInterface))
+	if (CurrentMovementState == InState)
 	{
-		OwnerMovementInterface->SetCurrentMovementSpeed(MovementStateSpeed[(uint8) InState]);
+		return;
+	}
+
+	if (SmoothTransition)
+	{
+		InitialValueTransition = MovementStateSpeed[(uint8)CurrentMovementState];
+		FinalValueTransition = MovementStateSpeed[(uint8)InState];
+		SmoothSpeedForSecond = (FinalValueTransition - InitialValueTransition) / SmoothTransitionDuration;
+
+		CurrentMovementState = InState;
+
+		SetComponentTickEnabled(true);
+	}
+	else
+	{
+		ensureAlwaysMsgf(!PrimaryComponentTick.IsTickFunctionEnabled(), TEXT("You are overriding the smooth transition"));
+
+		SetComponentTickEnabled(false);
+		CurrentMovementState = InState;
+		if (ensureAlways(OwnerMovementInterface))
+		{
+			OwnerMovementInterface->SetMaxMovementSpeed(MovementStateSpeed[(uint8)InState]);
+		}
 	}
 }
 
@@ -30,4 +45,37 @@ void UMovementManager::BeginPlay()
 	Super::BeginPlay();
 
 	OwnerMovementInterface = Cast<IMovementInterface>(GetOwner());
+
+	SetComponentTickEnabled(false);
+}
+
+void UMovementManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (ensureAlways(OwnerMovementInterface))
+	{
+		float Current = OwnerMovementInterface->GetCurrentMaxMovementSpeed();
+
+		float NewMovementSpeed = 0.f;
+		if (InitialValueTransition <= FinalValueTransition)
+		{
+			NewMovementSpeed = FMath::Clamp(Current + SmoothSpeedForSecond * DeltaTime, InitialValueTransition, FinalValueTransition);
+		}
+		else
+		{
+			NewMovementSpeed = FMath::Clamp(Current + SmoothSpeedForSecond * DeltaTime, FinalValueTransition, InitialValueTransition);
+		}
+
+		OwnerMovementInterface->SetMaxMovementSpeed(NewMovementSpeed);
+
+		if (NewMovementSpeed == FinalValueTransition)
+		{
+			InitialValueTransition = 0.f;
+			FinalValueTransition = 0.f;
+			SmoothSpeedForSecond = 0.f;
+
+			SetComponentTickEnabled(false);
+		}
+	}
 }

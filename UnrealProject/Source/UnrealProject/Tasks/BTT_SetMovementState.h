@@ -21,7 +21,13 @@ protected:
 
 protected:
 
-	UPROPERTY(EditAnywhere, Category = "MovementState")
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	EMovementState NewMovementState = EMovementState::MAX;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	bool bSmoothTransition = false;
+
+	UPROPERTY(EditAnywhere, Category = "Movement", meta = (EditCondition = "bSmoothTransition", EditConditionHides))
+	float SmoothTransitionDuration = 1.f;
 
 };

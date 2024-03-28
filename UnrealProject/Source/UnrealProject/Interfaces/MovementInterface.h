@@ -28,12 +28,15 @@ public:
 	virtual FVector GetCurrentMovementSpeed() = 0;
 
 	UFUNCTION()
-	virtual void SetCurrentMovementSpeed(float InValue) = 0;
+	virtual void SetMaxMovementSpeed(float InValue) = 0;
+
+	UFUNCTION()
+	virtual float GetCurrentMaxMovementSpeed() = 0;
 
 	UFUNCTION()
 	virtual class UMovementManager* GetMovementManager() = 0;
 
 	UFUNCTION()
-	virtual void SetCurrentMovementState(EMovementState InState);
+	virtual void SetCurrentMovementState(EMovementState InState, bool SmoothTransition = false, float SmoothTransitionDuration = 1.f);
 
 };

@@ -6,10 +6,10 @@
 
 // Add default functionality here for any IMovementInterfaces functions that are not pure virtual.
 
-void IMovementInterface::SetCurrentMovementState(EMovementState InState)
+void IMovementInterface::SetCurrentMovementState(EMovementState InState, bool SmoothTransition, float SmoothTransitionDuration)
 {
 	if (GetMovementManager())
 	{
-		GetMovementManager()->SetCurrentMovementState(InState);
+		GetMovementManager()->SetCurrentMovementState(InState, SmoothTransition, SmoothTransitionDuration);
 	}
 }

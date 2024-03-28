@@ -3,6 +3,9 @@
 
 #include "BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../Components/GeneralComponents/ActionComponent.h"
+#include "../Components/GeneralComponents/StatsManager.h"
+#include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -43,9 +46,14 @@ FVector ABaseCharacter::GetCurrentMovementSpeed()
 	return GetCharacterMovement()->Velocity;
 }
 
-void ABaseCharacter::SetCurrentMovementSpeed(float InValue)
+void ABaseCharacter::SetMaxMovementSpeed(float InValue)
 {
 	GetCharacterMovement()->MaxWalkSpeed = InValue;
+}
+
+float ABaseCharacter::GetCurrentMaxMovementSpeed()
+{
+	return GetCharacterMovement()->MaxWalkSpeed;
 }
 
 UMovementManager* ABaseCharacter::GetMovementManager()

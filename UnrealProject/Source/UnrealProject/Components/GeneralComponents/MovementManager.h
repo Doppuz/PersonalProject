@@ -16,11 +16,13 @@ public:
 	// Sets default values for this component's properties
 	UMovementManager();
 
-	void SetCurrentMovementState(EMovementState InState);
+	void SetCurrentMovementState(EMovementState InState, bool SmoothTransition = false, float SmoothTransitionDuration = 1.f);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
 
@@ -35,5 +37,14 @@ protected:
 #pragma endregion
 
 	class IMovementInterface* OwnerMovementInterface = nullptr;
+
+	UPROPERTY()
+	float InitialValueTransition = 0;
+
+	UPROPERTY()
+	float FinalValueTransition = 0;
+
+	UPROPERTY()
+	float SmoothSpeedForSecond = 0;
 
 };

@@ -15,7 +15,7 @@ EBTNodeResult::Type UBTT_SetMovementState::ExecuteTask(UBehaviorTreeComponent& O
 
 	if (CurrentOwnerMovementInterface && ensureAlways(NewMovementState != EMovementState::MAX))
 	{
-		CurrentOwnerMovementInterface->SetCurrentMovementState(NewMovementState);
+		CurrentOwnerMovementInterface->SetCurrentMovementState(NewMovementState, bSmoothTransition, SmoothTransitionDuration);
 
 		return EBTNodeResult::Succeeded;
 	}

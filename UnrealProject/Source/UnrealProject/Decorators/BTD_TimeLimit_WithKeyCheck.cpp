@@ -16,6 +16,15 @@ void UBTD_TimeLimit_WithKeyCheck::DescribeRuntimeValues(const UBehaviorTreeCompo
 	
 }
 
+void UBTD_TimeLimit_WithKeyCheck::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsFloat(TimerDurationKey.SelectedKeyName, FMath::RandRange(TimerDuration - RandomDeviation, TimerDuration + RandomDeviation));
+	}
+}
+
 void UBTD_TimeLimit_WithKeyCheck::OnCeaseRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
@@ -32,13 +41,13 @@ void UBTD_TimeLimit_WithKeyCheck::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 	{
 		float CurrentAmount = BlackboardComp->GetValueAsFloat(TimerDurationKey.SelectedKeyName);
 
-		if (CurrentAmount >= TimerDuration)
+		if (CurrentAmount <= 0)
 		{
 			OwnerComp.RequestExecution(this);
 		}
 		else
 		{
-			BlackboardComp->SetValueAsFloat(TimerDurationKey.SelectedKeyName, CurrentAmount + DeltaSeconds);
+			BlackboardComp->SetValueAsFloat(TimerDurationKey.SelectedKeyName, CurrentAmount - DeltaSeconds);
 		}
 	}
 }
