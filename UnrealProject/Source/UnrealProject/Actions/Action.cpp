@@ -7,6 +7,7 @@
 #include "../Components/GeneralComponents/ActionComponent.h"
 #include "../Components/GeneralComponents/ActionComponent.h"
 #include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
+#include "../Characters/BaseEnemy.h"
 
 void UAction::Initialize(UActionComponent* NewActionComponent)
 {
@@ -34,12 +35,6 @@ bool UAction::CanStart_Implementation()
 
 void UAction::StartAction_Implementation(AActor* Instigator)
 {
-	if (ActionRepData.bIsRunning)
-	{
-		//ensureAlwaysMsgf(false, TEXT("The action is already running!"));
-		return;
-	}
-
 	if (ensureAlways(ActionComponentOwner))
 	{
 		ActionComponentOwner->AddActiveTags(GrantsTags);
@@ -48,7 +43,7 @@ void UAction::StartAction_Implementation(AActor* Instigator)
 	ActionRepData.Instigator = Instigator;
 	ActionRepData.bIsRunning = true;
 
-	if (ensureAlways(WS_GlobalEvents))
+	if (WS_GlobalEvents)
 	{
 		WS_GlobalEvents->OnStartAction.Broadcast(ActionComponentOwner, ActionName);
 	}
@@ -56,11 +51,6 @@ void UAction::StartAction_Implementation(AActor* Instigator)
 
 void UAction::StopAction_Implementation(AActor* Instigator)
 {
-	if (!ActionRepData.bIsRunning)
-	{
-		//ensureAlwaysMsgf(false, TEXT("The action is not running!"));
-		return;
-	}
 	if (!ensureAlways(ActionComponentOwner))
 	{
 		return;
@@ -81,12 +71,12 @@ void UAction::StopAction_Implementation(AActor* Instigator)
 	ActionRepData.Instigator = Instigator;
 	ActionRepData.bIsRunning = false;
 
-	if (ensureAlways(WS_GlobalEvents))
+	if (WS_GlobalEvents)
 	{
 		WS_GlobalEvents->OnStopAction.Broadcast(ActionComponentOwner, ActionName);
 	}
 
-	if (bAutoRemove)
+	if (bAutoRemove && ActionComponentOwner->GetOwner()->HasAuthority())
 	{
 		ActionComponentOwner->RemoveAction(Instigator, this);
 	}
@@ -101,6 +91,17 @@ void UAction::OnCooldownExpire()
 
 void UAction::OnRep_RepActionData()
 {
+	if (ActionComponentOwner->GetOwner()->IsA(ABaseEnemy::StaticClass()))
+	{
+		FString DebugMsg;
+		if(ActionRepData.bIsRunning)
+			DebugMsg = "true";
+		else
+			DebugMsg = "false";
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, DebugMsg);
+	}
+
 	if (ActionRepData.bIsRunning)
 	{
 		StartAction(ActionRepData.Instigator);

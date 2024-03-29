@@ -28,7 +28,7 @@ protected:
 
 #pragma region MovementeState
 
-	UPROPERTY()
+	UPROPERTY(replicated, VisibleAnywhere, Category = "Movement State")
 	EMovementState CurrentMovementState = EMovementState::WALKING;
 
 	UPROPERTY(EditDefaultsOnly, meta = (ArraySizeEnum = "EMovementState"))

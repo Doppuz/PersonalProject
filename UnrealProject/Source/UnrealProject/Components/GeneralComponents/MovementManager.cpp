@@ -3,14 +3,22 @@
 
 #include "MovementManager.h"
 #include "../../Interfaces/MovementInterface.h"
+#include "Net/UnrealNetwork.h"
 
 UMovementManager::UMovementManager()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+
+	SetIsReplicatedByDefault(true);
 }
 
 void UMovementManager::SetCurrentMovementState(EMovementState InState, bool SmoothTransition, float SmoothTransitionDuration)
 {
+	if (!GetOwner()->HasAuthority())
+	{
+		return;
+	}
+
 	if (CurrentMovementState == InState)
 	{
 		return;
@@ -53,7 +61,7 @@ void UMovementManager::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (ensureAlways(OwnerMovementInterface))
+	if (ensureAlways(OwnerMovementInterface) && GetOwner()->HasAuthority())
 	{
 		float Current = OwnerMovementInterface->GetCurrentMaxMovementSpeed();
 
@@ -79,3 +87,14 @@ void UMovementManager::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		}
 	}
 }
+
+#pragma region Replication
+
+void UMovementManager::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UMovementManager, CurrentMovementState);
+}
+
+#pragma endregion
