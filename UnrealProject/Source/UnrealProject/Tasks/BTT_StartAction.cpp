@@ -35,18 +35,25 @@ EBTNodeResult::Type UBTT_StartAction::ExecuteTask(UBehaviorTreeComponent& OwnerC
         {
             if (bWaitForStopAction)
             {
-                UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
-                if (ensureAlways(BlackboardComp))
+                if (ActionComponent->CanStartAction(BaseCharacter, ActionName))
                 {
-                    BlackboardComp->SetValueAsString(StopActionKey.SelectedKeyName, "");
-                 
-                    auto KeyID = StopActionKey.GetSelectedKeyID();
-                    BlackboardComp->RegisterObserver(KeyID, this, FOnBlackboardChangeNotification::CreateUObject(this, &UBTT_StartAction::OnBlackboardKeyValueChange));
-                }
-                
-                ActionComponent->StartActionByName(BaseCharacter, ActionName);
+                    UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+                    if (ensureAlways(BlackboardComp))
+                    {
+                        BlackboardComp->SetValueAsString(StopActionKey.SelectedKeyName, "");
 
-                return EBTNodeResult::InProgress;
+                        auto KeyID = StopActionKey.GetSelectedKeyID();
+                        BlackboardComp->RegisterObserver(KeyID, this, FOnBlackboardChangeNotification::CreateUObject(this, &UBTT_StartAction::OnBlackboardKeyValueChange));
+                    }
+
+                    ActionComponent->StartActionByName(BaseCharacter, ActionName);
+
+                    return EBTNodeResult::InProgress;
+                }
+                else
+                {
+                    return EBTNodeResult::Succeeded;
+                }
             }
 
             ActionComponent->StartActionByName(BaseCharacter, ActionName);

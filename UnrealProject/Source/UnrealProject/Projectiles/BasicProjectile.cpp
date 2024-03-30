@@ -12,6 +12,7 @@
 #include "../Library/QuickAccessLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "../Settings/TagsReferenceSettings.h"
+#include "../Characters/BaseCharacter.h"
 
 // Sets default values
 ABasicProjectile::ABasicProjectile()

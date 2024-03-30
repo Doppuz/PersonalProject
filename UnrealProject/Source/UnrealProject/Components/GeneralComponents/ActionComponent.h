@@ -35,6 +35,9 @@ public:
 	void RemoveAction(AActor* Instigator, UAction* ActionToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
+	bool CanStartAction(AActor* Instigator, FGameplayTag ActionName);
+
+	UFUNCTION(BlueprintCallable, Category = "Action")
 	void StartActionByName(AActor* Instigator, FGameplayTag ActionName);
 
 	UFUNCTION(BlueprintCallable, Category = "Action")

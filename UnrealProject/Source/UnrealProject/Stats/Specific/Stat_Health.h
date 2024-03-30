@@ -21,9 +21,4 @@ protected:
 
 	virtual void OnStatReachesMinValue_Implementation(AActor* Instigator) override;
 
-protected:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
-	TSoftClassPtr<UAction> DieAction;
-
 };

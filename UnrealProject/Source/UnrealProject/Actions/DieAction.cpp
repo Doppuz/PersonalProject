@@ -6,13 +6,35 @@
 #include "../GameInstance/SAGameInstance.h"
 #include "../Components/GeneralComponents/ActionComponent.h"
 #include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
+#include "../Controllers/BaseAIController.h"
+#include "Components/CapsuleComponent.h"
 
 UDieAction::UDieAction()
 {
 	bAutoPlay = true;
 }
 
-void UDieAction::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+void UDieAction::StartAction_Implementation(AActor* Instigator)
+{
+	Super::StartAction_Implementation(Instigator);
+
+	if (ensureAlways(ActionComponentOwner) && ActionComponentOwner->GetOwner()->HasAuthority())
+	{
+		ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(ActionComponentOwner->GetOwner());
+
+		if (BaseCharacter)
+		{
+			ABaseAIController* BaseAIController = Cast<ABaseAIController>(BaseCharacter->GetController());
+			BaseAIController->StopBehaviorTree();
+			BaseAIController->SetFocus(nullptr);
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &UDieAction::OnEndTimer, DeadTimerDuration);
+	}
+
+}
+
+void UDieAction::OnEndTimer()
 {
 	//Overriden old behaviour
 	if (ensureAlways(WS_GlobalEvents) && ensureAlways(ActionComponentOwner))

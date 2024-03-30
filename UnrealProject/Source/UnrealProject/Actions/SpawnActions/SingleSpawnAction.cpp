@@ -42,5 +42,8 @@ void USingleSpawnAction::StopAction_Implementation(AActor* Instigator)
 
 void USingleSpawnAction::SpawnActor(TSubclassOf<AActor> ClassToSpawn)
 {
-	AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, ActionComponentOwner->GetOwner()->GetActorLocation(), ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation());
+	if (GetWorld())
+	{
+		AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, ActionComponentOwner->GetOwner()->GetActorLocation(), ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation());
+	}
 }

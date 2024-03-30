@@ -21,6 +21,8 @@ public:
 
 	virtual void OnPossess(APawn* InPawn) override;
 
+	void StopBehaviorTree();
+
 	UFUNCTION()
 	FORCEINLINE UBehaviorTree* GetBehaviorTree() { return BehaviorTree; };
 

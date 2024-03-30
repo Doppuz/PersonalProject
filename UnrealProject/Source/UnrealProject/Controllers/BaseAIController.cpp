@@ -57,6 +57,14 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	}
 }
 
+void ABaseAIController::StopBehaviorTree()
+{
+	if (ensureAlways(BrainComponent))
+	{
+		BrainComponent->StopLogic("Dead");
+	}
+}
+
 void ABaseAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 {
 	//Override in children

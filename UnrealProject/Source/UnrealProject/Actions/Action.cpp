@@ -14,7 +14,6 @@ void UAction::Initialize(UActionComponent* NewActionComponent)
 	ActionComponentOwner = NewActionComponent;
 
 	GI = UQuickAccessLibrary::GetGameInstance(this);
-	WS_GlobalEvents = GetOuter()->GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 }
 
 
@@ -43,6 +42,7 @@ void UAction::StartAction_Implementation(AActor* Instigator)
 	ActionRepData.Instigator = Instigator;
 	ActionRepData.bIsRunning = true;
 
+	WS_GlobalEvents = GetOuter()->GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 	if (WS_GlobalEvents)
 	{
 		WS_GlobalEvents->OnStartAction.Broadcast(ActionComponentOwner, ActionName);
@@ -71,6 +71,7 @@ void UAction::StopAction_Implementation(AActor* Instigator)
 	ActionRepData.Instigator = Instigator;
 	ActionRepData.bIsRunning = false;
 
+	WS_GlobalEvents = GetOuter()->GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
 	if (WS_GlobalEvents)
 	{
 		WS_GlobalEvents->OnStopAction.Broadcast(ActionComponentOwner, ActionName);

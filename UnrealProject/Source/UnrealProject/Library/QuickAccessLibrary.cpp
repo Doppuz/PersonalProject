@@ -246,7 +246,7 @@ void UQuickAccessLibrary::ApplyDamageToActor(AActor* FromActor, AActor* ToActor,
 
 			if (TeamAttitudeType == ETeamAttitude::Hostile || TeamAttitudeType == ETeamAttitude::Neutral)
 			{
-				OtherActorStatManager->ChangeStat(ToActor, EStatCategory::HEALTH, -DamageAmount);
+				OtherActorStatManager->ChangeStat(FromActor, EStatCategory::HEALTH, -DamageAmount);
 			}
 		}
 	}

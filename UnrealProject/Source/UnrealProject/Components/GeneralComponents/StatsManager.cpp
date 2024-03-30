@@ -119,7 +119,6 @@ float UStatsManager::GetCurrentStatValue(EStatCategory InStatCategory)
 		}
 	}
 
-	ensureAlwaysMsgf(false, TEXT("This stat do not exist in the character"));
 	return 0;
 }
 

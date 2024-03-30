@@ -160,6 +160,22 @@ void UActionComponent::RemoveAction(AActor* Instigator, UAction* ActionToRemove)
 	}
 }
 
+bool UActionComponent::CanStartAction(AActor* Instigator, FGameplayTag ActionName)
+{
+	for (int i = 0; i < CurrentActions.Num(); i++)
+	{
+		if (CurrentActions[i]->GetActionName() == ActionName)
+		{
+			if (CurrentActions[i]->CanStart())
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void UActionComponent::StartActionByName(AActor* Instigator, FGameplayTag ActionName)
 {
 	for (int i = 0; i < CurrentActions.Num(); i++)

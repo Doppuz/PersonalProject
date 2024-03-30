@@ -6,6 +6,7 @@
 #include "../../Components/GeneralComponents/StatsManager.h"
 #include "../../Characters/BaseCharacter.h"
 #include "../../Library/QuickAccessLibrary.h"
+#include "../../Settings/TagsReferenceSettings.h"
 
 FStat_Broadcast UStat_Health::ChangeStat(AActor* Instigator, float Value)
 {
@@ -42,6 +43,8 @@ void UStat_Health::OnStatReachesMinValue_Implementation(AActor* Instigator)
 {
 	if (ensureAlways(StatsManagerRef))
 	{
+		const UTagsReferenceSettings* TagsReferenceSettings = GetDefault<UTagsReferenceSettings>();
+
 		ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(StatsManagerRef->GetOwner());
 
 		if (ensureAlways(BaseCharacter))
@@ -51,7 +54,7 @@ void UStat_Health::OnStatReachesMinValue_Implementation(AActor* Instigator)
 			if (ActionComponent)
 			{
 				QL::AddScoreToAllPlayers(BaseCharacter, BaseCharacter->GetCharacterScore());
-				ActionComponent->AddAction_Soft(Instigator, DieAction);
+				QL::StartAction(BaseCharacter, Instigator, BaseCharacter, TagsReferenceSettings->DieTag);
 			}
 		}
 	}
