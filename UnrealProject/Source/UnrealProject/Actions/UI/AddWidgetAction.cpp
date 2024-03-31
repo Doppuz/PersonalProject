@@ -10,17 +10,13 @@ void UAddWidgetAction::StartAction_Implementation(AActor* Instigator)
 	Super::StartAction_Implementation(Instigator);
 
 	ENetRole LocalRole = ActionComponentOwner->GetOwner()->GetLocalRole();
-	ENetRole RemoteRole = ActionComponentOwner->GetOwner()->GetRemoteRole();
+	APawn* CurrentPawn = Cast<APawn>(ActionComponentOwner->GetOwner());
 
-	bool IsServerControllingThePlayer = LocalRole == ENetRole::ROLE_Authority && RemoteRole == ENetRole::ROLE_SimulatedProxy;
-	bool IsClientControllingThePlayer = LocalRole == ENetRole::ROLE_AutonomousProxy;
-
-	if (ensureAlways(ActionComponentOwner) && (IsServerControllingThePlayer || IsClientControllingThePlayer))
+	if (ensureAlways(ActionComponentOwner) && CurrentPawn && CurrentPawn->IsLocallyControlled())
 	{
-		APlayerController* PlayerController = Cast<APlayerController>(Cast<APawn>(ActionComponentOwner->GetOwner())->GetController());
 		UGeneralUserWidget* NewWidget = CreateWidget<UGeneralUserWidget>(GetWorld(), WidgetToAdd);
 
-		if (ensureAlways(NewWidget) && ensureAlways(ActionComponentOwner))
+		if (ensureAlways(NewWidget))
 		{
 			NewWidget->SetWidgetOwner(ActionComponentOwner->GetOwner());
 			NewWidget->AddToViewport();

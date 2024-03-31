@@ -27,6 +27,8 @@ protected:
 	UFUNCTION()
 	void OnTargetPerceptionForgotten(AActor* Actor);
 
+	virtual void SetUpInitialValues();
+
 #pragma region Senses
 
 protected:

@@ -15,6 +15,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "../Enums/SACustomDefine.h"
+#include "Engine/LocalPlayer.h"	
+#include "GameFramework/PlayerController.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()

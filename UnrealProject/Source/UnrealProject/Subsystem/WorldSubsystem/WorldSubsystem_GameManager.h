@@ -34,6 +34,8 @@ public:
 
 	void UpdateMeleeEnemiesManager();
 
+	void UpdateCoinsManager();
+
 #pragma region Events
 
 	UFUNCTION()
@@ -68,10 +70,13 @@ protected:
 	UPROPERTY()
 	bool bActivateTick = false;
 
+	UPROPERTY()
+	float TotalGameDuration = 0.f;
+
 #pragma region MeleeEnemies
 
 	UPROPERTY()
-	float CheckMeleeEnemiesFrequency = 5.f;
+	float CheckMeleeEnemiesFrequency = 6.f;
 
 	UPROPERTY()
 	float CurrentMeleeEnemiesTick = 0.f;
@@ -81,7 +86,7 @@ protected:
 #pragma region RangeEnemies
 
 	UPROPERTY()
-	float CheckRangeEnemiesFrequency = 3.f;
+	float CheckRangeEnemiesFrequency = 7.f;
 
 	UPROPERTY()
 	float CurrentRangeEnemiesTick = 0.f;
@@ -91,7 +96,7 @@ protected:
 #pragma region Powerups
 
 	UPROPERTY()
-	float PowerupCheckFrequency = 8.f;
+	float PowerupCheckFrequency = 10.f;
 
 	UPROPERTY()
 	float CurrentPowerUpTick = 0.f;
@@ -108,6 +113,16 @@ protected:
 
 	UPROPERTY()
 	float CurrentScoreTick = 0.f;
+
+#pragma endregion
+
+#pragma region Coins
+
+	UPROPERTY()
+	float CoinsCheckFrequency = 4.f;
+
+	UPROPERTY()
+	float CurrentCoinsTick = 0.f;
 
 #pragma endregion
 

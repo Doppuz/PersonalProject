@@ -33,9 +33,13 @@ void UDashAction::StartAction_Implementation(AActor* Instigator)
 
 			if (Character->GetCharacterMovement()->Velocity != FVector::ZeroVector && DashEffect && Character->GetMesh())
 			{
-				UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),DashEffect, Character->GetMesh()->GetSocketLocation(DashEffectSocketName), CurrentDirection.Rotation(), DashEffectScale, true, false);
-				NiagaraComp->SetCustomTimeDilation(DashEffectSpeed);
-				NiagaraComp->Activate();
+				UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), DashEffect, Character->GetMesh()->GetSocketLocation(DashEffectSocketName), CurrentDirection.Rotation(), DashEffectScale, true, false);
+					
+				if (NiagaraComp)
+				{
+					NiagaraComp->SetCustomTimeDilation(DashEffectSpeed);
+					NiagaraComp->Activate();
+				}
 			}
 
 			if (ensureAlways(GetWorld()))

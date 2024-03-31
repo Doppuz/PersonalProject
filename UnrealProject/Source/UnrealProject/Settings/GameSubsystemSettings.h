@@ -20,8 +20,20 @@ public:
 	TArray<TSoftObjectPtr<ASpawner>> RangeSpawners;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	TSoftObjectPtr<UCurveFloat> RangeSpawnerCurve;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	TArray<TSoftObjectPtr<ASpawner>> MeleeSpawners;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	TSoftObjectPtr<UCurveFloat> MeleeSpawnerCurve;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	TArray<TSoftObjectPtr<ASpawner>> PowerupSpawners;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	TSoftObjectPtr<UCurveFloat> PowerupSpawnerCurve;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	TSoftObjectPtr<ASpawner> CoinSpawner;
 };

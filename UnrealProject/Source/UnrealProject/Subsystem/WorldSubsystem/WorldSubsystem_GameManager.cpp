@@ -58,30 +58,37 @@ void UWorldSubsystem_GameManager::Tick(float DeltaTime)
     {
         CurrentRangeEnemiesTick += DeltaTime;
         CurrentPowerUpTick += DeltaTime;
-        CurrentScoreTick += DeltaTime;
         CurrentMeleeEnemiesTick += DeltaTime;
+        CurrentScoreTick += DeltaTime;
+        CurrentCoinsTick += DeltaTime;
+        TotalGameDuration += DeltaTime;
 
-        CheckRangeEnemiesFrequency = FMath::RandRange(3.f, 7.f);
-
-        if (CurrentRangeEnemiesTick >= CheckRangeEnemiesFrequency)
+        if (CurrentRangeEnemiesTick >= FMath::RandRange(CheckRangeEnemiesFrequency - 2, CheckRangeEnemiesFrequency + 2))
         {
             UpdateRangeEnemiesManager();
 
             CurrentRangeEnemiesTick = 0.f;
         }
 
-        if (CurrentPowerUpTick >= PowerupCheckFrequency)
+        if (CurrentPowerUpTick >= FMath::RandRange(PowerupCheckFrequency, CheckRangeEnemiesFrequency + 10))
         {
             UpdatePowerUpManager();
 
             CurrentPowerUpTick = 0.f;
         }
 
-        if (CurrentMeleeEnemiesTick >= CheckMeleeEnemiesFrequency)
+        if (CurrentMeleeEnemiesTick >= FMath::RandRange(CheckMeleeEnemiesFrequency, CheckMeleeEnemiesFrequency + 2))
         {
             UpdateMeleeEnemiesManager();
 
             CurrentMeleeEnemiesTick = 0.f;
+        }
+
+        if (CurrentCoinsTick >= CoinsCheckFrequency)
+        {
+            UpdateCoinsManager();
+
+            CurrentCoinsTick = 0.f;
         }
 
         if (CurrentScoreTick >= ScoreCheckFrequency)
@@ -155,6 +162,15 @@ void UWorldSubsystem_GameManager::UpdateMeleeEnemiesManager()
             int NumberExtracted = FMath::RandRange(0, CurrentMeleeSpawner.Num() - 1);
             ActivateSpawner(CurrentMeleeSpawner[NumberExtracted], TagsReferenceSettings->SpawnActionName);
         }
+    }
+}
+
+void UWorldSubsystem_GameManager::UpdateCoinsManager()
+{
+    if (ensureAlways(GameSubsystemSettings))
+    {
+        TSoftObjectPtr<ASpawner> CurrentCoinsSpawner = GameSubsystemSettings->CoinSpawner;
+        ActivateSpawner(CurrentCoinsSpawner, TagsReferenceSettings->SpawnActionName);
     }
 }
 

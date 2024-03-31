@@ -92,17 +92,6 @@ void UAction::OnCooldownExpire()
 
 void UAction::OnRep_RepActionData()
 {
-	if (ActionComponentOwner->GetOwner()->IsA(ABaseEnemy::StaticClass()))
-	{
-		FString DebugMsg;
-		if(ActionRepData.bIsRunning)
-			DebugMsg = "true";
-		else
-			DebugMsg = "false";
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, DebugMsg);
-	}
-
 	if (ActionRepData.bIsRunning)
 	{
 		StartAction(ActionRepData.Instigator);

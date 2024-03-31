@@ -23,6 +23,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn|EQS", meta = (EditCondition = "bUseEQS", EditConditionHides))
 	class UEnvQuery* SpawnQuery;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn")
+	bool bSpawnWithCollision = true;
+
 protected:
 
 	virtual void OnSpawnQueryFinished(TSharedPtr<FEnvQueryResult> Result);

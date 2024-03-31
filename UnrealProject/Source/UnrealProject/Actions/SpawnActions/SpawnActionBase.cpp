@@ -9,7 +9,11 @@
 void USpawnActionBase::OnSpawnQueryFinished(TSharedPtr<FEnvQueryResult> Result)
 {
 	FActorSpawnParameters ActorSpawnParameters;
-	//ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
+
+	if (!bSpawnWithCollision)
+	{
+		ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
+	}
 
 	TArray<FVector> Locations;
 	for (int i = 0; i < Result->Items.Num() - 1; i++)

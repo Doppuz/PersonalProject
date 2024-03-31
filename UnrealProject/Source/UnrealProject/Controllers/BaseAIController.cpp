@@ -46,14 +46,9 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	if (HasAuthority())
+	if (bStartBehaviorTreeOnPossess)
 	{
-		RunBehaviorTree(BehaviorTree);
-	}
-
-	if (Blackboard)
-	{
-		Blackboard->SetValueAsObject("AttackTarget", UQuickAccessLibrary::GetPlayer(this));
+		StartBehaviorTree();
 	}
 }
 
@@ -62,6 +57,15 @@ void ABaseAIController::StopBehaviorTree()
 	if (ensureAlways(BrainComponent))
 	{
 		BrainComponent->StopLogic("Dead");
+	}
+}
+
+void ABaseAIController::StartBehaviorTree()
+{
+	if (HasAuthority())
+	{
+		RunBehaviorTree(BehaviorTree);
+		SetUpInitialValues();
 	}
 }
 
@@ -115,6 +119,11 @@ ETeamAttitude::Type ABaseAIController::GetTeamAttitudeTowards(const AActor& Othe
 	}
 
 	return ETeamAttitude::Neutral;
+}
+
+void ABaseAIController::SetUpInitialValues()
+{
+	//override children
 }
 
 #pragma endregion

@@ -23,6 +23,9 @@ public:
 
 	void StopBehaviorTree();
 
+	UFUNCTION(BlueprintCallable)
+	void StartBehaviorTree();
+
 	UFUNCTION()
 	FORCEINLINE UBehaviorTree* GetBehaviorTree() { return BehaviorTree; };
 
@@ -36,11 +39,18 @@ public:
 
 protected:
 
+	virtual void SetUpInitialValues();
+
+protected:
+
 	UPROPERTY(EditAnywhere, BlueprintreadWrite, Category = "AI")
 	class UBehaviorTree* BehaviorTree;
 
 	UPROPERTY(EditAnywhere, BlueprintreadWrite, Category = "AI")
 	class UAIPerceptionComponent* AIPerceptionComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintreadWrite, Category = "AI")
+	bool bStartBehaviorTreeOnPossess = true;;
 
 private:
 

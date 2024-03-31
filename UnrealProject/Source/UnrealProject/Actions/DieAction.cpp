@@ -12,7 +12,7 @@
 
 UDieAction::UDieAction()
 {
-	bAutoPlay = true;
+	bAutoPlay = false;
 }
 
 void UDieAction::StartAction_Implementation(AActor* Instigator)
@@ -31,25 +31,23 @@ void UDieAction::StartAction_Implementation(AActor* Instigator)
 				BaseAIController->StopBehaviorTree();
 				BaseAIController->SetFocus(nullptr);
 			}
-
-			UAnimInstance* AnimInstance = BaseCharacter->GetAnimInstance();
-
-			if (AnimInstance)
-			{
-				BaseCharacter->StopAnimMontage(BaseCharacter->GetAnimInstance()->GetCurrentActiveMontage());
-			}
 		}
-
-		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &UDieAction::OnEndTimer, DeadTimerDuration);
 	}
 
 }
 
-void UDieAction::OnEndTimer()
+void UDieAction::OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
 {
-	//Overriden old behaviour
-	if (ensureAlways(WS_GlobalEvents) && ensureAlways(ActionComponentOwner))
+	if (NotifyName == "NotifyDestroy")
 	{
-		WS_GlobalEvents->OnActionActorDead.Broadcast(ActionComponentOwner, ActionComponentOwner->GetOwner());
+		if (ensureAlways(WS_GlobalEvents) && ensureAlways(ActionComponentOwner))
+		{
+			WS_GlobalEvents->OnActionActorDead.Broadcast(ActionComponentOwner, ActionComponentOwner->GetOwner());
+		}
 	}
+}
+
+void UDieAction::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	//Override old behaviour
 }

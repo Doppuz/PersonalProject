@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Action.h"
+#include "MontageActions/PlayMontageAction.h"
 #include "DieAction.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPROJECT_API UDieAction : public UAction
+class UNREALPROJECT_API UDieAction : public UPlayMontageAction
 {
 	GENERATED_BODY()
 	
@@ -22,11 +22,7 @@ protected:
 
 	virtual void StartAction_Implementation(AActor* Instigator) override;
 
-	void OnEndTimer();
+	virtual void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted) override;
 
-	UPROPERTY(EditAnywhere, Category = "Dead timer")
-	float DeadTimerDuration = 2.f;
-
-	FTimerHandle DeadTimerHandle;
-
+	virtual void OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload) override;
 };

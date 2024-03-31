@@ -12,17 +12,6 @@
 void ABaseEnemyController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	
-	if (GetBlackboardComponent())
-	{
-		IAttackDefenseInterface* AttackDefenseInterface = Cast<IAttackDefenseInterface>(InPawn);
-
-		if (AttackDefenseInterface)
-		{
-			GetBlackboardComponent()->SetValueAsFloat("AttackRange", AttackDefenseInterface->GetAttackRange());
-			GetBlackboardComponent()->SetValueAsFloat("DefenseRange", AttackDefenseInterface->GetDefenseRange());
-		}
-	}
 
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseEnemyController::OnTargetPerceptionUpdated);
 	AIPerceptionComponent->OnTargetPerceptionForgotten.AddDynamic(this, &ABaseEnemyController::OnTargetPerceptionForgotten);
@@ -89,6 +78,22 @@ void ABaseEnemyController::OnTargetPerceptionForgotten(AActor* Actor)
 		break;
 	default:
 		break;
+	}
+}
+
+void ABaseEnemyController::SetUpInitialValues()
+{
+	Super::SetUpInitialValues();
+
+	if (GetBlackboardComponent())
+	{
+		IAttackDefenseInterface* AttackDefenseInterface = Cast<IAttackDefenseInterface>(GetPawn());
+
+		if (AttackDefenseInterface)
+		{
+			GetBlackboardComponent()->SetValueAsFloat("AttackRange", AttackDefenseInterface->GetAttackRange());
+			GetBlackboardComponent()->SetValueAsFloat("DefenseRange", AttackDefenseInterface->GetDefenseRange());
+		}
 	}
 }
 
