@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Action.h"
+#include "SpawnActionBase.h"
 #include "../../Enums/Enums_General.h"
 #include "DataTableSpawnAction.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS(NotBlueprintable)
-class UNREALPROJECT_API UDataTableSpawnAction : public UAction
+class UNREALPROJECT_API UDataTableSpawnAction : public USpawnActionBase
 {
 	GENERATED_BODY()
 	

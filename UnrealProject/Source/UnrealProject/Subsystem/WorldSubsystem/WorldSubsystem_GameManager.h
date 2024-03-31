@@ -11,6 +11,7 @@ class ASpawner;
 class UGameSubsystemSettings;
 class UWorldSubsystem_GlobalEvents;
 class AUnrealProjectGameModeBase;
+class UTagsReferenceSettings;
 
 UCLASS()
 class UNREALPROJECT_API UWorldSubsystem_GameManager : public UTickableWorldSubsystem
@@ -27,9 +28,11 @@ public:
 
 	virtual TStatId GetStatId() const override;
 
-	void UpdateManager();
+	void UpdateRangeEnemiesManager();
 
 	void UpdatePowerUpManager();
+
+	void UpdateMeleeEnemiesManager();
 
 #pragma region Events
 
@@ -54,6 +57,9 @@ protected:
 	const UGameSubsystemSettings* GameSubsystemSettings;
 
 	UPROPERTY()
+	const UTagsReferenceSettings* TagsReferenceSettings;
+
+	UPROPERTY()
 	TObjectPtr<UWorldSubsystem_GlobalEvents> WS_GlobalEvents;
 
 	UPROPERTY()
@@ -62,13 +68,23 @@ protected:
 	UPROPERTY()
 	bool bActivateTick = false;
 
-#pragma region Enemies
+#pragma region MeleeEnemies
 
 	UPROPERTY()
-	float CheckFrequency = 3.f;
+	float CheckMeleeEnemiesFrequency = 5.f;
 
 	UPROPERTY()
-	float CurrentTick = 0.f;
+	float CurrentMeleeEnemiesTick = 0.f;
+
+#pragma endregion
+
+#pragma region RangeEnemies
+
+	UPROPERTY()
+	float CheckRangeEnemiesFrequency = 3.f;
+
+	UPROPERTY()
+	float CurrentRangeEnemiesTick = 0.f;
 
 #pragma endregion
 

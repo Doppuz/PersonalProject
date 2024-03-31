@@ -26,7 +26,14 @@ void USingleSpawnAction::StartAction_Implementation(AActor* Instigator)
 
 					if (ensureAlways(ClassToSpawn))
 					{
-						SpawnActor(ClassToSpawn);
+						if (bUseEQS)
+						{
+							SpawnActorWithEQS(ClassToSpawn);
+						}
+						else
+						{
+							SpawnActor(ClassToSpawn);
+						}
 					}
 
 					StopAction_Implementation(Instigator);
@@ -38,12 +45,4 @@ void USingleSpawnAction::StartAction_Implementation(AActor* Instigator)
 void USingleSpawnAction::StopAction_Implementation(AActor* Instigator)
 {
 	Super::StopAction_Implementation(Instigator);
-}
-
-void USingleSpawnAction::SpawnActor(TSubclassOf<AActor> ClassToSpawn)
-{
-	if (GetWorld())
-	{
-		AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, ActionComponentOwner->GetOwner()->GetActorLocation(), ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation());
-	}
 }

@@ -22,4 +22,7 @@ public:
 
 	UPROPERTY(config, EditDefaultsOnly, BlueprintReadOnly, Category = "Tags")
 	FGameplayTag DieTag;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Tags")
+	FGameplayTag SpawnActionName;
 };

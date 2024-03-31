@@ -8,6 +8,7 @@
 #include "../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 #include "../Controllers/BaseAIController.h"
 #include "Components/CapsuleComponent.h"
+#include "Animation/AnimInstance.h"
 
 UDieAction::UDieAction()
 {
@@ -25,8 +26,18 @@ void UDieAction::StartAction_Implementation(AActor* Instigator)
 		if (BaseCharacter)
 		{
 			ABaseAIController* BaseAIController = Cast<ABaseAIController>(BaseCharacter->GetController());
-			BaseAIController->StopBehaviorTree();
-			BaseAIController->SetFocus(nullptr);
+			if (BaseAIController)
+			{
+				BaseAIController->StopBehaviorTree();
+				BaseAIController->SetFocus(nullptr);
+			}
+
+			UAnimInstance* AnimInstance = BaseCharacter->GetAnimInstance();
+
+			if (AnimInstance)
+			{
+				BaseCharacter->StopAnimMontage(BaseCharacter->GetAnimInstance()->GetCurrentActiveMontage());
+			}
 		}
 
 		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &UDieAction::OnEndTimer, DeadTimerDuration);

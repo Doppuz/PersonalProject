@@ -1,15 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "EQSSpawnAction.h"
+#include "SpawnActionBase.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "../../Components/GeneralComponents/ActionComponent.h"
+#include "../../Subsystem/WorldSubsystem/WorldSubsystem_GlobalEvents.h"
 
-void UEQSSpawnAction::OnSpawnQueryFinished(TSharedPtr<FEnvQueryResult> Result)
+void USpawnActionBase::OnSpawnQueryFinished(TSharedPtr<FEnvQueryResult> Result)
 {
 	FActorSpawnParameters ActorSpawnParameters;
-	ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
-	
+	//ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
+
 	TArray<FVector> Locations;
 	for (int i = 0; i < Result->Items.Num() - 1; i++)
 	{
@@ -22,7 +23,7 @@ void UEQSSpawnAction::OnSpawnQueryFinished(TSharedPtr<FEnvQueryResult> Result)
 			}
 		}
 	}
-	
+
 	if (Locations.Num() > 0)
 	{
 		FVector LocationExtracted = Locations[FMath::RandRange(0, Locations.Num() - 1)];
@@ -33,10 +34,15 @@ void UEQSSpawnAction::OnSpawnQueryFinished(TSharedPtr<FEnvQueryResult> Result)
 		}
 
 		AActor* NewActor = GetWorld()->SpawnActor<AActor>(ClassToSpawn, LocationExtracted, ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation(), ActorSpawnParameters);
+		
+		if (NewActor && ensureAlways(WS_GlobalEvents))
+		{
+			WS_GlobalEvents->OnActionSpawnActor.Broadcast(ActionComponentOwner, NewActor);
+		}
 	}
 }
 
-void UEQSSpawnAction::SpawnActor(TSubclassOf<AActor> InClassToSpawn)
+void USpawnActionBase::SpawnActorWithEQS(TSubclassOf<AActor> InClassToSpawn)
 {
 	ClassToSpawn = InClassToSpawn;
 
@@ -45,6 +51,19 @@ void UEQSSpawnAction::SpawnActor(TSubclassOf<AActor> InClassToSpawn)
 	HidingSpotQueryRequest.Execute(
 		EEnvQueryRunMode::SingleResult,
 		this,
-		&UEQSSpawnAction::OnSpawnQueryFinished
+		&USpawnActionBase::OnSpawnQueryFinished
 	);
+}
+
+void USpawnActionBase::SpawnActor(TSubclassOf<AActor> InClassToSpawn)
+{
+	if (GetWorld())
+	{
+		AActor* NewActor = GetWorld()->SpawnActor<AActor>(InClassToSpawn, ActionComponentOwner->GetOwner()->GetActorLocation(), ActionComponentOwner->GetOwner()->GetActorForwardVector().Rotation());
+		
+		if (NewActor && ensureAlways(WS_GlobalEvents))
+		{
+			WS_GlobalEvents->OnActionSpawnActor.Broadcast(ActionComponentOwner, NewActor);
+		}
+	}
 }

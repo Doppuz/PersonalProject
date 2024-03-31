@@ -3,6 +3,7 @@
 
 #include "WorldSubsystem_GameManager.h"
 #include "../../Settings/GameSubsystemSettings.h"
+#include "../../Settings/TagsReferenceSettings.h"
 #include "../../Library/QuickAccessLibrary.h"
 #include "../../Spawners/Spawner.h"
 #include "Engine/AssetManager.h"
@@ -43,6 +44,7 @@ void UWorldSubsystem_GameManager::Initialize(FSubsystemCollectionBase& Collectio
 
     GameSubsystemSettings = GetDefault<UGameSubsystemSettings>();
     WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
+    TagsReferenceSettings = GetDefault<UTagsReferenceSettings>();
 
     if (ensure(WS_GlobalEvents))
     {
@@ -54,17 +56,18 @@ void UWorldSubsystem_GameManager::Tick(float DeltaTime)
 {
     if (bActivateTick)
     {
-        CurrentTick += DeltaTime;
+        CurrentRangeEnemiesTick += DeltaTime;
         CurrentPowerUpTick += DeltaTime;
         CurrentScoreTick += DeltaTime;
+        CurrentMeleeEnemiesTick += DeltaTime;
 
-        CheckFrequency = FMath::RandRange(3.f, 7.f);
+        CheckRangeEnemiesFrequency = FMath::RandRange(3.f, 7.f);
 
-        if (CurrentTick >= CheckFrequency)
+        if (CurrentRangeEnemiesTick >= CheckRangeEnemiesFrequency)
         {
-            UpdateManager();
+            UpdateRangeEnemiesManager();
 
-            CurrentTick = 0.f;
+            CurrentRangeEnemiesTick = 0.f;
         }
 
         if (CurrentPowerUpTick >= PowerupCheckFrequency)
@@ -72,6 +75,13 @@ void UWorldSubsystem_GameManager::Tick(float DeltaTime)
             UpdatePowerUpManager();
 
             CurrentPowerUpTick = 0.f;
+        }
+
+        if (CurrentMeleeEnemiesTick >= CheckMeleeEnemiesFrequency)
+        {
+            UpdateMeleeEnemiesManager();
+
+            CurrentMeleeEnemiesTick = 0.f;
         }
 
         if (CurrentScoreTick >= ScoreCheckFrequency)
@@ -88,7 +98,7 @@ void UWorldSubsystem_GameManager::Tick(float DeltaTime)
     }
 }
 
-void UWorldSubsystem_GameManager::UpdateManager()
+void UWorldSubsystem_GameManager::UpdateRangeEnemiesManager()
 {
     if (ensureAlways(GameSubsystemSettings))
     {
@@ -106,7 +116,7 @@ void UWorldSubsystem_GameManager::UpdateManager()
         if (CurrentRangeSpawner.Num() > 0)
         {
             int NumberExtracted = FMath::RandRange(0, CurrentRangeSpawner.Num() - 1);
-            ActivateSpawner(CurrentRangeSpawner[NumberExtracted], GameSubsystemSettings->SpawnActionName);
+            ActivateSpawner(CurrentRangeSpawner[NumberExtracted], TagsReferenceSettings->SpawnActionName);
         }
     }
 }
@@ -120,7 +130,30 @@ void UWorldSubsystem_GameManager::UpdatePowerUpManager()
         if (CurrentPowerupSpawner.Num() > 0)
         {
             int NumberExtracted = FMath::RandRange(0, CurrentPowerupSpawner.Num() - 1);
-            ActivateSpawner(CurrentPowerupSpawner[NumberExtracted], GameSubsystemSettings->SpawnActionName);
+            ActivateSpawner(CurrentPowerupSpawner[NumberExtracted], TagsReferenceSettings->SpawnActionName);
+        }
+    }
+}
+
+void UWorldSubsystem_GameManager::UpdateMeleeEnemiesManager()
+{
+    if (ensureAlways(GameSubsystemSettings))
+    {
+        TArray<TSoftObjectPtr<ASpawner>> CurrentMeleeSpawner = GameSubsystemSettings->MeleeSpawners;
+
+        for (int i = CurrentMeleeSpawner.Num() - 1; i >= 0; i--)
+        {
+            ASpawner* CurrentSpawner = CurrentMeleeSpawner[i].Get();
+            if (!CurrentSpawner || !CurrentSpawner->CanSpawn())
+            {
+                CurrentMeleeSpawner.RemoveAt(i);
+            }
+        }
+
+        if (CurrentMeleeSpawner.Num() > 0)
+        {
+            int NumberExtracted = FMath::RandRange(0, CurrentMeleeSpawner.Num() - 1);
+            ActivateSpawner(CurrentMeleeSpawner[NumberExtracted], TagsReferenceSettings->SpawnActionName);
         }
     }
 }

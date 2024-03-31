@@ -20,7 +20,7 @@ public:
 	TArray<TSoftObjectPtr<ASpawner>> RangeSpawners;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
-	FGameplayTag SpawnActionName;
+	TArray<TSoftObjectPtr<ASpawner>> MeleeSpawners;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	TArray<TSoftObjectPtr<ASpawner>> PowerupSpawners;

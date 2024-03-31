@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Action.h"
+#include "SpawnActionBase.h"
 #include "SingleSpawnAction.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPROJECT_API USingleSpawnAction : public UAction
+class UNREALPROJECT_API USingleSpawnAction : public USpawnActionBase
 {
 	GENERATED_BODY()
 
@@ -19,10 +19,6 @@ public:
 	virtual void StartAction_Implementation(AActor* Instigator) override;
 
 	virtual void StopAction_Implementation(AActor* Instigator) override;
-
-protected:
-
-	virtual void SpawnActor(TSubclassOf<AActor> ClassToSpawn);
 
 protected:
 
