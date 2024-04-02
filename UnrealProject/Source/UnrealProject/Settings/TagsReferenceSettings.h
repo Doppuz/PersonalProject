@@ -10,17 +10,17 @@
 /**
  * 
  */
-UCLASS(Config = Game)
+UCLASS(Config = Game, defaultconfig)
 class UNREALPROJECT_API UTagsReferenceSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
 	
 public:
 
-	UPROPERTY(config, EditDefaultsOnly, BlueprintReadOnly, Category = "Tags")
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Tags")
 	FGameplayTag ShieldTag;
 
-	UPROPERTY(config, EditDefaultsOnly, BlueprintReadOnly, Category = "Tags")
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Tags")
 	FGameplayTag DieTag;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Tags")
