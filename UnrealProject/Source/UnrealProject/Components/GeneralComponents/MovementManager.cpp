@@ -36,8 +36,6 @@ void UMovementManager::SetCurrentMovementState(EMovementState InState, bool Smoo
 	}
 	else
 	{
-		ensureAlwaysMsgf(!PrimaryComponentTick.IsTickFunctionEnabled(), TEXT("You are overriding the smooth transition"));
-
 		SetComponentTickEnabled(false);
 		CurrentMovementState = InState;
 		if (ensureAlways(OwnerMovementInterface))
@@ -55,6 +53,14 @@ void UMovementManager::BeginPlay()
 	OwnerMovementInterface = Cast<IMovementInterface>(GetOwner());
 
 	SetComponentTickEnabled(false);
+}
+
+void UMovementManager::OnRep_CurrentMovementState()
+{
+	if (ensureAlways(OwnerMovementInterface))
+	{
+		OwnerMovementInterface->SetMaxMovementSpeed(MovementStateSpeed[(uint8)CurrentMovementState]);
+	}
 }
 
 void UMovementManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

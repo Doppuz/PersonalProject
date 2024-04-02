@@ -25,10 +25,7 @@ void UDashAction::StartAction_Implementation(AActor* Instigator)
 
 			if (Character->HasAuthority())
 			{
-				MovementInterface->SetCurrentMovementState(EMovementState::DASH);
-
-				float DashSpeed = Character->GetCharacterMovement()->MaxWalkSpeed;
-				Character->GetCharacterMovement()->Velocity = CurrentDirection * DashSpeed;
+				Character->LaunchCharacter(CurrentDirection * DashDistance, true, false);
 			}
 
 			if (Character->GetCharacterMovement()->Velocity != FVector::ZeroVector && DashEffect && Character->GetMesh())
@@ -53,14 +50,5 @@ void UDashAction::StartAction_Implementation(AActor* Instigator)
 
 void UDashAction::StopAction_Implementation(AActor* Instigator)
 {
-	ACharacter* Character = Cast<ACharacter>(ActionComponentOwner->GetOwner());
-	IMovementInterface* MovementInterface = Cast<IMovementInterface>(Character);
-
-	if (Character && Character->GetCharacterMovement() && ensureAlways(MovementInterface)
-		&& Character->HasAuthority())
-	{
-		MovementInterface->SetCurrentMovementState(EMovementState::WALKING);
-	}
-
 	Super::StopAction_Implementation(Instigator);
 }

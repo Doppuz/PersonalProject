@@ -25,4 +25,7 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Tags")
 	FGameplayTag SpawnActionName;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Tags")
+	FGameplayTag HitReactionActionName;
 };

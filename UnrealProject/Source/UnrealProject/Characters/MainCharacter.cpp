@@ -17,6 +17,7 @@
 #include "../Enums/SACustomDefine.h"
 #include "Engine/LocalPlayer.h"	
 #include "GameFramework/PlayerController.h"
+#include "../Library/QuickAccessLibrary.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -125,6 +126,11 @@ void AMainCharacter::OnActionActorDead(UActionComponent* InActionComponent, AAct
 	{
 		Destroy();
 	}
+}
+
+void AMainCharacter::StartAction(FGameplayTag ActionName)
+{
+	ActionComponent->StartActionByName(this, ActionName);
 }
 
 #pragma endregion

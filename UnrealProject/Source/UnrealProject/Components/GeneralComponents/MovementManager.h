@@ -24,11 +24,14 @@ protected:
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION()
+	void OnRep_CurrentMovementState();
+
 protected:
 
 #pragma region MovementeState
 
-	UPROPERTY(replicated, VisibleAnywhere, Category = "Movement State")
+	UPROPERTY(ReplicatedUsing = "OnRep_CurrentMovementState", VisibleAnywhere, Category = "Movement State")
 	EMovementState CurrentMovementState = EMovementState::WALKING;
 
 	UPROPERTY(EditDefaultsOnly, meta = (ArraySizeEnum = "EMovementState"))

@@ -75,4 +75,12 @@ protected:
 
 #pragma endregion
 
+
+#pragma region Debug
+
+	UFUNCTION(exec)
+	void StartAction(FGameplayTag ActionName);
+
+#pragma endregion
+
 };

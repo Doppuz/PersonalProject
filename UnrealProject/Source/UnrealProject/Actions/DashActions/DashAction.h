@@ -25,6 +25,9 @@ protected:
 	float DashDuration = 500;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Dash")
+	float DashDistance = 4000;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Dash")
 	FVector DashEffectScale = FVector(1.f, 1.f, 1.f);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Dash")
