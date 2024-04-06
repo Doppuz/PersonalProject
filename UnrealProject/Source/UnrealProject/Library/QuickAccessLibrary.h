@@ -57,4 +57,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
 	static void ApplyDamageToActor(AActor* FromActor, AActor* ToActor, float DamageAmount);
+
+	UFUNCTION(BlueprintCallable, Category = "QuickLibrary")
+	static void AsyncLoadActor(UObject* InObject);
 };

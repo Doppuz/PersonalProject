@@ -12,6 +12,7 @@
 #include "../PlayerState/SAPlayerState.h"
 #include "../Components/GeneralComponents/StatsManager.h"
 #include "../Enums/Enums_Stat.h"
+#include "../Interfaces/AsyncLoadInterface.h"
 
 USAGameInstance* UQuickAccessLibrary::GetGameInstance(UObject* WorldContextObject)
 {
@@ -250,5 +251,15 @@ void UQuickAccessLibrary::ApplyDamageToActor(AActor* FromActor, AActor* ToActor,
 				//QL::StartAction(FromActor, FromActor, ToActor, TagsReferenceSettings->HitReactionActionName);
 			}
 		}
+	}
+}
+
+void UQuickAccessLibrary::AsyncLoadActor(UObject* InObject)
+{
+	IAsyncLoadInterface* AsyncLoadInterface = Cast<IAsyncLoadInterface>(InObject);
+
+	if (AsyncLoadInterface)
+	{
+		AsyncLoadInterface->AsyncLoadData();
 	}
 }

@@ -11,6 +11,8 @@
 #include "../../GameState/SAGameStateBase.h"
 #include "../../PlayerState/SAPlayerState.h"
 #include "../../UnrealProjectGameModeBase.h"
+#include "../../DataAsset/Setting/PDA_GameSubsystem.h"
+#include "Engine/AssetManager.h"
 
 static int DebugPrintSpawners = 0;
 FAutoConsoleVariableRef CVarDebugPrintSpawners(TEXT("DebugPrintSpawners"), DebugPrintSpawners, TEXT("Print spawners controlled by the Game Manager"), ECVF_Cheat);
@@ -45,6 +47,8 @@ void UWorldSubsystem_GameManager::Initialize(FSubsystemCollectionBase& Collectio
     GameSubsystemSettings = GetDefault<UGameSubsystemSettings>();
     WS_GlobalEvents = GetWorld()->GetSubsystem<UWorldSubsystem_GlobalEvents>();
     TagsReferenceSettings = GetDefault<UTagsReferenceSettings>();
+
+    AsyncLoadData();
 
     if (ensure(WS_GlobalEvents))
     {
@@ -107,9 +111,9 @@ void UWorldSubsystem_GameManager::Tick(float DeltaTime)
 
 void UWorldSubsystem_GameManager::UpdateRangeEnemiesManager()
 {
-    if (ensureAlways(GameSubsystemSettings))
+    if (ensureAlways(GameSubsystemSettings) && ensureAlways(PDA_GameSubsystemSetting))
     {
-        TArray<TSoftObjectPtr<ASpawner>> CurrentRangeSpawner = GameSubsystemSettings->RangeSpawners;
+        TArray<TSoftObjectPtr<ASpawner>> CurrentRangeSpawner = PDA_GameSubsystemSetting->RangeSpawners;
 
         for (int i = CurrentRangeSpawner.Num() - 1; i >= 0; i--)
         {
@@ -132,7 +136,7 @@ void UWorldSubsystem_GameManager::UpdatePowerUpManager()
 {
     if (ensureAlways(GameSubsystemSettings))
     {
-        TArray<TSoftObjectPtr<ASpawner>> CurrentPowerupSpawner = GameSubsystemSettings->PowerupSpawners;
+        TArray<TSoftObjectPtr<ASpawner>> CurrentPowerupSpawner = PDA_GameSubsystemSetting->PowerupSpawners;
 
         if (CurrentPowerupSpawner.Num() > 0)
         {
@@ -146,7 +150,7 @@ void UWorldSubsystem_GameManager::UpdateMeleeEnemiesManager()
 {
     if (ensureAlways(GameSubsystemSettings))
     {
-        TArray<TSoftObjectPtr<ASpawner>> CurrentMeleeSpawner = GameSubsystemSettings->MeleeSpawners;
+        TArray<TSoftObjectPtr<ASpawner>> CurrentMeleeSpawner = PDA_GameSubsystemSetting->MeleeSpawners;
 
         for (int i = CurrentMeleeSpawner.Num() - 1; i >= 0; i--)
         {
@@ -169,7 +173,7 @@ void UWorldSubsystem_GameManager::UpdateCoinsManager()
 {
     if (ensureAlways(GameSubsystemSettings))
     {
-        TSoftObjectPtr<ASpawner> CurrentCoinsSpawner = GameSubsystemSettings->CoinSpawner;
+        TSoftObjectPtr<ASpawner> CurrentCoinsSpawner = PDA_GameSubsystemSetting->CoinSpawner;
         ActivateSpawner(CurrentCoinsSpawner, TagsReferenceSettings->SpawnActionName);
     }
 }
@@ -179,7 +183,7 @@ void UWorldSubsystem_GameManager::PrintSpawners(float DeltaTime)
     // Print all the spawner
     int CurrentFreeSpawners = 0;
 
-    for (TSoftObjectPtr<ASpawner> SpawnerSoft : GameSubsystemSettings->RangeSpawners)
+    for (TSoftObjectPtr<ASpawner> SpawnerSoft : PDA_GameSubsystemSetting->RangeSpawners)
     {
         ASpawner* CurrentSpawner = SpawnerSoft.Get();
         if (CurrentSpawner)
@@ -215,6 +219,34 @@ TStatId UWorldSubsystem_GameManager::GetStatId() const
 void UWorldSubsystem_GameManager::OnAllPlayersReady(AGameModeBase* CurrentGameMode)
 {
     bActivateTick = true;
+}
+
+#pragma endregion
+
+#pragma region AsynLoad
+
+void UWorldSubsystem_GameManager::AsyncLoadData()
+{
+    if (ensureAlways(GameSubsystemSettings))
+    {
+        if (UAssetManager* Manager = UAssetManager::GetIfValid())
+        {
+            TArray<FName> Bundles;
+            FPrimaryAssetId AssetId = GameSubsystemSettings->PA_GameSubsystemSetting;
+            FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &UWorldSubsystem_GameManager::OnDataLoaded, AssetId);
+
+            Manager->LoadPrimaryAsset(AssetId, Bundles, Delegate);
+        }
+    }
+}
+
+void UWorldSubsystem_GameManager::OnDataLoaded(FPrimaryAssetId AssetIdLoaded)
+{
+    UAssetManager* Manager = UAssetManager::GetIfValid();
+    if (Manager)
+    {
+        PDA_GameSubsystemSetting = Cast<UPDA_GameSubsystem>(Manager->GetPrimaryAssetObject(AssetIdLoaded));
+    }
 }
 
 #pragma endregion

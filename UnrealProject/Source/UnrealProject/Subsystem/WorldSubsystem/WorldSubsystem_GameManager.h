@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "GameplayTagContainer.h"
+#include "../../Interfaces/AsyncLoadInterface.h"
 #include "WorldSubsystem_GameManager.generated.h"
 
 class ASpawner;
@@ -14,7 +15,7 @@ class AUnrealProjectGameModeBase;
 class UTagsReferenceSettings;
 
 UCLASS()
-class UNREALPROJECT_API UWorldSubsystem_GameManager : public UTickableWorldSubsystem
+class UNREALPROJECT_API UWorldSubsystem_GameManager : public UTickableWorldSubsystem, public IAsyncLoadInterface
 {
 	GENERATED_BODY()
 	
@@ -35,6 +36,14 @@ public:
 	void UpdateMeleeEnemiesManager();
 
 	void UpdateCoinsManager();
+
+#pragma region AsynLoad
+
+	void AsyncLoadData();
+
+	void OnDataLoaded(FPrimaryAssetId AssetIdLoaded);
+
+#pragma endregion
 
 #pragma region Events
 
@@ -125,5 +134,10 @@ protected:
 	float CurrentCoinsTick = 0.f;
 
 #pragma endregion
+
+private:
+
+	UPROPERTY()
+	class UPDA_GameSubsystem* PDA_GameSubsystemSetting;
 
 };
