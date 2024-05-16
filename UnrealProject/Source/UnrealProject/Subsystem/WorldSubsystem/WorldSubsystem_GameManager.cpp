@@ -58,8 +58,14 @@ void UWorldSubsystem_GameManager::Initialize(FSubsystemCollectionBase& Collectio
 
 void UWorldSubsystem_GameManager::Tick(float DeltaTime)
 {
-    if (bActivateTick)
+    if (bActivateTick && ensure(PDA_GameSubsystemSetting))
     {
+        if (!ensure(PDA_GameSubsystemSetting->RangeSpawnerCurve) || !ensure(PDA_GameSubsystemSetting->PowerupSpawnerCurve) ||
+            !ensure(PDA_GameSubsystemSetting->MeleeSpawnerCurve) || !ensure(PDA_GameSubsystemSetting->GameManagerLevelCurve))
+        {
+            return;
+        }
+
         CurrentRangeEnemiesTick += DeltaTime;
         CurrentPowerUpTick += DeltaTime;
         CurrentMeleeEnemiesTick += DeltaTime;

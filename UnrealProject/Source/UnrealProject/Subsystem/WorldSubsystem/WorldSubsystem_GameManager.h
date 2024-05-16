@@ -82,6 +82,9 @@ protected:
 	UPROPERTY()
 	float TotalGameDuration = 0.f;
 
+	UPROPERTY()
+	int CurrentGameLevel = 1;
+
 #pragma region MeleeEnemies
 
 	UPROPERTY()

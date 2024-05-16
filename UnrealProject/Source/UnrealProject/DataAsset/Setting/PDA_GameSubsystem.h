@@ -19,22 +19,28 @@ public:
 	TArray<TSoftObjectPtr<ASpawner>> RangeSpawners;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
-	TSoftObjectPtr<UCurveFloat> RangeSpawnerCurve;
+	UCurveFloat* RangeSpawnerCurve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	TArray<TSoftObjectPtr<ASpawner>> MeleeSpawners;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
-	TSoftObjectPtr<UCurveFloat> MeleeSpawnerCurve;
+	UCurveFloat* MeleeSpawnerCurve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	TArray<TSoftObjectPtr<ASpawner>> PowerupSpawners;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
-	TSoftObjectPtr<UCurveFloat> PowerupSpawnerCurve;
+	UCurveFloat* PowerupSpawnerCurve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
 	TSoftObjectPtr<ASpawner> CoinSpawner;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	UCurveFloat* GameManagerLevelCurve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn management")
+	int MaxGameLevel = 6;
 
 public:
 
